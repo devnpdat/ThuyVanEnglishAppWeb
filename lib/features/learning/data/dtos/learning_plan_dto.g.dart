@@ -1,0 +1,93 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'learning_plan_dto.dart';
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+_$LearningPlanDtoImpl _$$LearningPlanDtoImplFromJson(
+        Map<String, dynamic> json) =>
+    _$LearningPlanDtoImpl(
+      id: json['id'] as String,
+      userId: json['userId'] as String,
+      topicId: json['topicId'] as String,
+      planType: json['planType'] as String,
+      dailyTargetSentences:
+          (json['dailyTargetSentences'] as num?)?.toInt() ?? 5,
+      selectedDayOfWeek: (json['selectedDayOfWeek'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
+      completedSentences: (json['completedSentences'] as num?)?.toInt() ?? 0,
+      isActive: json['isActive'] as bool? ?? false,
+      startDate: json['startDate'] == null
+          ? null
+          : DateTime.parse(json['startDate'] as String),
+      endDate: json['endDate'] == null
+          ? null
+          : DateTime.parse(json['endDate'] as String),
+      createdAt: json['createdAt'] == null
+          ? null
+          : DateTime.parse(json['createdAt'] as String),
+      updatedAt: json['updatedAt'] == null
+          ? null
+          : DateTime.parse(json['updatedAt'] as String),
+    );
+
+Map<String, dynamic> _$$LearningPlanDtoImplToJson(
+        _$LearningPlanDtoImpl instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'userId': instance.userId,
+      'topicId': instance.topicId,
+      'planType': instance.planType,
+      'dailyTargetSentences': instance.dailyTargetSentences,
+      'selectedDayOfWeek': instance.selectedDayOfWeek,
+      'completedSentences': instance.completedSentences,
+      'isActive': instance.isActive,
+      'startDate': instance.startDate?.toIso8601String(),
+      'endDate': instance.endDate?.toIso8601String(),
+      'createdAt': instance.createdAt?.toIso8601String(),
+      'updatedAt': instance.updatedAt?.toIso8601String(),
+    };
+
+_$LearningProgressDtoImpl _$$LearningProgressDtoImplFromJson(
+        Map<String, dynamic> json) =>
+    _$LearningProgressDtoImpl(
+      id: json['id'] as String,
+      userId: json['userId'] as String,
+      sentenceId: json['sentenceId'] as String,
+      planId: json['planId'] as String,
+      reviewCount: (json['reviewCount'] as num?)?.toInt() ?? 0,
+      correctCount: (json['correctCount'] as num?)?.toInt() ?? 0,
+      masteryLevel: json['masteryLevel'] as String? ?? 'learning',
+      lastReviewedAt: json['lastReviewedAt'] == null
+          ? null
+          : DateTime.parse(json['lastReviewedAt'] as String),
+      masteredAt: json['masteredAt'] == null
+          ? null
+          : DateTime.parse(json['masteredAt'] as String),
+      createdAt: json['createdAt'] == null
+          ? null
+          : DateTime.parse(json['createdAt'] as String),
+      updatedAt: json['updatedAt'] == null
+          ? null
+          : DateTime.parse(json['updatedAt'] as String),
+    );
+
+Map<String, dynamic> _$$LearningProgressDtoImplToJson(
+        _$LearningProgressDtoImpl instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'userId': instance.userId,
+      'sentenceId': instance.sentenceId,
+      'planId': instance.planId,
+      'reviewCount': instance.reviewCount,
+      'correctCount': instance.correctCount,
+      'masteryLevel': instance.masteryLevel,
+      'lastReviewedAt': instance.lastReviewedAt?.toIso8601String(),
+      'masteredAt': instance.masteredAt?.toIso8601String(),
+      'createdAt': instance.createdAt?.toIso8601String(),
+      'updatedAt': instance.updatedAt?.toIso8601String(),
+    };
