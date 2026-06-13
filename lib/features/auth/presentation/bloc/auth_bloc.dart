@@ -32,7 +32,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
 
       // Lấy profile để có userId, displayName
-      await _authRepository.setAuthToken(response.accessToken);
+      await _authRepository.setAuthToken(response.accessToken!);
       UserProfileResponse? profile;
       try {
         profile = await _authRepository.getProfile();

@@ -19,6 +19,49 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isRegisterMode = false;
   bool _obscurePassword = true;
 
+  void _showTopError(BuildContext context, String msg) {
+    final overlay = Overlay.of(context);
+    late OverlayEntry entry;
+    entry = OverlayEntry(
+      builder: (_) => Positioned(
+        top: 24,
+        right: 16,
+        left: 16,
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: Colors.red[700],
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(color: Colors.black26, blurRadius: 8, offset: Offset(0, 3)),
+              ],
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.error_outline, color: Colors.white, size: 20),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(msg,
+                      style: const TextStyle(color: Colors.white, fontSize: 14)),
+                ),
+                GestureDetector(
+                  onTap: () => entry.remove(),
+                  child: const Icon(Icons.close, color: Colors.white70, size: 18),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+    overlay.insert(entry);
+    Future.delayed(const Duration(seconds: 4), () {
+      if (entry.mounted) entry.remove();
+    });
+  }
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -50,13 +93,9 @@ class _LoginScreenState extends State<LoginScreen> {
         state.maybeWhen(
           // Router tự động redirect khi authenticated — không cần gọi setLoggedIn
           authenticated: (userId, email, token, displayName) {},
-          error: (msg) => ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(msg),
-              backgroundColor: Colors.red[700],
-              behavior: SnackBarBehavior.floating,
-            ),
-          ),
+          error: (msg) {
+            _showTopError(context, msg);
+          },
           orElse: () {},
         );
       },
