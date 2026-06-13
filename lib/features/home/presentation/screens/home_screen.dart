@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -15,6 +16,11 @@ class HomeScreen extends StatelessWidget {
         title: const Text('English Learning'),
         elevation: 0,
         actions: [
+          IconButton(
+            icon: const Icon(Icons.admin_panel_settings_outlined),
+            tooltip: 'Admin — Quản lý câu',
+            onPressed: () => context.push('/admin/sentences'),
+          ),
           IconButton(
             icon: const Icon(Icons.person),
             onPressed: () => context.push('/profile'),
@@ -72,10 +78,39 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildGreetingSection(BuildContext context) {
-    final userDisplayName = context.read<AuthBloc>().state.maybeWhen(
-          authenticated: (_, __, displayName, ___) => displayName,
-          orElse: () => 'Learner',
-        );
+    final authState = context.read<AuthBloc>().state;
+    
+    String userDisplayName = 'Learner';
+    authState.maybeWhen(
+      authenticated: (_, __, displayName, token) {
+        // Nếu displayName là token (quá dài), parse JWT để lấy tên
+        if (displayName.length > 50) {
+          // Parse JWT token để lấy claim "name" hoặc "sub"
+          try {
+            final parts = token.split('.');
+            if (parts.length == 3) {
+              final payload = parts[1];
+              // Base64 decode (thêm padding nếu cần)
+              String normalized = payload.replaceAll('-', '+').replaceAll('_', '/');
+              while (normalized.length % 4 != 0) {
+                normalized += '=';
+              }
+              final decoded = const Utf8Decoder().convert(base64.decode(normalized));
+              final Map<String, dynamic> json = jsonDecode(decoded);
+              userDisplayName = json['name'] as String? ?? 
+                                json['unique_name'] as String? ?? 
+                                json['sub'] as String? ?? 
+                                'Learner';
+            }
+          } catch (_) {
+            userDisplayName = 'Learner';
+          }
+        } else {
+          userDisplayName = displayName;
+        }
+      },
+      orElse: () {},
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

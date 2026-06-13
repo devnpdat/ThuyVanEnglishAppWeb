@@ -43,7 +43,7 @@ class DailyLearningRepository {
   Future<AudioPlayedResultDto> recordAudioPlayed(String sentenceId) async {
     try {
       final response = await _httpClient.post<Map<String, dynamic>>(
-        '${AppConfig.learningEndpoint}/sentences/$sentenceId/audio-played',
+        '${AppConfig.learningEndpoint}/$sentenceId/audio-played',
       );
 
       if (response.statusCode == 200 && response.data != null) {
@@ -58,7 +58,7 @@ class DailyLearningRepository {
   Future<TypingResultDto> submitTypingAttempt(String sentenceId, TypingAttemptDto attempt) async {
     try {
       final response = await _httpClient.post<Map<String, dynamic>>(
-        '${AppConfig.learningEndpoint}/sentences/$sentenceId/typing-attempt',
+        '${AppConfig.learningEndpoint}/$sentenceId/typing-attempt',
         data: attempt.toJson(),
       );
 
@@ -74,7 +74,7 @@ class DailyLearningRepository {
   Future<SessionQuizResultDto> submitSessionQuiz(String sentenceId, SessionQuizSubmitDto submission) async {
     try {
       final response = await _httpClient.post<Map<String, dynamic>>(
-        '${AppConfig.learningEndpoint}/sentences/$sentenceId/quiz-submit',
+        '${AppConfig.learningEndpoint}/$sentenceId/quiz-submit',
         data: submission.toJson(),
       );
 
@@ -90,7 +90,7 @@ class DailyLearningRepository {
   Future<SessionCompleteResultDto> completeSession(String sentenceId) async {
     try {
       final response = await _httpClient.post<Map<String, dynamic>>(
-        '${AppConfig.learningEndpoint}/sentences/$sentenceId/complete',
+        '${AppConfig.learningEndpoint}/$sentenceId/complete',
       );
 
       if (response.statusCode == 200 && response.data != null) {

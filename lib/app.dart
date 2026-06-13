@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:english_learning_app/core/services/http_client.dart';
 import 'package:english_learning_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:english_learning_app/features/auth/presentation/screens/login_screen.dart';
 import 'package:english_learning_app/features/home/presentation/screens/home_screen.dart';
@@ -25,6 +26,7 @@ import 'package:english_learning_app/features/learning/presentation/bloc/learnin
 import 'package:english_learning_app/features/learning/presentation/screens/learning_plan_detail_screen.dart';
 import 'package:english_learning_app/features/quiz/presentation/screens/quiz_stats_screen.dart';
 import 'package:english_learning_app/features/review/presentation/screens/mastered_sentences_screen.dart';
+import 'package:english_learning_app/features/admin/presentation/screens/admin_sentences_screen.dart';
 
 
 // ─── Placeholder screen ───────────────────────────────────────────────────────
@@ -95,6 +97,14 @@ class _PlaceholderScreen extends StatelessWidget {
 // ─── AuthBloc singleton (tồn tại suốt app lifecycle) ─────────────────────────
 
 final _authBloc = AuthBloc()..add(const AuthCheckStatusEvent());
+
+// Wire 401 handler — đá về login và logout AuthBloc
+void _setup401Handler() {
+  HttpClient.onUnauthorized = () {
+    _authBloc.add(const AuthLogoutEvent());
+    _router.go('/login');
+  };
+}
 
 // ─── Router ───────────────────────────────────────────────────────────────────
 
@@ -273,6 +283,12 @@ final _router = GoRouter(
       path: '/quiz/stats',
       builder: (context, state) => const QuizStatsScreen(),
     ),
+
+    // Admin — Quản lý Sentences
+    GoRoute(
+      path: '/admin/sentences',
+      builder: (context, state) => const AdminSentencesScreen(),
+    ),
   ],
 );
 
@@ -300,6 +316,9 @@ class EnglishLearningApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Setup 401 → auto redirect về login
+    _setup401Handler();
+
     return BlocProvider.value(
       value: _authBloc,
       child: MaterialApp.router(

@@ -1,7 +1,9 @@
 /// App Configuration - API endpoints, timeouts, environment settings
 class AppConfig {
   // Backend API Configuration
-  static const String apiBaseUrl = 'https://vanvy.up.railway.app';
+  // LOCAL: trỏ BE local cho dev/test
+  static const String apiBaseUrl = 'https://localhost:44396';
+  // PROD: static const String apiBaseUrl = 'https://vanvy.up.railway.app';
 
   // API Endpoints — đúng path /api/v1/...
   static const String topicsEndpoint = '$apiBaseUrl/api/v1/topics';
@@ -18,7 +20,7 @@ class AppConfig {
   // Auth endpoints — ABP Identity Server
   static const String authLoginEndpoint = '$apiBaseUrl/api/account/login';
   static const String authRegisterEndpoint = '$apiBaseUrl/api/account/register';
-  static const String authProfileEndpoint = '$apiBaseUrl/api/account/my-profile';
+  static const String authProfileEndpoint = '$apiBaseUrl/api/account/profile-extended';
   static const String authChangePasswordEndpoint = '$apiBaseUrl/api/account/change-password';
 
   // HTTP Configuration

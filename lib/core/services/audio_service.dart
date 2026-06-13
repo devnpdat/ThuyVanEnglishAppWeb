@@ -1,67 +1,97 @@
 import 'package:flutter/foundation.dart';
-import 'package:just_audio/just_audio.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:injectable/injectable.dart';
+import 'package:web/web.dart' as web;
 
-/// Service để quản lý Audio playback
+/// AudioService — hybrid:
+/// 1. Nếu có audioUrl từ Drive → dùng <audio> HTML element (chất lượng Neural2)
+/// 2. Fallback → Web Speech API (TTS trình duyệt)
 @singleton
 class AudioService {
-  // Lazy init để tránh crash khi WidgetsFlutterBinding chưa ready
-  AudioPlayer? _audioPlayerInstance;
-  FlutterTts? _flutterTtsInstance;
-  double _ttsSpeed = 0.5;
+  double _ttsSpeed = 0.85;
+  web.HTMLAudioElement? _audioEl;
 
   AudioService();
 
-  AudioPlayer get _audioPlayer {
-    _audioPlayerInstance ??= AudioPlayer();
-    return _audioPlayerInstance!;
-  }
+  // ── Play từ URL (Drive MP3) ───────────────────────────────────────────────
 
-  FlutterTts get _flutterTts {
-    if (_flutterTtsInstance == null) {
-      _flutterTtsInstance = FlutterTts();
-      _flutterTtsInstance!.setLanguage("en-US");
-    }
-    return _flutterTtsInstance!;
-  }
-
-  Future<void> speak(String text, {String language = 'en-US', double speed = 0.5}) async {
-    await _flutterTts.setLanguage(language);
-    await _flutterTts.setSpeechRate(speed);
-    await _flutterTts.speak(text);
-  }
-
-  Future<void> stop() async {
-    await _flutterTts.stop();
-  }
-
-  Future<void> playAudio(String url) async {
+  Future<void> playAudioUrl(String url) async {
+    if (!kIsWeb || url.isEmpty) return;
     try {
-      await _audioPlayer.setUrl(url);
-      await _audioPlayer.play();
+      await stopAudio();
+
+      // Tạo audio element mới mỗi lần để tránh cache stale
+      final el = web.HTMLAudioElement();
+      el.src = url;
+      el.preload = 'auto';
+      el.crossOrigin = 'anonymous';
+      _audioEl = el;
+
+      // Play — Drive URL sẽ redirect về file MP3 thực
+      el.play();
+      debugPrint('🎵 Playing audio URL: $url');
     } catch (e) {
-      print('Audio Error: $e');
+      debugPrint('❌ playAudioUrl error: $e');
     }
   }
 
   Future<void> stopAudio() async {
-    await _audioPlayer.stop();
+    try {
+      _audioEl?.pause();
+      _audioEl = null;
+    } catch (_) {}
   }
 
-  /// Alias for playAudio — called by AudioPlayerWidget
-  Future<void> playAudioUrl(String url) async {
-    await playAudio(url);
+  bool get isPlayingAudio => _audioEl != null;
+
+  // ── Speak via Web Speech API (fallback) ──────────────────────────────────
+
+  Future<void> speak(String text,
+      {String language = 'en-US', double? speed}) async {
+    if (!kIsWeb) return;
+    try {
+      final rate = speed ?? _ttsSpeed;
+      final synth = web.window.speechSynthesis;
+      synth.cancel();
+
+      final utterance = web.SpeechSynthesisUtterance(text);
+      utterance.lang = language;
+      utterance.rate = rate;
+      utterance.pitch = 1.0;
+      utterance.volume = 1.0;
+
+      // Chọn giọng Google US English nếu có
+      final voices = synth.getVoices();
+      web.SpeechSynthesisVoice? bestVoice;
+      for (var i = 0; i < voices.length; i++) {
+        final v = voices[i];
+        if (v.name.contains('Google') && v.lang.startsWith('en-US')) {
+          bestVoice = v;
+          break;
+        }
+        if (bestVoice == null && v.lang.startsWith('en')) {
+          bestVoice = v;
+        }
+      }
+      if (bestVoice != null) utterance.voice = bestVoice;
+
+      synth.speak(utterance);
+    } catch (e) {
+      debugPrint('❌ TTS error: $e');
+    }
   }
 
-  /// Set TTS playback speed
-  void setTtsSpeed(double speed) {
-    _ttsSpeed = speed;
-    _flutterTts.setSpeechRate(_ttsSpeed);
+  Future<void> stop() async {
+    if (!kIsWeb) return;
+    try {
+      web.window.speechSynthesis.cancel();
+      await stopAudio();
+    } catch (_) {}
   }
+
+  void setTtsSpeed(double speed) => _ttsSpeed = speed;
 
   void dispose() {
-    _audioPlayer.dispose();
-    _flutterTts.stop();
+    _audioEl?.pause();
+    _audioEl = null;
   }
 }

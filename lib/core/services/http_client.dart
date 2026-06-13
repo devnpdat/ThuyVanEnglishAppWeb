@@ -10,6 +10,9 @@ class HttpClient {
   late final Dio _dio;
   String? _token;
 
+  // Callback được set từ app.dart — gọi khi nhận 401
+  static void Function()? onUnauthorized;
+
   HttpClient() {
     _dio = Dio(
       BaseOptions(
@@ -44,8 +47,13 @@ class HttpClient {
           }
           return handler.next(response);
         },
-        onError: (DioException error, handler) {
+        onError: (DioException error, handler) async {
           debugPrint('🔴 API Error: ${error.response?.statusCode} ${error.requestOptions.path}');
+          if (error.response?.statusCode == 401) {
+            // Token hết hạn hoặc invalid — xóa token và đá về login
+            await clearAuthToken();
+            onUnauthorized?.call();
+          }
           return handler.next(error);
         },
       ),
