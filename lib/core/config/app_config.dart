@@ -15,8 +15,8 @@ class AppConfig {
   static const String dashboardEndpoint = '$apiBaseUrl/api/v1/dashboard';
   static const String aiEndpoint = '$apiBaseUrl/api/v1/ai';
 
-  // Auth endpoints — ABP Identity dùng /api/account/...
-  static const String authLoginEndpoint = '$apiBaseUrl/connect/token';
+  // Auth endpoints — ABP Identity Server
+  static const String authLoginEndpoint = '$apiBaseUrl/api/account/login';
   static const String authRegisterEndpoint = '$apiBaseUrl/api/account/register';
   static const String authProfileEndpoint = '$apiBaseUrl/api/account/my-profile';
   static const String authChangePasswordEndpoint = '$apiBaseUrl/api/account/change-password';

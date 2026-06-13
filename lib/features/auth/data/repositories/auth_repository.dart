@@ -132,22 +132,14 @@ class AuthRepository {
 
   AuthRepository(this._httpClient);
 
-  /// Login — trả về JWT token
+  /// Login — ABP /api/account/login → trả về token
   Future<LoginResponse> login(LoginRequest request) async {
     try {
       final response = await _httpClient.post<Map<String, dynamic>>(
         AppConfig.authLoginEndpoint,
-        data: {
-          'grant_type': 'password',
-          'username': request.userNameOrEmailAddress,
-          'password': request.password,
-          'client_id': 'EnglishApp_Mobile',
-          'scope': 'EnglishApp offline_access',
-        },
+        data: request.toJson(),
         options: Options(
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
+          headers: {'Content-Type': 'application/json'},
         ),
       );
 
