@@ -33,8 +33,8 @@ class RegisterRequest {
     required this.userName,
     required this.emailAddress,
     required this.password,
-    this.appName = AppConfig.appName,
-  });
+    String? appName,
+  }) : appName = appName ?? AppConfig.appName;
 
   Map<String, dynamic> toJson() => {
         'userName': userName,
