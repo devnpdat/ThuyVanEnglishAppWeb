@@ -1,9 +1,9 @@
 /// App Configuration - API endpoints, timeouts, environment settings
 class AppConfig {
   // Backend API Configuration
-  // LOCAL: trỏ BE local cho dev/test
-  static const String apiBaseUrl = 'https://localhost:44396';
-  // PROD: static const String apiBaseUrl = 'https://vanvy.up.railway.app';
+  // PROD: https://vanvy.up.railway.app
+  static const String apiBaseUrl = 'https://vanvy.up.railway.app';
+  // LOCAL (dev): static const String apiBaseUrl = 'https://localhost:44396';
 
   // API Endpoints — đúng path /api/v1/...
   static const String topicsEndpoint = '$apiBaseUrl/api/v1/topics';
