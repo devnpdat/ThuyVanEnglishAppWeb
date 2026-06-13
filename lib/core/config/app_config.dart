@@ -1,7 +1,7 @@
 /// App Configuration - API endpoints, timeouts, environment settings
 class AppConfig {
   // Backend API Configuration
-  static const String apiBaseUrl = 'https://spirited-wonder-production-8738.up.railway.app';
+  static const String apiBaseUrl = 'https://vanvy.up.railway.app';
 
   // API Endpoints — đúng path /api/v1/...
   static const String topicsEndpoint = '$apiBaseUrl/api/v1/topics';
