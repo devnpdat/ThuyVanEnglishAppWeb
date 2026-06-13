@@ -17,16 +17,18 @@ class AudioService {
   Future<void> playAudioUrl(String url) async {
     if (!kIsWeb || url.isEmpty) return;
     try {
+      // Stop và cleanup trước
       await stopAudio();
 
-      // Tạo audio element mới mỗi lần để tránh cache stale
+      // Tạo audio element mới mỗi lần
       final el = web.HTMLAudioElement();
       el.src = url;
       el.preload = 'auto';
       el.crossOrigin = 'anonymous';
+      
       _audioEl = el;
 
-      // Play — Drive URL sẽ redirect về file MP3 thực
+      // Play
       el.play();
       debugPrint('🎵 Playing audio URL: $url');
     } catch (e) {
@@ -36,8 +38,12 @@ class AudioService {
 
   Future<void> stopAudio() async {
     try {
-      _audioEl?.pause();
-      _audioEl = null;
+      if (_audioEl != null) {
+        _audioEl!.pause();
+        _audioEl!.currentTime = 0;  // Reset position
+        _audioEl!.src = '';  // Clear src
+        _audioEl = null;
+      }
     } catch (_) {}
   }
 
