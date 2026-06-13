@@ -32,7 +32,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
 
       // Lấy profile để có userId, displayName
-      await _authRepository.setAuthToken(response.accessToken!);
+      final token = response.accessToken ?? '';
+      if (token.isEmpty) {
+        throw Exception('Không lấy được token từ server');
+      }
+      
+      await _authRepository.setAuthToken(token);
       UserProfileResponse? profile;
       try {
         profile = await _authRepository.getProfile();
@@ -41,7 +46,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
 
       await _authRepository.saveUserLocally(
-        response.accessToken,
+        token,
         profile?.id ?? '',
         profile?.emailAddress ?? event.email,
         profile?.displayName ?? event.email,
@@ -50,7 +55,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthState.authenticated(
         userId: profile?.id ?? '',
         email: profile?.emailAddress ?? event.email,
-        token: response.accessToken,
+        token: token,
         displayName: profile?.displayName ?? event.email,
       ));
     } catch (e) {
@@ -80,14 +85,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         ),
       );
 
-      await _authRepository.setAuthToken(loginResp.accessToken);
+      final token = loginResp.accessToken ?? '';
+      if (token.isEmpty) {
+        throw Exception('Không lấy được token từ server');
+      }
+
+      await _authRepository.setAuthToken(token);
       UserProfileResponse? profile;
       try {
         profile = await _authRepository.getProfile();
       } catch (_) {}
 
       await _authRepository.saveUserLocally(
-        loginResp.accessToken,
+        token,
         profile?.id ?? '',
         event.email,
         event.displayName.isNotEmpty ? event.displayName : event.email,
@@ -96,7 +106,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthState.authenticated(
         userId: profile?.id ?? '',
         email: event.email,
-        token: loginResp.accessToken,
+        token: token,
         displayName: event.displayName.isNotEmpty ? event.displayName : event.email,
       ));
     } catch (e) {
