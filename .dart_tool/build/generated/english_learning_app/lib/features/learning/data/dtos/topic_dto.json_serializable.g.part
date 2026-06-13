@@ -1,0 +1,31 @@
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+_$TopicDtoImpl _$$TopicDtoImplFromJson(Map<String, dynamic> json) =>
+    _$TopicDtoImpl(
+      id: json['id'] as String,
+      topicName: json['topicName'] as String,
+      slug: json['slug'] as String,
+      description: json['description'] as String?,
+      sourceType: json['sourceType'] as String?,
+      sentenceCount: (json['sentenceCount'] as num?)?.toInt() ?? 0,
+      iconEmoji: json['iconEmoji'] as String? ?? '📚',
+      isActive: json['isActive'] as bool? ?? true,
+      createdAt: json['createdAt'] == null
+          ? null
+          : DateTime.parse(json['createdAt'] as String),
+    );
+
+Map<String, dynamic> _$$TopicDtoImplToJson(_$TopicDtoImpl instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'topicName': instance.topicName,
+      'slug': instance.slug,
+      'description': instance.description,
+      'sourceType': instance.sourceType,
+      'sentenceCount': instance.sentenceCount,
+      'iconEmoji': instance.iconEmoji,
+      'isActive': instance.isActive,
+      'createdAt': instance.createdAt?.toIso8601String(),
+    };

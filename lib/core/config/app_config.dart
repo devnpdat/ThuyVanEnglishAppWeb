@@ -1,50 +1,68 @@
-/// App Configuration - API endpoints, timeouts, environment settings
+/// App Configuration - Environment Selector
+/// 
+/// Chọn config theo build mode:
+/// - Development (local): flutter run -d chrome --web-port=5173
+/// - Production (Railway): flutter build web --release
+/// 
+/// File này export đúng config theo kIsWeb và kReleaseMode.
+
+import 'package:flutter/foundation.dart';
+
+// Import cả 2 config với prefix
+import 'app_config.dev.dart' as dev;
+import 'app_config.prod.dart' as prod;
+
+/// AppConfig - tự động chọn dev/prod dựa vào build mode
 class AppConfig {
+  // Chọn config: kReleaseMode → prod, còn lại → dev
+  static final _config = kReleaseMode ? prod.AppConfig : dev.AppConfig;
+
   // Backend API Configuration
-  // PROD: https://vanvy.up.railway.app
-  static const String apiBaseUrl = 'https://vanvy.up.railway.app';
-  // LOCAL (dev): static const String apiBaseUrl = 'https://localhost:44396';
+  static String get apiBaseUrl => _config.apiBaseUrl;
 
-  // API Endpoints — đúng path /api/v1/...
-  static const String topicsEndpoint = '$apiBaseUrl/api/v1/topics';
-  static const String sentencesEndpoint = '$apiBaseUrl/api/v1/sentences';
-  static const String quizEndpoint = '$apiBaseUrl/api/v1/quiz';
-  static const String reviewEndpoint = '$apiBaseUrl/api/v1/review';
-  static const String userProfileEndpoint = '$apiBaseUrl/api/v1/userprofile';
-  static const String rewardsEndpoint = '$apiBaseUrl/api/v1/rewards';
-  static const String learningPlanEndpoint = '$apiBaseUrl/api/v1/learningplan';
-  static const String learningEndpoint = '$apiBaseUrl/api/v1/learning';
-  static const String dashboardEndpoint = '$apiBaseUrl/api/v1/dashboard';
-  static const String aiEndpoint = '$apiBaseUrl/api/v1/ai';
+  // API Endpoints
+  static String get topicsEndpoint => _config.topicsEndpoint;
+  static String get sentencesEndpoint => _config.sentencesEndpoint;
+  static String get quizEndpoint => _config.quizEndpoint;
+  static String get reviewEndpoint => _config.reviewEndpoint;
+  static String get userProfileEndpoint => _config.userProfileEndpoint;
+  static String get rewardsEndpoint => _config.rewardsEndpoint;
+  static String get learningPlanEndpoint => _config.learningPlanEndpoint;
+  static String get learningEndpoint => _config.learningEndpoint;
+  static String get dashboardEndpoint => _config.dashboardEndpoint;
+  static String get aiEndpoint => _config.aiEndpoint;
 
-  // Auth endpoints — ABP Identity Server
-  static const String authLoginEndpoint = '$apiBaseUrl/api/account/login';
-  static const String authRegisterEndpoint = '$apiBaseUrl/api/account/register';
-  static const String authProfileEndpoint = '$apiBaseUrl/api/account/profile-extended';
-  static const String authChangePasswordEndpoint = '$apiBaseUrl/api/account/change-password';
+  // Auth endpoints
+  static String get authLoginEndpoint => _config.authLoginEndpoint;
+  static String get authRegisterEndpoint => _config.authRegisterEndpoint;
+  static String get authProfileEndpoint => _config.authProfileEndpoint;
+  static String get authChangePasswordEndpoint => _config.authChangePasswordEndpoint;
 
   // HTTP Configuration
-  static const int connectionTimeout = 30; // seconds
-  static const int receiveTimeout = 30; // seconds
-  static const int sendTimeout = 30; // seconds
+  static int get connectionTimeout => _config.connectionTimeout;
+  static int get receiveTimeout => _config.receiveTimeout;
+  static int get sendTimeout => _config.sendTimeout;
 
   // Local Storage Keys
-  static const String tokenStorageKey = 'auth_token';
-  static const String userEmailKey = 'user_email';
-  static const String userIdKey = 'user_id';
-  static const String userDisplayNameKey = 'user_display_name';
-  static const String offlineDataKey = 'offline_data';
+  static String get tokenStorageKey => _config.tokenStorageKey;
+  static String get userEmailKey => _config.userEmailKey;
+  static String get userIdKey => _config.userIdKey;
+  static String get userDisplayNameKey => _config.userDisplayNameKey;
+  static String get offlineDataKey => _config.offlineDataKey;
 
   // App Settings
-  static const String appName = 'EnglishLearningApp';
-  static const String appVersion = '1.0.0';
-  static const String defaultLanguage = 'en';
+  static String get appName => _config.appName;
+  static String get appVersion => _config.appVersion;
+  static String get defaultLanguage => _config.defaultLanguage;
 
   // Feature Flags
-  static const bool enableOfflineMode = true;
-  static const bool enableDebugLogging = true;
-  static const bool enableApiCaching = true;
+  static bool get enableOfflineMode => _config.enableOfflineMode;
+  static bool get enableDebugLogging => _config.enableDebugLogging;
+  static bool get enableApiCaching => _config.enableApiCaching;
 
   // SSL Configuration
-  static const bool allowSelfSignedCerts = false;
+  static bool get allowSelfSignedCerts => _config.allowSelfSignedCerts;
+
+  // Debug info
+  static String get currentEnv => kReleaseMode ? 'PRODUCTION' : 'DEVELOPMENT';
 }

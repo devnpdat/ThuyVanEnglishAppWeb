@@ -3,7 +3,7 @@ description: English learning app - learn 5 sentences per day with audio and spa
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: '>=3.6.0 <4.0.0'
   flutter: '>=3.13.0'
 
 dependencies:
@@ -23,9 +23,8 @@ dependencies:
   # Navigation
   go_router: ^13.2.4
 
-  # Audio
-  just_audio: ^0.9.36
-  audio_session: ^0.1.18
+  # Audio — Web Speech API qua package:web
+  web: ^1.1.0
 
   # Storage & Cache
   hive_flutter: ^1.1.0
@@ -45,7 +44,6 @@ dependencies:
   intl: ^0.19.0
   connectivity_plus: ^5.0.2
   logger: ^2.1.0
-  flutter_tts: ^4.2.5
 
 dev_dependencies:
   flutter_test:
