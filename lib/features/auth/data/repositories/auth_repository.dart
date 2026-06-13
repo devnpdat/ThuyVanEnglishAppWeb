@@ -266,12 +266,21 @@ class AuthRepository {
         return Exception('Không có kết nối mạng. Vui lòng kiểm tra internet.');
       case DioExceptionType.badResponse:
         final statusCode = e.response?.statusCode;
-        // ABP trả error message trong response.data cho cả 400 (Validation) và 403 (Business Exception)
         final data = e.response?.data;
         String? errorMsg;
+
         if (data is Map) {
-          errorMsg = data['error']?['message'] as String? ??
-              data['error_description'] as String?;
+          // OpenIddict /connect/token trả: {"error":"invalid_client","error_description":"..."}
+          // data['error'] ở đây là String, KHÔNG phải Map — tránh gọi ['message'] trên String
+          final errorField = data['error'];
+          if (errorField is Map) {
+            // ABP Business Exception format: {"error":{"message":"...","details":"..."}}
+            errorMsg = errorField['message'] as String?;
+          } else {
+            // OAuth2 format: {"error":"invalid_client","error_description":"..."}
+            errorMsg = data['error_description'] as String? ??
+                data['message'] as String?;
+          }
         }
 
         if (statusCode == 400) {
