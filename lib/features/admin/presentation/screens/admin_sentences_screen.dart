@@ -50,7 +50,7 @@ class _AdminSentencesScreenState extends State<AdminSentencesScreen> {
     String? topicId = sentence != null && (sentence['topics'] as List?)?.isNotEmpty == true
         ? sentence['topics'][0]['id']
         : null;
-    int level = sentence?['difficultyLevel'] ?? 1;
+    String level = sentence?['difficultyLevel'] ?? 'beginner';
 
     final result = await showDialog<bool>(
       context: context,
@@ -84,10 +84,14 @@ class _AdminSentencesScreenState extends State<AdminSentencesScreen> {
                     onChanged: (v) => setDlgState(() => topicId = v),
                   ),
                   const SizedBox(height: 12),
-                  DropdownButtonFormField<int>(
+                  DropdownButtonFormField<String>(
                     value: level,
                     decoration: const InputDecoration(labelText: 'Level'),
-                    items: [1, 2, 3, 4, 5].map((l) => DropdownMenuItem(value: l, child: Text('Level $l'))).toList(),
+                    items: const [
+                      DropdownMenuItem(value: 'beginner',     child: Text('Beginner (Cơ bản)')),
+                      DropdownMenuItem(value: 'intermediate', child: Text('Intermediate (Trung cấp)')),
+                      DropdownMenuItem(value: 'advanced',     child: Text('Advanced (Nâng cao)')),
+                    ],
                     onChanged: (v) => setDlgState(() => level = v!),
                   ),
                 ],
@@ -132,7 +136,7 @@ class _AdminSentencesScreenState extends State<AdminSentencesScreen> {
                     'englishText': engCtrl.text.trim(),
                     'vietnameseText': vieCtrl.text.trim(),
                     'topicIds': topicId != null ? [topicId] : [],
-                    'difficultyLevel': level,
+                    'difficultyLevel': level, // string: beginner|intermediate|advanced
                     'isActive': true,
                   };
                   if (isUpdate) {
