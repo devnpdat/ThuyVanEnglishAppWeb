@@ -1,10 +1,12 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:english_learning_app/core/di/service_locator.dart';
+import 'package:get_it/get_it.dart';
 import 'package:english_learning_app/features/learning/data/dtos/daily_learning_dto.dart';
 import 'package:english_learning_app/features/learning/data/repositories/daily_learning_repository.dart';
 
 part 'daily_learning_bloc.freezed.dart';
+
+final _getIt = GetIt.instance;
 
 // --- Events ---
 @freezed
@@ -34,7 +36,7 @@ class DailyLearningBloc extends Bloc<DailyLearningEvent, DailyLearningState> {
   final DailyLearningRepository _repository;
 
   DailyLearningBloc({DailyLearningRepository? repository})
-      : _repository = repository ?? getIt<DailyLearningRepository>(),
+      : _repository = repository ?? _getIt<DailyLearningRepository>(),
         super(const DailyLearningState.initial()) {
     on<_LoadToday>(_onLoadToday);
     on<_GenerateToday>(_onGenerateToday);

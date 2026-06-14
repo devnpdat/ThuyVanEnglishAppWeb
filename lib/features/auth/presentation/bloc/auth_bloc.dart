@@ -1,18 +1,20 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:english_learning_app/features/auth/data/repositories/auth_repository.dart';
-import 'package:english_learning_app/core/di/service_locator.dart';
+import 'package:get_it/get_it.dart';
 
 part 'auth_bloc.freezed.dart';
 part 'auth_event.dart';
 part 'auth_state.dart';
+
+final _getIt = GetIt.instance;
 
 /// AuthBloc — kết nối với API thật
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepository _authRepository;
 
   AuthBloc({AuthRepository? authRepository})
-      : _authRepository = authRepository ?? getIt<AuthRepository>(),
+      : _authRepository = authRepository ?? _getIt<AuthRepository>(),
         super(const AuthState.initial()) {
     on<AuthLoginEvent>(_onLogin);
     on<AuthRegisterEvent>(_onRegister);

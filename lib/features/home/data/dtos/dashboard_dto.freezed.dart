@@ -30,6 +30,8 @@ mixin _$DashboardDto {
   int get rank => throw _privateConstructorUsedError;
   double get overallAccuracy => throw _privateConstructorUsedError;
   DateTime? get lastActivityAt => throw _privateConstructorUsedError;
+  String? get selfLevel => throw _privateConstructorUsedError;
+  bool get hasTakenPlacementTest => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -53,7 +55,9 @@ abstract class $DashboardDtoCopyWith<$Res> {
       int totalPoints,
       int rank,
       double overallAccuracy,
-      DateTime? lastActivityAt});
+      DateTime? lastActivityAt,
+      String? selfLevel,
+      bool hasTakenPlacementTest});
 }
 
 /// @nodoc
@@ -79,6 +83,8 @@ class _$DashboardDtoCopyWithImpl<$Res, $Val extends DashboardDto>
     Object? rank = null,
     Object? overallAccuracy = null,
     Object? lastActivityAt = freezed,
+    Object? selfLevel = freezed,
+    Object? hasTakenPlacementTest = null,
   }) {
     return _then(_value.copyWith(
       totalSentencesLearned: null == totalSentencesLearned
@@ -121,6 +127,14 @@ class _$DashboardDtoCopyWithImpl<$Res, $Val extends DashboardDto>
           ? _value.lastActivityAt
           : lastActivityAt // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      selfLevel: freezed == selfLevel
+          ? _value.selfLevel
+          : selfLevel // ignore: cast_nullable_to_non_nullable
+              as String?,
+      hasTakenPlacementTest: null == hasTakenPlacementTest
+          ? _value.hasTakenPlacementTest
+          : hasTakenPlacementTest // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -143,7 +157,9 @@ abstract class _$$DashboardDtoImplCopyWith<$Res>
       int totalPoints,
       int rank,
       double overallAccuracy,
-      DateTime? lastActivityAt});
+      DateTime? lastActivityAt,
+      String? selfLevel,
+      bool hasTakenPlacementTest});
 }
 
 /// @nodoc
@@ -167,6 +183,8 @@ class __$$DashboardDtoImplCopyWithImpl<$Res>
     Object? rank = null,
     Object? overallAccuracy = null,
     Object? lastActivityAt = freezed,
+    Object? selfLevel = freezed,
+    Object? hasTakenPlacementTest = null,
   }) {
     return _then(_$DashboardDtoImpl(
       totalSentencesLearned: null == totalSentencesLearned
@@ -209,6 +227,14 @@ class __$$DashboardDtoImplCopyWithImpl<$Res>
           ? _value.lastActivityAt
           : lastActivityAt // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      selfLevel: freezed == selfLevel
+          ? _value.selfLevel
+          : selfLevel // ignore: cast_nullable_to_non_nullable
+              as String?,
+      hasTakenPlacementTest: null == hasTakenPlacementTest
+          ? _value.hasTakenPlacementTest
+          : hasTakenPlacementTest // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -226,7 +252,9 @@ class _$DashboardDtoImpl implements _DashboardDto {
       this.totalPoints = 0,
       this.rank = 0,
       this.overallAccuracy = 0.0,
-      this.lastActivityAt});
+      this.lastActivityAt,
+      this.selfLevel,
+      this.hasTakenPlacementTest = false});
 
   factory _$DashboardDtoImpl.fromJson(Map<String, dynamic> json) =>
       _$$DashboardDtoImplFromJson(json);
@@ -260,10 +288,15 @@ class _$DashboardDtoImpl implements _DashboardDto {
   final double overallAccuracy;
   @override
   final DateTime? lastActivityAt;
+  @override
+  final String? selfLevel;
+  @override
+  @JsonKey()
+  final bool hasTakenPlacementTest;
 
   @override
   String toString() {
-    return 'DashboardDto(totalSentencesLearned: $totalSentencesLearned, totalSentencesMastered: $totalSentencesMastered, todayCompleted: $todayCompleted, todayTarget: $todayTarget, reviewDueToday: $reviewDueToday, streakDays: $streakDays, totalPoints: $totalPoints, rank: $rank, overallAccuracy: $overallAccuracy, lastActivityAt: $lastActivityAt)';
+    return 'DashboardDto(totalSentencesLearned: $totalSentencesLearned, totalSentencesMastered: $totalSentencesMastered, todayCompleted: $todayCompleted, todayTarget: $todayTarget, reviewDueToday: $reviewDueToday, streakDays: $streakDays, totalPoints: $totalPoints, rank: $rank, overallAccuracy: $overallAccuracy, lastActivityAt: $lastActivityAt, selfLevel: $selfLevel, hasTakenPlacementTest: $hasTakenPlacementTest)';
   }
 
   @override
@@ -289,7 +322,11 @@ class _$DashboardDtoImpl implements _DashboardDto {
             (identical(other.overallAccuracy, overallAccuracy) ||
                 other.overallAccuracy == overallAccuracy) &&
             (identical(other.lastActivityAt, lastActivityAt) ||
-                other.lastActivityAt == lastActivityAt));
+                other.lastActivityAt == lastActivityAt) &&
+            (identical(other.selfLevel, selfLevel) ||
+                other.selfLevel == selfLevel) &&
+            (identical(other.hasTakenPlacementTest, hasTakenPlacementTest) ||
+                other.hasTakenPlacementTest == hasTakenPlacementTest));
   }
 
   @JsonKey(ignore: true)
@@ -305,7 +342,9 @@ class _$DashboardDtoImpl implements _DashboardDto {
       totalPoints,
       rank,
       overallAccuracy,
-      lastActivityAt);
+      lastActivityAt,
+      selfLevel,
+      hasTakenPlacementTest);
 
   @JsonKey(ignore: true)
   @override
@@ -332,7 +371,9 @@ abstract class _DashboardDto implements DashboardDto {
       final int totalPoints,
       final int rank,
       final double overallAccuracy,
-      final DateTime? lastActivityAt}) = _$DashboardDtoImpl;
+      final DateTime? lastActivityAt,
+      final String? selfLevel,
+      final bool hasTakenPlacementTest}) = _$DashboardDtoImpl;
 
   factory _DashboardDto.fromJson(Map<String, dynamic> json) =
       _$DashboardDtoImpl.fromJson;
@@ -357,6 +398,10 @@ abstract class _DashboardDto implements DashboardDto {
   double get overallAccuracy;
   @override
   DateTime? get lastActivityAt;
+  @override
+  String? get selfLevel;
+  @override
+  bool get hasTakenPlacementTest;
   @override
   @JsonKey(ignore: true)
   _$$DashboardDtoImplCopyWith<_$DashboardDtoImpl> get copyWith =>

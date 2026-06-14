@@ -9,6 +9,8 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:english_learning_app/core/services/audio_service.dart' as _i184;
+import 'package:english_learning_app/core/services/audio_service_interface.dart'
+    as _i239;
 import 'package:english_learning_app/core/services/http_client.dart' as _i246;
 import 'package:english_learning_app/core/services/local_storage_service.dart'
     as _i133;
@@ -53,7 +55,7 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.singleton<_i246.HttpClient>(() => _i246.HttpClient());
     gh.singleton<_i133.LocalStorageService>(() => _i133.LocalStorageService());
-    gh.singleton<_i184.AudioService>(() => _i184.AudioService());
+    gh.singleton<_i239.IAudioService>(() => _i184.AudioService());
     gh.factory<_i731.DashboardRepository>(
         () => _i731.DashboardRepository(gh<_i246.HttpClient>()));
     gh.factory<_i385.AuthRepository>(

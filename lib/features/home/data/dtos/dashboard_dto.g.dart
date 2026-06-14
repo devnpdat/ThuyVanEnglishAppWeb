@@ -22,6 +22,8 @@ _$DashboardDtoImpl _$$DashboardDtoImplFromJson(Map<String, dynamic> json) =>
       lastActivityAt: json['lastActivityAt'] == null
           ? null
           : DateTime.parse(json['lastActivityAt'] as String),
+      selfLevel: json['selfLevel'] as String?,
+      hasTakenPlacementTest: json['hasTakenPlacementTest'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$$DashboardDtoImplToJson(_$DashboardDtoImpl instance) =>
@@ -36,4 +38,6 @@ Map<String, dynamic> _$$DashboardDtoImplToJson(_$DashboardDtoImpl instance) =>
       'rank': instance.rank,
       'overallAccuracy': instance.overallAccuracy,
       'lastActivityAt': instance.lastActivityAt?.toIso8601String(),
+      'selfLevel': instance.selfLevel,
+      'hasTakenPlacementTest': instance.hasTakenPlacementTest,
     };

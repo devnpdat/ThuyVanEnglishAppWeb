@@ -14,6 +14,8 @@ import 'package:english_learning_app/features/ai/data/repositories/ai_repository
 import 'package:english_learning_app/features/home/data/repositories/dashboard_repository.dart';
 import 'package:english_learning_app/features/learning/data/repositories/daily_learning_repository.dart';
 import 'package:english_learning_app/core/services/audio_service.dart';
+import 'package:english_learning_app/core/services/audio_service_interface.dart';
+import 'package:english_learning_app/features/placement_test/data/repositories/placement_test_repository.dart';
 
 /// Service Locator — tất cả repositories và services được register ở đây
 final getIt = GetIt.instance;
@@ -25,7 +27,7 @@ void configureInjection() {
   getIt.registerSingleton<HttpClient>(HttpClient());
   // AudioService dùng lazy — just_audio/audio_session cần WidgetsBinding đã attach xong
   // registerLazySingleton chỉ tạo instance khi getIt<AudioService>() được gọi lần đầu
-  getIt.registerLazySingleton<AudioService>(() => AudioService());
+  getIt.registerLazySingleton<IAudioService>(() => AudioService());
 
   // ── Repositories ─────────────────────────────────────────────────────────
   getIt.registerSingleton<AuthRepository>(
@@ -74,6 +76,10 @@ void configureInjection() {
 
   getIt.registerSingleton<LearningPlanRepository>(
     LearningPlanRepository(getIt<HttpClient>()),
+  );
+
+  getIt.registerSingleton<PlacementTestRepository>(
+    PlacementTestRepository(getIt<HttpClient>()),
   );
 }
 

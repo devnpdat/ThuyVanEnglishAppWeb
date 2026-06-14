@@ -22,6 +22,11 @@ class HomeScreen extends StatelessWidget {
             onPressed: () => context.push('/admin/sentences'),
           ),
           IconButton(
+            icon: const Icon(Icons.psychology_alt_outlined),
+            tooltip: 'Kiểm tra năng lực',
+            onPressed: () => context.push('/placement-test'),
+          ),
+          IconButton(
             icon: const Icon(Icons.person),
             onPressed: () => context.push('/profile'),
           ),
@@ -53,6 +58,25 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildContent(BuildContext context, DashboardDto dashboard) {
+    // Redirect nếu chưa thi placement test
+    if (!dashboard.hasTakenPlacementTest) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (context.mounted) {
+          context.go('/placement-test');
+        }
+      });
+      return const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 16),
+            Text('Đang chuyển đến bài kiểm tra năng lực...'),
+          ],
+        ),
+      );
+    }
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -60,6 +84,10 @@ class HomeScreen extends StatelessWidget {
         children: [
           // Greeting section
           _buildGreetingSection(context),
+          const SizedBox(height: 24),
+
+          // Placement Test Level Card
+          _buildPlacementLevelCard(context, dashboard),
           const SizedBox(height: 24),
 
           // Stats cards
@@ -129,6 +157,80 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildPlacementLevelCard(BuildContext context, DashboardDto dashboard) {
+    final levelDisplay = dashboard.selfLevel ?? 'Unknown';
+    IconData levelIcon;
+    Color levelColor;
+
+    switch (levelDisplay.toLowerCase()) {
+      case 'beginner':
+        levelIcon = Icons.school;
+        levelColor = Colors.green;
+        break;
+      case 'intermediate':
+        levelIcon = Icons.trending_up;
+        levelColor = Colors.orange;
+        break;
+      case 'advanced':
+        levelIcon = Icons.star;
+        levelColor = Colors.purple;
+        break;
+      default:
+        levelIcon = Icons.help_outline;
+        levelColor = Colors.grey;
+    }
+
+    return Card(
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: levelColor.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(levelIcon, color: levelColor, size: 32),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Trình độ hiện tại',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    levelDisplay,
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: levelColor,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            OutlinedButton.icon(
+              onPressed: () => context.push('/placement-test'),
+              icon: const Icon(Icons.refresh, size: 18),
+              label: const Text('Test lại'),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: levelColor,
+                side: BorderSide(color: levelColor),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

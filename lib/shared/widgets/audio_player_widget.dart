@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:english_learning_app/core/services/audio_service.dart';
+import 'package:english_learning_app/core/services/audio_service_interface.dart';
 import 'package:english_learning_app/core/di/injection.dart';
 
 /// Widget để phát âm câu text với TTS hoặc audio file
@@ -24,14 +24,14 @@ class AudioPlayerWidget extends StatefulWidget {
 }
 
 class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
-  late final AudioService _audioService;
+  late final IAudioService _audioService;
   bool _isPlaying = false;
-  double _playbackSpeed = 0.8;
+  double _playbackSpeed = 0.9;
 
   @override
   void initState() {
     super.initState();
-    _audioService = getIt<AudioService>();
+    _audioService = getIt<IAudioService>();
   }
 
   @override
@@ -169,13 +169,13 @@ class CompactAudioButton extends StatefulWidget {
 }
 
 class _CompactAudioButtonState extends State<CompactAudioButton> {
-  late final AudioService _audioService;
+  late final IAudioService _audioService;
   bool _isPlaying = false;
 
   @override
   void initState() {
     super.initState();
-    _audioService = getIt<AudioService>();
+    _audioService = getIt<IAudioService>();
   }
 
   void _togglePlay() async {

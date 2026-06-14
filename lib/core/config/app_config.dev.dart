@@ -14,6 +14,7 @@ class AppConfig {
   static const String learningEndpoint = '$apiBaseUrl/api/v1/learning';
   static const String dashboardEndpoint = '$apiBaseUrl/api/v1/dashboard';
   static const String aiEndpoint = '$apiBaseUrl/api/v1/ai';
+  static const String placementTestEndpoint = '$apiBaseUrl/api/v1/placement-test';
 
   // Auth endpoints
   static const String authLoginEndpoint = '$apiBaseUrl/api/account/login';

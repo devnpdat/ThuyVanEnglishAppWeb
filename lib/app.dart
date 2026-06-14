@@ -27,6 +27,10 @@ import 'package:english_learning_app/features/learning/presentation/screens/lear
 import 'package:english_learning_app/features/quiz/presentation/screens/quiz_stats_screen.dart';
 import 'package:english_learning_app/features/review/presentation/screens/mastered_sentences_screen.dart';
 import 'package:english_learning_app/features/admin/presentation/screens/admin_sentences_screen.dart';
+import 'package:english_learning_app/features/placement_test/presentation/bloc/placement_test_bloc.dart';
+import 'package:english_learning_app/features/placement_test/presentation/screens/placement_test_screen.dart';
+import 'package:english_learning_app/features/placement_test/presentation/screens/placement_result_screen.dart';
+import 'package:english_learning_app/features/placement_test/data/dtos/placement_test_dto.dart';
 
 
 // ─── Placeholder screen ───────────────────────────────────────────────────────
@@ -121,7 +125,9 @@ final _router = GoRouter(
       loading: () => true,
       orElse: () => false,
     );
-    final onLogin = state.matchedLocation == '/login';
+    final loc = state.matchedLocation;
+    final onLogin = loc == '/login';
+    final onPlacementTest = loc.startsWith('/placement-test');
 
     // Đang check status — không redirect
     if (isLoading) return null;
@@ -288,6 +294,36 @@ final _router = GoRouter(
     GoRoute(
       path: '/admin/sentences',
       builder: (context, state) => const AdminSentencesScreen(),
+    ),
+
+    // ── Placement Test ───────────────────────────────────────────────────────
+
+    // Màn hình làm bài kiểm tra năng lực
+    GoRoute(
+      path: '/placement-test',
+      builder: (context, state) => BlocProvider(
+        create: (_) => PlacementTestBloc()
+          ..add(const PlacementTestLoadQuestionsEvent()),
+        child: const PlacementTestScreen(),
+      ),
+    ),
+
+    // Màn hình kết quả placement test
+    GoRoute(
+      path: '/placement-test/result',
+      builder: (context, state) {
+        final result = state.extra as PlacementTestResultDto?;
+        if (result == null) {
+          // Nếu navigate thẳng vào URL này mà không có data → về home
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (context.mounted) context.go('/');
+          });
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+        return PlacementResultScreen(result: result);
+      },
     ),
   ],
 );

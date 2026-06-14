@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:english_learning_app/features/learning/presentation/bloc/daily_learning_bloc.dart';
 import 'package:english_learning_app/features/learning/data/dtos/daily_learning_dto.dart';
-import 'package:english_learning_app/core/services/audio_service.dart';
+import 'package:english_learning_app/core/services/audio_service_interface.dart';
 import 'package:english_learning_app/core/di/service_locator.dart';
 import 'package:english_learning_app/features/learning/data/dtos/sentence_dto.dart';
 
@@ -22,7 +22,7 @@ class _SentenceStudyScreenState extends State<SentenceStudyScreen> {
   int  _currentStep    = 0; // 0:Nghe 1:Gõ 2:Quiz 3:Xong
   bool _isPlaying      = false;
   int  _audioPlayCount = 0;
-  late AudioService _audioService;
+  late IAudioService _audioService;
 
   // ── Auto-repeat settings ──────────────────────────────────────────────────
   bool   _autoRepeat     = false;
@@ -41,7 +41,7 @@ class _SentenceStudyScreenState extends State<SentenceStudyScreen> {
   @override
   void initState() {
     super.initState();
-    _audioService = getIt<AudioService>();
+    _audioService = getIt<IAudioService>();
   }
 
   @override

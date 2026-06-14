@@ -26,6 +26,7 @@ class AppConfig {
   static String get learningEndpoint => kReleaseMode ? prod.AppConfig.learningEndpoint : dev.AppConfig.learningEndpoint;
   static String get dashboardEndpoint => kReleaseMode ? prod.AppConfig.dashboardEndpoint : dev.AppConfig.dashboardEndpoint;
   static String get aiEndpoint => kReleaseMode ? prod.AppConfig.aiEndpoint : dev.AppConfig.aiEndpoint;
+  static String get placementTestEndpoint => kReleaseMode ? prod.AppConfig.placementTestEndpoint : dev.AppConfig.placementTestEndpoint;
 
   // Auth endpoints
   static String get authLoginEndpoint => kReleaseMode ? prod.AppConfig.authLoginEndpoint : dev.AppConfig.authLoginEndpoint;

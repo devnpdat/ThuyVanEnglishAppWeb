@@ -16,6 +16,8 @@ class DashboardDto with _$DashboardDto {
     @Default(0) int rank,
     @Default(0.0) double overallAccuracy,
     DateTime? lastActivityAt,
+    String? selfLevel,
+    @Default(false) bool hasTakenPlacementTest,
   }) = _DashboardDto;
 
   factory DashboardDto.fromJson(Map<String, dynamic> json) =>

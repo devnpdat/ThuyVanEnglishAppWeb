@@ -1,18 +1,21 @@
+import 'dart:async';
+import 'dart:js_interop';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:web/web.dart' as web;
+import 'audio_service_interface.dart';
 
 /// AudioService — hybrid:
-/// 1. Nếu có audioUrl từ Drive → dùng <audio> HTML element (chất lượng Neural2)
+/// 1. Nếu có audioUrl từ BE → dùng <audio> HTML element (chất lượng Neural2)
 /// 2. Fallback → Web Speech API (TTS trình duyệt)
-@singleton
-class AudioService {
+@Singleton(as: IAudioService)
+class AudioService implements IAudioService {
   double _ttsSpeed = 0.85;
   web.HTMLAudioElement? _audioEl;
 
   AudioService();
 
-  // ── Play từ URL (Drive MP3) ───────────────────────────────────────────────
+  // ── Play từ URL (BE static MP3) ───────────────────────────────────────────
 
   Future<void> playAudioUrl(String url) async {
     if (!kIsWeb || url.isEmpty) return;
@@ -20,17 +23,46 @@ class AudioService {
       // Stop và cleanup trước
       await stopAudio();
 
-      // Tạo audio element mới mỗi lần
+      // Tạo audio element mới mỗi lần — tránh state stale
       final el = web.HTMLAudioElement();
       el.src = url;
       el.preload = 'auto';
       el.crossOrigin = 'anonymous';
-      
       _audioEl = el;
 
-      // Play
-      el.play();
-      debugPrint('🎵 Playing audio URL: $url');
+      // Chờ canplay trước khi gọi play() — tránh tiếng rùng rợn lần đầu
+      // do buffer chưa sẵn sàng
+      final canPlayCompleter = Completer<void>();
+      late web.EventListener canPlayListener;
+      late web.EventListener errorListener;
+
+      canPlayListener = (web.Event _) {
+        if (!canPlayCompleter.isCompleted) canPlayCompleter.complete();
+      }.toJS;
+
+      errorListener = (web.Event e) {
+        if (!canPlayCompleter.isCompleted) {
+          canPlayCompleter.completeError('Audio load error');
+        }
+      }.toJS;
+
+      el.addEventListener('canplay', canPlayListener);
+      el.addEventListener('error', errorListener);
+
+      try {
+        await canPlayCompleter.future.timeout(const Duration(seconds: 5));
+      } catch (_) {
+        // Timeout hoặc lỗi load — vẫn thử play
+      } finally {
+        el.removeEventListener('canplay', canPlayListener);
+        el.removeEventListener('error', errorListener);
+      }
+
+      // Chỉ play nếu element vẫn là element hiện tại (chưa bị stopAudio clear)
+      if (_audioEl == el) {
+        el.play();
+        debugPrint('🎵 Playing audio URL: $url');
+      }
     } catch (e) {
       debugPrint('❌ playAudioUrl error: $e');
     }
@@ -40,8 +72,8 @@ class AudioService {
     try {
       if (_audioEl != null) {
         _audioEl!.pause();
-        _audioEl!.currentTime = 0;  // Reset position
-        _audioEl!.src = '';  // Clear src
+        _audioEl!.currentTime = 0; // Reset position
+        _audioEl!.src = '';        // Clear src
         _audioEl = null;
       }
     } catch (_) {}

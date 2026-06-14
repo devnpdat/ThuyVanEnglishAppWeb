@@ -86,7 +86,8 @@ flutter run -d chrome --web-port=5173
 ### P3 — Low
 - [ ] Animations (Lottie rewards, confetti)
 - [ ] Sound effects
-- [ ] Widget tests
+- [x] Integration test: `test/integration/test_api_contract.sh` — verify API contract với BE
+- [ ] Widget tests (BLoC unit tests, audio service tests)
 
 ---
 

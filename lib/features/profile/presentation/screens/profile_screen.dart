@@ -64,7 +64,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             // Initialize controllers
             _nameController.text = state.displayName;
             _dailyTargetController.text = state.dailyTargetMinutes.toString();
-            _selectedGoal = state.learningGoal;
+            _selectedGoal = state.learningGoal.isEmpty ? 'general' : state.learningGoal;
 
             return SingleChildScrollView(
               padding: const EdgeInsets.all(16),

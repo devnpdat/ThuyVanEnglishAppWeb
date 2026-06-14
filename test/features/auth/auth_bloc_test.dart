@@ -3,9 +3,11 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:get_it/get_it.dart';
 import 'package:english_learning_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:english_learning_app/features/auth/data/repositories/auth_repository.dart';
-import 'package:english_learning_app/core/di/service_locator.dart';
+
+final getIt = GetIt.instance;
 
 class MockAuthRepository extends Mock implements AuthRepository {}
 
