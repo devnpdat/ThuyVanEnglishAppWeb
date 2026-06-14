@@ -56,7 +56,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
           if (state is ProfileError) {
             return Center(
-              child: Text(state.message),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error_outline, size: 64, color: Colors.orange),
+                  const SizedBox(height: 16),
+                  Text(state.message, textAlign: TextAlign.center),
+                  const SizedBox(height: 16),
+                  ElevatedButton.icon(
+                    icon: const Icon(Icons.refresh),
+                    label: const Text('Thử lại'),
+                    onPressed: () => context.read<ProfileBloc>().add(const ProfileLoadEvent()),
+                  ),
+                  const SizedBox(height: 8),
+                  TextButton(
+                    child: const Text('Về trang chủ'),
+                    onPressed: () => context.go('/dashboard'),
+                  ),
+                ],
+              ),
             );
           }
 
