@@ -1,11 +1,11 @@
 {
-    "name": "english_learning_app",
-    "short_name": "english_learning_app",
+    "name": "Thuỳ Vân English",
+    "short_name": "Thuỳ Vân",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Ứng dụng học tiếng Anh dành cho bạn Thuỳ Vân - lớp 8",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
