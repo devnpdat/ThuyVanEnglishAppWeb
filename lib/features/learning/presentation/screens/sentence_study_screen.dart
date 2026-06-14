@@ -313,9 +313,8 @@ class _SentenceStudyScreenState extends State<SentenceStudyScreen> {
               borderRadius: BorderRadius.circular(16),
               child: Image.network(
                 imageUrl,
-                height: 200,
                 width: double.infinity,
-                fit: BoxFit.cover,
+                fit: BoxFit.contain,
                 errorBuilder: (_, __, ___) => _buildImagePlaceholder(),
               ),
             )
@@ -496,9 +495,8 @@ class _SentenceStudyScreenState extends State<SentenceStudyScreen> {
               borderRadius: BorderRadius.circular(12),
               child: Image.network(
                 imageUrl,
-                height: 160,
                 width: double.infinity,
-                fit: BoxFit.cover,
+                fit: BoxFit.contain,
                 errorBuilder: (_, __, ___) => _buildImagePlaceholder(),
               ),
             )
