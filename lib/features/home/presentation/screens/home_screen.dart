@@ -16,10 +16,20 @@ class HomeScreen extends StatelessWidget {
         title: const Text('App học Tiếng Anh của Thuỳ Vân'),
         elevation: 0,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.admin_panel_settings_outlined),
-            tooltip: 'Admin — Quản lý câu',
-            onPressed: () => context.push('/admin/sentences'),
+          // Admin icon - chỉ hiện cho devdatnp@gmail.com
+          BlocBuilder<AuthBloc, AuthState>(
+            builder: (context, authState) {
+              final isAdmin = authState.maybeWhen(
+                authenticated: (_, email, __, ___) => email == 'devdatnp@gmail.com',
+                orElse: () => false,
+              );
+              if (!isAdmin) return const SizedBox.shrink();
+              return IconButton(
+                icon: const Icon(Icons.admin_panel_settings_outlined),
+                tooltip: 'Admin — Quản lý câu',
+                onPressed: () => context.push('/admin/sentences'),
+              );
+            },
           ),
           IconButton(
             icon: const Icon(Icons.psychology_alt_outlined),
