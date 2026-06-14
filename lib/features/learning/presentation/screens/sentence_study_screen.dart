@@ -29,6 +29,9 @@ class _SentenceStudyScreenState extends State<SentenceStudyScreen> {
   double _repeatInterval = 2.0; // giây giữa 2 lần đọc
   Timer? _repeatTimer;
 
+  // ── Audio speed ───────────────────────────────────────────────────────────
+  double _ttsSpeed = 0.85; // 0.5 = chậm, 1.0 = bình thường
+
   // ── Quiz state ────────────────────────────────────────────────────────────
   final _quizStartTime = DateTime.now();
   int?  _pointsAwarded;
@@ -61,7 +64,7 @@ class _SentenceStudyScreenState extends State<SentenceStudyScreen> {
       if (audioUrl.isNotEmpty) {
         await _audioService.playAudioUrl(audioUrl);
       } else {
-        await _audioService.speak(text, language: 'en-US');
+        await _audioService.speak(text, language: 'en-US', speed: _ttsSpeed);
       }
       if (!mounted) return;
       setState(() => _audioPlayCount++);
@@ -474,122 +477,208 @@ class _SentenceStudyScreenState extends State<SentenceStudyScreen> {
       orElse: () => null,
     );
     final audioUrl = sentence.audioUrl ?? '';
+    final imageUrl = sentence.imageUrl;
 
-    return Column(
-      children: [
-        Row(
-          children: [
-            const Expanded(
-              child: Text(
-                'Gõ lại câu tiếng Anh bạn vừa nghe:',
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // ── Ảnh minh hoạ ──────────────────────────────────────────────
+          if (imageUrl != null && imageUrl.isNotEmpty)
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.network(
+                imageUrl,
+                height: 160,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => _buildImagePlaceholder(),
               ),
-            ),
-            IconButton(
-              icon: Icon(_isPlaying ? Icons.stop : Icons.replay),
-              color: Colors.blue,
-              onPressed: () => _playAudio(audioUrl, sentence.englishText),
-              tooltip: 'Nghe lại',
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
+            )
+          else
+            _buildImagePlaceholder(),
 
-        // Diff feedback
-        if (lastResult != null && !lastResult.isCorrect && lastResult.diffSegments.isNotEmpty)
+          const SizedBox(height: 12),
+
+          // ── Header + nút nghe lại ──────────────────────────────────────
+          Row(
+            children: [
+              const Expanded(
+                child: Text(
+                  'Gõ lại câu tiếng Anh bạn vừa nghe:',
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                ),
+              ),
+              IconButton(
+                icon: Icon(_isPlaying ? Icons.stop : Icons.replay),
+                color: Colors.blue,
+                onPressed: () => _playAudio(audioUrl, sentence.englishText),
+                tooltip: 'Nghe lại',
+              ),
+            ],
+          ),
+
+          // ── Slider tốc độ đọc ─────────────────────────────────────────
           Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(12),
-            margin: const EdgeInsets.only(bottom: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
             decoration: BoxDecoration(
-              color: Colors.red.shade50,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.red.shade200),
+              color: Colors.blue.shade50,
+              borderRadius: BorderRadius.circular(10),
             ),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Gần đúng! (${lastResult.totalCorrectTypings} lần đúng)',
-                  style: TextStyle(color: Colors.red[700], fontWeight: FontWeight.bold, fontSize: 12),
+                Row(
+                  children: [
+                    const Icon(Icons.speed, size: 16, color: Colors.blue),
+                    const SizedBox(width: 6),
+                    Text(
+                      'Tốc độ: ${_ttsSpeed.toStringAsFixed(2)}x',
+                      style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+                    ),
+                    const Spacer(),
+                    // Auto-repeat toggle
+                    const Text('Tự động đọc', style: TextStyle(fontSize: 12)),
+                    Switch(
+                      value: _autoRepeat,
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      onChanged: (_) => _toggleAutoRepeat(),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 6),
-                Wrap(
-                  spacing: 2, runSpacing: 2,
-                  children: lastResult.diffSegments.map((seg) {
-                    Color color;
-                    TextDecoration deco = TextDecoration.none;
-                    switch (seg.type) {
-                      case 'wrong':
-                      case 'extra':
-                        color = Colors.red;
-                        deco  = TextDecoration.lineThrough;
-                        break;
-                      case 'missing':
-                        color = Colors.orange;
-                        break;
-                      default:
-                        color = Colors.green[700]!;
-                    }
-                    return Text(seg.text,
-                        style: TextStyle(
-                          color: color,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
-                          decoration: deco,
-                        ));
-                  }).toList(),
+                Slider(
+                  value: _ttsSpeed,
+                  min: 0.5, max: 1.5, divisions: 10,
+                  label: '${_ttsSpeed.toStringAsFixed(2)}x',
+                  onChanged: (v) {
+                    setState(() => _ttsSpeed = v);
+                    (_audioService as dynamic).setTtsSpeed?.call(v);
+                  },
                 ),
+                // Slider khoảng cách (chỉ khi auto-repeat bật)
+                if (_autoRepeat) ...[
+                  Row(
+                    children: [
+                      const Icon(Icons.timer_outlined, size: 16, color: Colors.blue),
+                      const SizedBox(width: 6),
+                      Text(
+                        'Khoảng cách: ${_repeatInterval.toStringAsFixed(1)}s',
+                        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+                      ),
+                    ],
+                  ),
+                  Slider(
+                    value: _repeatInterval,
+                    min: 0.5, max: 10.0, divisions: 19,
+                    label: '${_repeatInterval.toStringAsFixed(1)}s',
+                    onChanged: (v) {
+                      setState(() => _repeatInterval = v);
+                      if (_autoRepeat) _startAutoRepeat();
+                    },
+                  ),
+                ],
               ],
             ),
           ),
 
-        // Input — Enter xuống dòng, Shift+Enter submit (hoặc dùng nút)
-        TextField(
-          controller: _typingController,
-          decoration: InputDecoration(
-            border: const OutlineInputBorder(),
-            hintText: 'Nhập câu tiếng Anh...\n(Enter = xuống dòng, nhấn Kiểm tra để nộp)',
-            hintMaxLines: 2,
-            suffixIcon: _typingController.text.isNotEmpty
-                ? IconButton(
-                    icon: const Icon(Icons.clear),
-                    onPressed: () => setState(() => _typingController.clear()),
-                  )
-                : null,
-          ),
-          maxLines: 4,
-          minLines: 2,
-          onChanged: (_) => setState(() {}),
-          // Enter = newline, không submit
-          textInputAction: TextInputAction.newline,
-          keyboardType: TextInputType.multiline,
-        ),
-        const SizedBox(height: 8),
+          const SizedBox(height: 10),
 
-        if (lastResult != null)
-          Text(
-            'Số lần gõ đúng: ${lastResult.totalCorrectTypings}/3',
-            style: TextStyle(color: Colors.grey[600], fontSize: 12),
-          ),
+          // ── Diff feedback ──────────────────────────────────────────────
+          if (lastResult != null && !lastResult.isCorrect && lastResult.diffSegments.isNotEmpty)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              margin: const EdgeInsets.only(bottom: 8),
+              decoration: BoxDecoration(
+                color: Colors.red.shade50,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.red.shade200),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Gần đúng! (${lastResult.totalCorrectTypings} lần đúng)',
+                    style: TextStyle(color: Colors.red[700], fontWeight: FontWeight.bold, fontSize: 12),
+                  ),
+                  const SizedBox(height: 6),
+                  Wrap(
+                    spacing: 2, runSpacing: 2,
+                    children: lastResult.diffSegments.map((seg) {
+                      Color color;
+                      TextDecoration deco = TextDecoration.none;
+                      switch (seg.type) {
+                        case 'wrong':
+                        case 'extra':
+                          color = Colors.red;
+                          deco  = TextDecoration.lineThrough;
+                          break;
+                        case 'missing':
+                          color = Colors.orange;
+                          break;
+                        default:
+                          color = Colors.green[700]!;
+                      }
+                      return Text(seg.text,
+                          style: TextStyle(
+                            color: color,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                            decoration: deco,
+                          ));
+                    }).toList(),
+                  ),
+                ],
+              ),
+            ),
 
-        const Spacer(),
-        ElevatedButton.icon(
-          onPressed: _typingController.text.trim().isEmpty
-              ? null
-              : () {
-                  context.read<DailyLearningBloc>().add(
-                    DailyLearningEvent.typingAttempt(
-                      widget.sentenceId,
-                      _typingController.text.trim(),
-                    ),
-                  );
-                },
-          icon: const Icon(Icons.check),
-          label: const Text('Kiểm tra'),
-          style: ElevatedButton.styleFrom(minimumSize: const Size(double.infinity, 50)),
-        ),
-      ],
+          // ── Input box ─────────────────────────────────────────────────
+          TextField(
+            controller: _typingController,
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              hintText: 'Nhập câu tiếng Anh...\n(Enter = xuống dòng, nhấn Kiểm tra để nộp)',
+              hintMaxLines: 2,
+              suffixIcon: _typingController.text.isNotEmpty
+                  ? IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () => setState(() => _typingController.clear()),
+                    )
+                  : null,
+            ),
+            maxLines: 4,
+            minLines: 2,
+            onChanged: (_) => setState(() {}),
+            textInputAction: TextInputAction.newline,
+            keyboardType: TextInputType.multiline,
+          ),
+          const SizedBox(height: 8),
+
+          if (lastResult != null)
+            Text(
+              'Số lần gõ đúng: ${lastResult.totalCorrectTypings}/3',
+              style: TextStyle(color: Colors.grey[600], fontSize: 12),
+            ),
+
+          const SizedBox(height: 12),
+
+          ElevatedButton.icon(
+            onPressed: _typingController.text.trim().isEmpty
+                ? null
+                : () {
+                    context.read<DailyLearningBloc>().add(
+                      DailyLearningEvent.typingAttempt(
+                        widget.sentenceId,
+                        _typingController.text.trim(),
+                      ),
+                    );
+                  },
+            icon: const Icon(Icons.check),
+            label: const Text('Kiểm tra'),
+            style: ElevatedButton.styleFrom(minimumSize: const Size(double.infinity, 50)),
+          ),
+          const SizedBox(height: 8),
+        ],
+      ),
     );
   }
 
