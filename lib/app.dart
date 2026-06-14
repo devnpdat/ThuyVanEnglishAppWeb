@@ -26,6 +26,10 @@ import 'package:english_learning_app/features/learning/presentation/bloc/learnin
 import 'package:english_learning_app/features/learning/presentation/screens/learning_plan_detail_screen.dart';
 import 'package:english_learning_app/features/quiz/presentation/screens/quiz_stats_screen.dart';
 import 'package:english_learning_app/features/review/presentation/screens/mastered_sentences_screen.dart';
+import 'package:english_learning_app/features/admin/presentation/screens/admin_shell_screen.dart';
+import 'package:english_learning_app/features/admin/presentation/screens/admin_topics_screen.dart';
+import 'package:english_learning_app/features/admin/presentation/screens/admin_settings_screen.dart';
+import 'package:english_learning_app/features/admin/presentation/screens/admin_users_screen.dart';
 import 'package:english_learning_app/features/admin/presentation/screens/admin_sentences_screen.dart';
 import 'package:english_learning_app/features/placement_test/presentation/bloc/placement_test_bloc.dart';
 import 'package:english_learning_app/features/placement_test/presentation/screens/placement_test_screen.dart';
@@ -290,10 +294,27 @@ final _router = GoRouter(
       builder: (context, state) => const QuizStatsScreen(),
     ),
 
-    // Admin — Quản lý Sentences
-    GoRoute(
-      path: '/admin/sentences',
-      builder: (context, state) => const AdminSentencesScreen(),
+    // ── Admin Panel ──────────────────────────────────────────────────────────
+    ShellRoute(
+      builder: (context, state, child) => AdminShellScreen(child: child),
+      routes: [
+        GoRoute(
+          path: '/admin/topics',
+          builder: (_, __) => const AdminTopicsScreen(),
+        ),
+        GoRoute(
+          path: '/admin/sentences',
+          builder: (_, __) => const AdminSentencesScreen(),
+        ),
+        GoRoute(
+          path: '/admin/settings',
+          builder: (_, __) => const AdminSettingsScreen(),
+        ),
+        GoRoute(
+          path: '/admin/users',
+          builder: (_, __) => const AdminUsersScreen(),
+        ),
+      ],
     ),
 
     // ── Placement Test ───────────────────────────────────────────────────────

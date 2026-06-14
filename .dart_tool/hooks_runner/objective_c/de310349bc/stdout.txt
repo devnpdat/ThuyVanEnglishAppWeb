@@ -1,0 +1,44 @@
+Running `(cd /Users/npdat132/.pub-cache/hosted/pub.dev/objective_c-9.4.1/; ANDROID_HOME=/Users/npdat132/Library/Android/sdk TMPDIR=/var/folders/61/h8kvd50j5dxcnd9kvkvvl0m00000gn/T/ PATH=/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/usr/local/share/dotnet:~/.dotnet/tools:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Users/npdat132/.antigravity-ide/antigravity-ide/bin:/Users/npdat132/.antigravity/antigravity/bin:/Users/npdat132/.local/bin:/Users/npdat132/.bun/bin:/Users/npdat132/.rbenv/shims:/opt/homebrew/opt/openjdk@17/bin:/Library/Frameworks/Python.framework/Versions/3.12/bin/python3:/Library/Frameworks/Python.framework/Versions/3.12/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Users/npdat132/.dotnet/tools:/Users/npdat132/development/flutter/bin:/Users/npdat132/Library/Android/sdk/cmdline-tools/latest/bin:/Users/npdat132/.lmstudio/bin:/Users/npdat132/flutter_sdk/bin HOME=/Users/npdat132 /Users/npdat132/flutter_sdk/bin/cache/dart-sdk/bin/dart --packages=/Users/npdat132/Works/FRT/ThuyVanEnglishAppWeb/.dart_tool/package_config.json /Users/npdat132/Works/FRT/ThuyVanEnglishAppWeb/.dart_tool/hooks_runner/objective_c/de310349bc/hook.dill --config=/Users/npdat132/Works/FRT/ThuyVanEnglishAppWeb/.dart_tool/hooks_runner/objective_c/de310349bc/input.json )`.
+INFO: 2026-06-14 11:17:40.090520: Using compiler /Library/Developer/CommandLineTools/usr/bin/clang from BuildInput.cCompiler.cc.
+
+INFO: 2026-06-14 11:17:40.093398: Running: /Library/Developer/CommandLineTools/usr/bin/clang -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -target arm64-apple-darwin -mmacos-version-min=13 -c /Users/npdat132/.pub-cache/hosted/pub.dev/objective_c-9.4.1/src/include/dart_api_dl.c -fpic -gline-tables-only -I src -o /Users/npdat132/Works/FRT/ThuyVanEnglishAppWeb/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/include/dart_api_dl.c.o
+
+INFO: 2026-06-14 11:17:40.094304: Running: /Library/Developer/CommandLineTools/usr/bin/clang -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -target arm64-apple-darwin -mmacos-version-min=13 -c /Users/npdat132/.pub-cache/hosted/pub.dev/objective_c-9.4.1/src/objective_c.c -fpic -gline-tables-only -I src -o /Users/npdat132/Works/FRT/ThuyVanEnglishAppWeb/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/objective_c.c.o
+
+INFO: 2026-06-14 11:17:40.094443: Running: /Library/Developer/CommandLineTools/usr/bin/clang -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -target arm64-apple-darwin -mmacos-version-min=13 -x objective-c -fobjc-arc -c /Users/npdat132/.pub-cache/hosted/pub.dev/objective_c-9.4.1/src/input_stream_adapter.m -fpic -gline-tables-only -I src -o /Users/npdat132/Works/FRT/ThuyVanEnglishAppWeb/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/input_stream_adapter.m.o
+
+INFO: 2026-06-14 11:17:40.094542: Running: /Library/Developer/CommandLineTools/usr/bin/clang -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -target arm64-apple-darwin -mmacos-version-min=13 -x objective-c -fobjc-arc -c /Users/npdat132/.pub-cache/hosted/pub.dev/objective_c-9.4.1/src/objective_c.m -fpic -gline-tables-only -I src -o /Users/npdat132/Works/FRT/ThuyVanEnglishAppWeb/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/objective_c.m.o
+
+INFO: 2026-06-14 11:17:40.094639: Running: /Library/Developer/CommandLineTools/usr/bin/clang -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -target arm64-apple-darwin -mmacos-version-min=13 -x objective-c -fobjc-arc -c /Users/npdat132/.pub-cache/hosted/pub.dev/objective_c-9.4.1/src/observer.m -fpic -gline-tables-only -I src -o /Users/npdat132/Works/FRT/ThuyVanEnglishAppWeb/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/observer.m.o
+
+INFO: 2026-06-14 11:17:40.094818: Running: /Library/Developer/CommandLineTools/usr/bin/clang -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -target arm64-apple-darwin -mmacos-version-min=13 -x objective-c -fobjc-arc -c /Users/npdat132/.pub-cache/hosted/pub.dev/objective_c-9.4.1/src/protocol.m -fpic -gline-tables-only -I src -o /Users/npdat132/Works/FRT/ThuyVanEnglishAppWeb/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/protocol.m.o
+
+
+
+INFO: 2026-06-14 11:17:40.094909: Running: /Library/Developer/CommandLineTools/usr/bin/clang -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -target arm64-apple-darwin -mmacos-version-min=13 -x objective-c -fobjc-arc -c /Users/npdat132/.pub-cache/hosted/pub.dev/objective_c-9.4.1/src/objective_c_bindings_generated.m -fpic -gline-tables-only -I src -o /Users/npdat132/Works/FRT/ThuyVanEnglishAppWeb/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/objective_c_bindings_generated.m.o
+
+INFO: 2026-06-14 11:17:40.394123: 
+INFO: 2026-06-14 11:17:40.394133: 
+INFO: 2026-06-14 11:17:40.394141: Generated /Users/npdat132/Works/FRT/ThuyVanEnglishAppWeb/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/objective_c.c.o
+INFO: 2026-06-14 11:17:40.394173: 
+INFO: 2026-06-14 11:17:40.394187: 
+INFO: 2026-06-14 11:17:40.394196: Generated /Users/npdat132/Works/FRT/ThuyVanEnglishAppWeb/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/include/dart_api_dl.c.o
+
+INFO: 2026-06-14 11:17:40.648841: 
+INFO: 2026-06-14 11:17:40.648889: 
+INFO: 2026-06-14 11:17:40.648900: Generated /Users/npdat132/Works/FRT/ThuyVanEnglishAppWeb/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/ns_number.m.o
+
+INFO: 2026-06-14 11:17:40.659598: 
+INFO: 2026-06-14 11:17:40.659609: 
+INFO: 2026-06-14 11:17:40.659617: Generated /Users/npdat132/Works/FRT/ThuyVanEnglishAppWeb/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/input_stream_adapter.m.o
+
+INFO: 2026-06-14 11:17:40.677157: 
+INFO: 2026-06-14 11:17:40.677186: 
+INFO: 2026-06-14 11:17:40.677198: Generated /Users/npdat132/Works/FRT/ThuyVanEnglishAppWeb/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/objective_c_bindings_generated.m.o
+
+INFO: 2026-06-14 11:17:40.677528: Running: /Library/Developer/CommandLineTools/usr/bin/clang -shared -Wl,-encryptable -undefined dynamic_lookup -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -target arm64-apple-darwin -mmacos-version-min=13 /Users/npdat132/Works/FRT/ThuyVanEnglishAppWeb/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/include/dart_api_dl.c.o /Users/npdat132/Works/FRT/ThuyVanEnglishAppWeb/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/objective_c.c.o /Users/npdat132/Works/FRT/ThuyVanEnglishAppWeb/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/input_stream_adapter.m.o /Users/npdat132/Works/FRT/ThuyVanEnglishAppWeb/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/objective_c.m.o /Users/npdat132/Works/FRT/ThuyVanEnglishAppWeb/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/observer.m.o /Users/npdat132/Works/FRT/ThuyVanEnglishAppWeb/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/ns_number.m.o /Users/npdat132/Works/FRT/ThuyVanEnglishAppWeb/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/protocol.m.o /Users/npdat132/Works/FRT/ThuyVanEnglishAppWeb/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/objective_c_bindings_generated.m.o -o /Users/npdat132/Works/FRT/ThuyVanEnglishAppWeb/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/objective_c.dylib
+
+INFO: 2026-06-14 11:17:40.836834: 
+INFO: 2026-06-14 11:17:40.836887: 
+INFO: 2026-06-14 11:17:40.836900: Generated /Users/npdat132/Works/FRT/ThuyVanEnglishAppWeb/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/objective_c.dylib
+

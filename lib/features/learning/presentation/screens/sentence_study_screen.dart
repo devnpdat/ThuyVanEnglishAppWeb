@@ -636,8 +636,7 @@ class _SentenceStudyScreenState extends State<SentenceStudyScreen> {
             controller: _typingController,
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
-              hintText: 'Nhập câu tiếng Anh...\n(Enter = xuống dòng, nhấn Kiểm tra để nộp)',
-              hintMaxLines: 2,
+              hintText: 'Nhập câu tiếng Anh...',
               suffixIcon: _typingController.text.isNotEmpty
                   ? IconButton(
                       icon: const Icon(Icons.clear),
@@ -645,18 +644,42 @@ class _SentenceStudyScreenState extends State<SentenceStudyScreen> {
                     )
                   : null,
             ),
-            maxLines: 4,
+            maxLines: 3,
             minLines: 2,
             onChanged: (_) => setState(() {}),
             textInputAction: TextInputAction.newline,
             keyboardType: TextInputType.multiline,
+            // Block paste
+            contextMenuBuilder: (context, editableTextState) {
+              // Trả về empty — ẩn context menu (không có Paste)
+              return const SizedBox.shrink();
+            },
           ),
           const SizedBox(height: 8),
 
           if (lastResult != null)
-            Text(
-              'Số lần gõ đúng: ${lastResult.totalCorrectTypings}/3',
-              style: TextStyle(color: Colors.grey[600], fontSize: 12),
+            Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: LinearProgressIndicator(
+                      value: (lastResult.totalCorrectTypings / 20).clamp(0.0, 1.0),
+                      backgroundColor: Colors.grey.shade200,
+                      color: lastResult.totalCorrectTypings >= 20 ? Colors.green : Colors.blue,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    '${lastResult.totalCorrectTypings}/20 lần đúng',
+                    style: TextStyle(
+                      color: lastResult.totalCorrectTypings >= 20 ? Colors.green[700] : Colors.grey[600],
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
             ),
 
           const SizedBox(height: 12),
