@@ -161,6 +161,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               TextFormField(
                                 controller: _emailController,
                                 keyboardType: TextInputType.emailAddress,
+                                style: const TextStyle(color: Colors.black),
                                 decoration: const InputDecoration(
                                   labelText: 'Email',
                                   prefixIcon: Icon(Icons.email_outlined),
@@ -173,6 +174,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               if (_isRegisterMode) ...[
                                 TextFormField(
                                   controller: _displayNameController,
+                                  style: const TextStyle(color: Colors.black),
                                   decoration: const InputDecoration(
                                     labelText: 'Tên hiển thị',
                                     prefixIcon: Icon(Icons.person_outlined),
@@ -186,6 +188,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               TextFormField(
                                 controller: _passwordController,
                                 obscureText: _obscurePassword,
+                                style: const TextStyle(color: Colors.black),
                                 decoration: InputDecoration(
                                   labelText: 'Mật khẩu',
                                   prefixIcon: const Icon(Icons.lock_outlined),
