@@ -14,7 +14,7 @@ class DailyLearningEvent with _$DailyLearningEvent {
   const factory DailyLearningEvent.loadToday() = _LoadToday;
   const factory DailyLearningEvent.generateToday() = _GenerateToday;
   const factory DailyLearningEvent.audioPlayed(String sentenceId) = _AudioPlayed;
-  const factory DailyLearningEvent.typingAttempt(String sentenceId, String userInput) = _TypingAttempt;
+  const factory DailyLearningEvent.typingAttempt(String sentenceId, String userInput, int elapsedSeconds) = _TypingAttempt;
   const factory DailyLearningEvent.quizSubmit(String sentenceId, bool isCorrect, String userAnswer, int timeSpentMs) = _QuizSubmit;
   const factory DailyLearningEvent.completeSession(String sentenceId) = _CompleteSession;
 }
@@ -92,7 +92,7 @@ class DailyLearningBloc extends Bloc<DailyLearningEvent, DailyLearningState> {
     try {
       final result = await _repository.submitTypingAttempt(
         event.sentenceId, 
-        TypingAttemptDto(userInput: event.userInput)
+        TypingAttemptDto(userInput: event.userInput, elapsedSeconds: event.elapsedSeconds)
       );
       emit(DailyLearningState.typingResult(result, current));
     } catch (e) {

@@ -21,7 +21,8 @@ mixin _$DailyLearningEvent {
     required TResult Function() loadToday,
     required TResult Function() generateToday,
     required TResult Function(String sentenceId) audioPlayed,
-    required TResult Function(String sentenceId, String userInput)
+    required TResult Function(
+            String sentenceId, String userInput, int elapsedSeconds)
         typingAttempt,
     required TResult Function(String sentenceId, bool isCorrect,
             String userAnswer, int timeSpentMs)
@@ -34,7 +35,8 @@ mixin _$DailyLearningEvent {
     TResult? Function()? loadToday,
     TResult? Function()? generateToday,
     TResult? Function(String sentenceId)? audioPlayed,
-    TResult? Function(String sentenceId, String userInput)? typingAttempt,
+    TResult? Function(String sentenceId, String userInput, int elapsedSeconds)?
+        typingAttempt,
     TResult? Function(String sentenceId, bool isCorrect, String userAnswer,
             int timeSpentMs)?
         quizSubmit,
@@ -46,7 +48,8 @@ mixin _$DailyLearningEvent {
     TResult Function()? loadToday,
     TResult Function()? generateToday,
     TResult Function(String sentenceId)? audioPlayed,
-    TResult Function(String sentenceId, String userInput)? typingAttempt,
+    TResult Function(String sentenceId, String userInput, int elapsedSeconds)?
+        typingAttempt,
     TResult Function(String sentenceId, bool isCorrect, String userAnswer,
             int timeSpentMs)?
         quizSubmit,
@@ -146,7 +149,8 @@ class _$LoadTodayImpl implements _LoadToday {
     required TResult Function() loadToday,
     required TResult Function() generateToday,
     required TResult Function(String sentenceId) audioPlayed,
-    required TResult Function(String sentenceId, String userInput)
+    required TResult Function(
+            String sentenceId, String userInput, int elapsedSeconds)
         typingAttempt,
     required TResult Function(String sentenceId, bool isCorrect,
             String userAnswer, int timeSpentMs)
@@ -162,7 +166,8 @@ class _$LoadTodayImpl implements _LoadToday {
     TResult? Function()? loadToday,
     TResult? Function()? generateToday,
     TResult? Function(String sentenceId)? audioPlayed,
-    TResult? Function(String sentenceId, String userInput)? typingAttempt,
+    TResult? Function(String sentenceId, String userInput, int elapsedSeconds)?
+        typingAttempt,
     TResult? Function(String sentenceId, bool isCorrect, String userAnswer,
             int timeSpentMs)?
         quizSubmit,
@@ -177,7 +182,8 @@ class _$LoadTodayImpl implements _LoadToday {
     TResult Function()? loadToday,
     TResult Function()? generateToday,
     TResult Function(String sentenceId)? audioPlayed,
-    TResult Function(String sentenceId, String userInput)? typingAttempt,
+    TResult Function(String sentenceId, String userInput, int elapsedSeconds)?
+        typingAttempt,
     TResult Function(String sentenceId, bool isCorrect, String userAnswer,
             int timeSpentMs)?
         quizSubmit,
@@ -279,7 +285,8 @@ class _$GenerateTodayImpl implements _GenerateToday {
     required TResult Function() loadToday,
     required TResult Function() generateToday,
     required TResult Function(String sentenceId) audioPlayed,
-    required TResult Function(String sentenceId, String userInput)
+    required TResult Function(
+            String sentenceId, String userInput, int elapsedSeconds)
         typingAttempt,
     required TResult Function(String sentenceId, bool isCorrect,
             String userAnswer, int timeSpentMs)
@@ -295,7 +302,8 @@ class _$GenerateTodayImpl implements _GenerateToday {
     TResult? Function()? loadToday,
     TResult? Function()? generateToday,
     TResult? Function(String sentenceId)? audioPlayed,
-    TResult? Function(String sentenceId, String userInput)? typingAttempt,
+    TResult? Function(String sentenceId, String userInput, int elapsedSeconds)?
+        typingAttempt,
     TResult? Function(String sentenceId, bool isCorrect, String userAnswer,
             int timeSpentMs)?
         quizSubmit,
@@ -310,7 +318,8 @@ class _$GenerateTodayImpl implements _GenerateToday {
     TResult Function()? loadToday,
     TResult Function()? generateToday,
     TResult Function(String sentenceId)? audioPlayed,
-    TResult Function(String sentenceId, String userInput)? typingAttempt,
+    TResult Function(String sentenceId, String userInput, int elapsedSeconds)?
+        typingAttempt,
     TResult Function(String sentenceId, bool isCorrect, String userAnswer,
             int timeSpentMs)?
         quizSubmit,
@@ -439,7 +448,8 @@ class _$AudioPlayedImpl implements _AudioPlayed {
     required TResult Function() loadToday,
     required TResult Function() generateToday,
     required TResult Function(String sentenceId) audioPlayed,
-    required TResult Function(String sentenceId, String userInput)
+    required TResult Function(
+            String sentenceId, String userInput, int elapsedSeconds)
         typingAttempt,
     required TResult Function(String sentenceId, bool isCorrect,
             String userAnswer, int timeSpentMs)
@@ -455,7 +465,8 @@ class _$AudioPlayedImpl implements _AudioPlayed {
     TResult? Function()? loadToday,
     TResult? Function()? generateToday,
     TResult? Function(String sentenceId)? audioPlayed,
-    TResult? Function(String sentenceId, String userInput)? typingAttempt,
+    TResult? Function(String sentenceId, String userInput, int elapsedSeconds)?
+        typingAttempt,
     TResult? Function(String sentenceId, bool isCorrect, String userAnswer,
             int timeSpentMs)?
         quizSubmit,
@@ -470,7 +481,8 @@ class _$AudioPlayedImpl implements _AudioPlayed {
     TResult Function()? loadToday,
     TResult Function()? generateToday,
     TResult Function(String sentenceId)? audioPlayed,
-    TResult Function(String sentenceId, String userInput)? typingAttempt,
+    TResult Function(String sentenceId, String userInput, int elapsedSeconds)?
+        typingAttempt,
     TResult Function(String sentenceId, bool isCorrect, String userAnswer,
             int timeSpentMs)?
         quizSubmit,
@@ -542,7 +554,7 @@ abstract class _$$TypingAttemptImplCopyWith<$Res> {
           _$TypingAttemptImpl value, $Res Function(_$TypingAttemptImpl) then) =
       __$$TypingAttemptImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({String sentenceId, String userInput});
+  $Res call({String sentenceId, String userInput, int elapsedSeconds});
 }
 
 /// @nodoc
@@ -558,6 +570,7 @@ class __$$TypingAttemptImplCopyWithImpl<$Res>
   $Res call({
     Object? sentenceId = null,
     Object? userInput = null,
+    Object? elapsedSeconds = null,
   }) {
     return _then(_$TypingAttemptImpl(
       null == sentenceId
@@ -568,6 +581,10 @@ class __$$TypingAttemptImplCopyWithImpl<$Res>
           ? _value.userInput
           : userInput // ignore: cast_nullable_to_non_nullable
               as String,
+      null == elapsedSeconds
+          ? _value.elapsedSeconds
+          : elapsedSeconds // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -575,16 +592,19 @@ class __$$TypingAttemptImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$TypingAttemptImpl implements _TypingAttempt {
-  const _$TypingAttemptImpl(this.sentenceId, this.userInput);
+  const _$TypingAttemptImpl(
+      this.sentenceId, this.userInput, this.elapsedSeconds);
 
   @override
   final String sentenceId;
   @override
   final String userInput;
+  @override
+  final int elapsedSeconds;
 
   @override
   String toString() {
-    return 'DailyLearningEvent.typingAttempt(sentenceId: $sentenceId, userInput: $userInput)';
+    return 'DailyLearningEvent.typingAttempt(sentenceId: $sentenceId, userInput: $userInput, elapsedSeconds: $elapsedSeconds)';
   }
 
   @override
@@ -595,11 +615,14 @@ class _$TypingAttemptImpl implements _TypingAttempt {
             (identical(other.sentenceId, sentenceId) ||
                 other.sentenceId == sentenceId) &&
             (identical(other.userInput, userInput) ||
-                other.userInput == userInput));
+                other.userInput == userInput) &&
+            (identical(other.elapsedSeconds, elapsedSeconds) ||
+                other.elapsedSeconds == elapsedSeconds));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, sentenceId, userInput);
+  int get hashCode =>
+      Object.hash(runtimeType, sentenceId, userInput, elapsedSeconds);
 
   @JsonKey(ignore: true)
   @override
@@ -613,14 +636,15 @@ class _$TypingAttemptImpl implements _TypingAttempt {
     required TResult Function() loadToday,
     required TResult Function() generateToday,
     required TResult Function(String sentenceId) audioPlayed,
-    required TResult Function(String sentenceId, String userInput)
+    required TResult Function(
+            String sentenceId, String userInput, int elapsedSeconds)
         typingAttempt,
     required TResult Function(String sentenceId, bool isCorrect,
             String userAnswer, int timeSpentMs)
         quizSubmit,
     required TResult Function(String sentenceId) completeSession,
   }) {
-    return typingAttempt(sentenceId, userInput);
+    return typingAttempt(sentenceId, userInput, elapsedSeconds);
   }
 
   @override
@@ -629,13 +653,14 @@ class _$TypingAttemptImpl implements _TypingAttempt {
     TResult? Function()? loadToday,
     TResult? Function()? generateToday,
     TResult? Function(String sentenceId)? audioPlayed,
-    TResult? Function(String sentenceId, String userInput)? typingAttempt,
+    TResult? Function(String sentenceId, String userInput, int elapsedSeconds)?
+        typingAttempt,
     TResult? Function(String sentenceId, bool isCorrect, String userAnswer,
             int timeSpentMs)?
         quizSubmit,
     TResult? Function(String sentenceId)? completeSession,
   }) {
-    return typingAttempt?.call(sentenceId, userInput);
+    return typingAttempt?.call(sentenceId, userInput, elapsedSeconds);
   }
 
   @override
@@ -644,7 +669,8 @@ class _$TypingAttemptImpl implements _TypingAttempt {
     TResult Function()? loadToday,
     TResult Function()? generateToday,
     TResult Function(String sentenceId)? audioPlayed,
-    TResult Function(String sentenceId, String userInput)? typingAttempt,
+    TResult Function(String sentenceId, String userInput, int elapsedSeconds)?
+        typingAttempt,
     TResult Function(String sentenceId, bool isCorrect, String userAnswer,
             int timeSpentMs)?
         quizSubmit,
@@ -652,7 +678,7 @@ class _$TypingAttemptImpl implements _TypingAttempt {
     required TResult orElse(),
   }) {
     if (typingAttempt != null) {
-      return typingAttempt(sentenceId, userInput);
+      return typingAttempt(sentenceId, userInput, elapsedSeconds);
     }
     return orElse();
   }
@@ -702,11 +728,12 @@ class _$TypingAttemptImpl implements _TypingAttempt {
 }
 
 abstract class _TypingAttempt implements DailyLearningEvent {
-  const factory _TypingAttempt(
-      final String sentenceId, final String userInput) = _$TypingAttemptImpl;
+  const factory _TypingAttempt(final String sentenceId, final String userInput,
+      final int elapsedSeconds) = _$TypingAttemptImpl;
 
   String get sentenceId;
   String get userInput;
+  int get elapsedSeconds;
   @JsonKey(ignore: true)
   _$$TypingAttemptImplCopyWith<_$TypingAttemptImpl> get copyWith =>
       throw _privateConstructorUsedError;
@@ -810,7 +837,8 @@ class _$QuizSubmitImpl implements _QuizSubmit {
     required TResult Function() loadToday,
     required TResult Function() generateToday,
     required TResult Function(String sentenceId) audioPlayed,
-    required TResult Function(String sentenceId, String userInput)
+    required TResult Function(
+            String sentenceId, String userInput, int elapsedSeconds)
         typingAttempt,
     required TResult Function(String sentenceId, bool isCorrect,
             String userAnswer, int timeSpentMs)
@@ -826,7 +854,8 @@ class _$QuizSubmitImpl implements _QuizSubmit {
     TResult? Function()? loadToday,
     TResult? Function()? generateToday,
     TResult? Function(String sentenceId)? audioPlayed,
-    TResult? Function(String sentenceId, String userInput)? typingAttempt,
+    TResult? Function(String sentenceId, String userInput, int elapsedSeconds)?
+        typingAttempt,
     TResult? Function(String sentenceId, bool isCorrect, String userAnswer,
             int timeSpentMs)?
         quizSubmit,
@@ -841,7 +870,8 @@ class _$QuizSubmitImpl implements _QuizSubmit {
     TResult Function()? loadToday,
     TResult Function()? generateToday,
     TResult Function(String sentenceId)? audioPlayed,
-    TResult Function(String sentenceId, String userInput)? typingAttempt,
+    TResult Function(String sentenceId, String userInput, int elapsedSeconds)?
+        typingAttempt,
     TResult Function(String sentenceId, bool isCorrect, String userAnswer,
             int timeSpentMs)?
         quizSubmit,
@@ -980,7 +1010,8 @@ class _$CompleteSessionImpl implements _CompleteSession {
     required TResult Function() loadToday,
     required TResult Function() generateToday,
     required TResult Function(String sentenceId) audioPlayed,
-    required TResult Function(String sentenceId, String userInput)
+    required TResult Function(
+            String sentenceId, String userInput, int elapsedSeconds)
         typingAttempt,
     required TResult Function(String sentenceId, bool isCorrect,
             String userAnswer, int timeSpentMs)
@@ -996,7 +1027,8 @@ class _$CompleteSessionImpl implements _CompleteSession {
     TResult? Function()? loadToday,
     TResult? Function()? generateToday,
     TResult? Function(String sentenceId)? audioPlayed,
-    TResult? Function(String sentenceId, String userInput)? typingAttempt,
+    TResult? Function(String sentenceId, String userInput, int elapsedSeconds)?
+        typingAttempt,
     TResult? Function(String sentenceId, bool isCorrect, String userAnswer,
             int timeSpentMs)?
         quizSubmit,
@@ -1011,7 +1043,8 @@ class _$CompleteSessionImpl implements _CompleteSession {
     TResult Function()? loadToday,
     TResult Function()? generateToday,
     TResult Function(String sentenceId)? audioPlayed,
-    TResult Function(String sentenceId, String userInput)? typingAttempt,
+    TResult Function(String sentenceId, String userInput, int elapsedSeconds)?
+        typingAttempt,
     TResult Function(String sentenceId, bool isCorrect, String userAnswer,
             int timeSpentMs)?
         quizSubmit,

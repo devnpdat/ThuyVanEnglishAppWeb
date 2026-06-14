@@ -24,6 +24,10 @@ class _SentenceStudyScreenState extends State<SentenceStudyScreen> {
   int  _audioPlayCount = 0;
   late IAudioService _audioService;
 
+  // ── Typing time tracking ──────────────────────────────────────────────────
+  DateTime? _typingStartTime;
+  int _totalTypingSeconds = 0;
+
   // ── Auto-repeat settings ──────────────────────────────────────────────────
   bool   _autoRepeat     = false;
   double _repeatInterval = 2.0; // giây giữa 2 lần đọc
@@ -426,7 +430,10 @@ class _SentenceStudyScreenState extends State<SentenceStudyScreen> {
 
           ElevatedButton.icon(
             onPressed: _audioPlayCount > 0
-                ? () => setState(() => _currentStep = 1)
+                ? () => setState(() {
+                      _currentStep = 1;
+                      _typingStartTime = DateTime.now();
+                    })
                 : null,
             icon: const Icon(Icons.arrow_forward),
             label: const Text('Tiếp tục → Bước Gõ'),
@@ -688,10 +695,16 @@ class _SentenceStudyScreenState extends State<SentenceStudyScreen> {
             onPressed: _typingController.text.trim().isEmpty
                 ? null
                 : () {
+                    // Tính elapsed seconds từ lúc vào step gõ
+                    final elapsed = _typingStartTime != null 
+                        ? DateTime.now().difference(_typingStartTime!).inSeconds 
+                        : 0;
+                    
                     context.read<DailyLearningBloc>().add(
                       DailyLearningEvent.typingAttempt(
                         widget.sentenceId,
                         _typingController.text.trim(),
+                        elapsed,
                       ),
                     );
                   },

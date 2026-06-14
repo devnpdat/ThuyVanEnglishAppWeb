@@ -64,12 +64,14 @@ _$TypingAttemptDtoImpl _$$TypingAttemptDtoImplFromJson(
         Map<String, dynamic> json) =>
     _$TypingAttemptDtoImpl(
       userInput: json['userInput'] as String,
+      elapsedSeconds: (json['elapsedSeconds'] as num?)?.toInt() ?? 0,
     );
 
 Map<String, dynamic> _$$TypingAttemptDtoImplToJson(
         _$TypingAttemptDtoImpl instance) =>
     <String, dynamic>{
       'userInput': instance.userInput,
+      'elapsedSeconds': instance.elapsedSeconds,
     };
 
 _$TypingResultDtoImpl _$$TypingResultDtoImplFromJson(

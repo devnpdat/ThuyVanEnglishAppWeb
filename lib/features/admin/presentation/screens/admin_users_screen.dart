@@ -35,18 +35,19 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
       await showDialog(
         context: context,
         builder: (_) => AlertDialog(
-          title: Text('Progress: ${user['userName']}'),
+          title: Text(d['userName'] ?? ''),
           content: SizedBox(
-            width: 520,
+            width: 400,
             child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-              _row('Tổng câu hoàn thành', '${d['totalSentencesLearned']}'),
-              const Divider(height: 20),
-              const Text('Câu gần đây:', style: TextStyle(fontWeight: FontWeight.bold)),
-              const SizedBox(height: 8),
-              if ((d['recentSentences'] as List? ?? []).isEmpty)
-                const Text('Chưa có dữ liệu', style: TextStyle(color: Colors.grey))
-              else
-                ...(d['recentSentences'] as List).map((s) => Padding(
+              _row('Level', '${d['level']}'),
+              _row('Total XP', '${d['totalXp']}'),
+              _row('Số câu đã học', '${d['totalSentencesLearned']}'),
+              _row('Tổng thời gian gõ', '${d['totalTypingHours'] ?? 0}h ${d['totalTypingMinutes'] ?? 0}m'),
+              _row('Streak', '${d['currentStreak']} ngày'),
+              const Divider(height: 24),
+              const Text('10 câu gần nhất:', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+              const SizedBox(height: 6),
+              ...((d['recentSentences'] as List?) ?? []).map((s) => Padding(
                   padding: const EdgeInsets.only(bottom: 6),
                   child: Row(children: [
                     Expanded(child: Text(s['englishText']?.toString().isNotEmpty == true ? s['englishText'] : '(câu)',

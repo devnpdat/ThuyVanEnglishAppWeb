@@ -41,6 +41,7 @@ class LearningSessionItemDto with _$LearningSessionItemDto {
 class TypingAttemptDto with _$TypingAttemptDto {
   const factory TypingAttemptDto({
     required String userInput,
+    @Default(0) int elapsedSeconds,
   }) = _TypingAttemptDto;
 
   factory TypingAttemptDto.fromJson(Map<String, dynamic> json) =>

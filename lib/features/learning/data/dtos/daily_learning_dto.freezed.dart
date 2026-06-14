@@ -624,6 +624,7 @@ TypingAttemptDto _$TypingAttemptDtoFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$TypingAttemptDto {
   String get userInput => throw _privateConstructorUsedError;
+  int get elapsedSeconds => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -637,7 +638,7 @@ abstract class $TypingAttemptDtoCopyWith<$Res> {
           TypingAttemptDto value, $Res Function(TypingAttemptDto) then) =
       _$TypingAttemptDtoCopyWithImpl<$Res, TypingAttemptDto>;
   @useResult
-  $Res call({String userInput});
+  $Res call({String userInput, int elapsedSeconds});
 }
 
 /// @nodoc
@@ -654,12 +655,17 @@ class _$TypingAttemptDtoCopyWithImpl<$Res, $Val extends TypingAttemptDto>
   @override
   $Res call({
     Object? userInput = null,
+    Object? elapsedSeconds = null,
   }) {
     return _then(_value.copyWith(
       userInput: null == userInput
           ? _value.userInput
           : userInput // ignore: cast_nullable_to_non_nullable
               as String,
+      elapsedSeconds: null == elapsedSeconds
+          ? _value.elapsedSeconds
+          : elapsedSeconds // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 }
@@ -672,7 +678,7 @@ abstract class _$$TypingAttemptDtoImplCopyWith<$Res>
       __$$TypingAttemptDtoImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String userInput});
+  $Res call({String userInput, int elapsedSeconds});
 }
 
 /// @nodoc
@@ -687,12 +693,17 @@ class __$$TypingAttemptDtoImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? userInput = null,
+    Object? elapsedSeconds = null,
   }) {
     return _then(_$TypingAttemptDtoImpl(
       userInput: null == userInput
           ? _value.userInput
           : userInput // ignore: cast_nullable_to_non_nullable
               as String,
+      elapsedSeconds: null == elapsedSeconds
+          ? _value.elapsedSeconds
+          : elapsedSeconds // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -700,17 +711,21 @@ class __$$TypingAttemptDtoImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$TypingAttemptDtoImpl implements _TypingAttemptDto {
-  const _$TypingAttemptDtoImpl({required this.userInput});
+  const _$TypingAttemptDtoImpl(
+      {required this.userInput, this.elapsedSeconds = 0});
 
   factory _$TypingAttemptDtoImpl.fromJson(Map<String, dynamic> json) =>
       _$$TypingAttemptDtoImplFromJson(json);
 
   @override
   final String userInput;
+  @override
+  @JsonKey()
+  final int elapsedSeconds;
 
   @override
   String toString() {
-    return 'TypingAttemptDto(userInput: $userInput)';
+    return 'TypingAttemptDto(userInput: $userInput, elapsedSeconds: $elapsedSeconds)';
   }
 
   @override
@@ -719,12 +734,14 @@ class _$TypingAttemptDtoImpl implements _TypingAttemptDto {
         (other.runtimeType == runtimeType &&
             other is _$TypingAttemptDtoImpl &&
             (identical(other.userInput, userInput) ||
-                other.userInput == userInput));
+                other.userInput == userInput) &&
+            (identical(other.elapsedSeconds, elapsedSeconds) ||
+                other.elapsedSeconds == elapsedSeconds));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, userInput);
+  int get hashCode => Object.hash(runtimeType, userInput, elapsedSeconds);
 
   @JsonKey(ignore: true)
   @override
@@ -742,14 +759,17 @@ class _$TypingAttemptDtoImpl implements _TypingAttemptDto {
 }
 
 abstract class _TypingAttemptDto implements TypingAttemptDto {
-  const factory _TypingAttemptDto({required final String userInput}) =
-      _$TypingAttemptDtoImpl;
+  const factory _TypingAttemptDto(
+      {required final String userInput,
+      final int elapsedSeconds}) = _$TypingAttemptDtoImpl;
 
   factory _TypingAttemptDto.fromJson(Map<String, dynamic> json) =
       _$TypingAttemptDtoImpl.fromJson;
 
   @override
   String get userInput;
+  @override
+  int get elapsedSeconds;
   @override
   @JsonKey(ignore: true)
   _$$TypingAttemptDtoImplCopyWith<_$TypingAttemptDtoImpl> get copyWith =>
