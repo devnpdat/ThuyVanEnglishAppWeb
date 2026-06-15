@@ -6,8 +6,15 @@ import 'package:english_learning_app/features/auth/presentation/bloc/auth_bloc.d
 import 'package:english_learning_app/features/home/presentation/bloc/dashboard_bloc.dart';
 import 'package:english_learning_app/features/home/data/dtos/dashboard_dto.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  bool _isVietnamese = false; // false = EN, true = VI
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +23,36 @@ class HomeScreen extends StatelessWidget {
         title: const Text('App học Tiếng Anh của Thuỳ Vân'),
         elevation: 0,
         actions: [
+          // Switch EN/VI
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(20),
+              onTap: () => setState(() => _isVietnamese = !_isVietnamese),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: _isVietnamese
+                      ? Colors.red.withValues(alpha: 0.15)
+                      : const Color(0xFF4F6AF5).withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: _isVietnamese ? Colors.red : const Color(0xFF4F6AF5),
+                    width: 1.5,
+                  ),
+                ),
+                child: Text(
+                  _isVietnamese ? '🇻🇳 VI' : '🇺🇸 EN',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                    color: _isVietnamese ? Colors.red[700] : const Color(0xFF4F6AF5),
+                  ),
+                ),
+              ),
+            ),
+          ),
           // Admin icon - chỉ hiện cho devdatnp@gmail.com
           BlocBuilder<AuthBloc, AuthState>(
             builder: (context, authState) {
@@ -202,7 +239,7 @@ class HomeScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: levelColor.withValues(alpha: 0.1),
+                color: levelColor.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(levelIcon, color: levelColor, size: 32),
@@ -294,28 +331,38 @@ class HomeScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+            color: color.withValues(alpha: 0.12),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
           ),
         ],
+        border: Border.all(color: color.withValues(alpha: 0.2)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: color, size: 24),
-          const SizedBox(height: 8),
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon, color: color, size: 22),
+          ),
+          const SizedBox(height: 10),
           Text(
             value,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.bold,
+              color: color,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 2),
           Text(
             title,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
               color: Colors.grey[600],
+              fontWeight: FontWeight.w500,
             ),
           ),
         ],
@@ -418,10 +465,10 @@ class HomeScreen extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: const Color(0xFF4F6AF5).withOpacity(0.1),
+            color: const Color(0xFF4F6AF5).withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: const Color(0xFF4F6AF5).withOpacity(0.3),
+              color: const Color(0xFF4F6AF5).withValues(alpha: 0.3),
             ),
           ),
           child: Column(
@@ -465,7 +512,7 @@ class HomeScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 8,
               ),
             ],
@@ -477,13 +524,14 @@ class HomeScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Sentences learned',
+                    'Câu đã học hôm nay',
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   Text(
                     '${dashboard.todayCompleted} / ${dashboard.todayTarget}',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.bold,
+                      color: const Color(0xFF4F6AF5),
                     ),
                   ),
                 ],
@@ -493,13 +541,25 @@ class HomeScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
                 child: LinearProgressIndicator(
                   value: progressValue.clamp(0.0, 1.0),
-                  minHeight: 8,
+                  minHeight: 10,
                   backgroundColor: Colors.grey[200],
                   valueColor: AlwaysStoppedAnimation<Color>(
-                    Theme.of(context).primaryColor,
+                    progressValue >= 1.0 ? Colors.green : const Color(0xFF4F6AF5),
                   ),
                 ),
               ),
+              if (progressValue >= 1.0) ...[
+                const SizedBox(height: 8),
+                const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.check_circle, color: Colors.green, size: 16),
+                    SizedBox(width: 4),
+                    Text('Hoàn thành mục tiêu hôm nay! 🎉',
+                        style: TextStyle(color: Colors.green, fontWeight: FontWeight.w600, fontSize: 13)),
+                  ],
+                ),
+              ],
             ],
           ),
         ),

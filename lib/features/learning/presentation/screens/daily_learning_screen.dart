@@ -1,7 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:english_learning_app/features/learning/presentation/bloc/daily_learning_bloc.dart';
+
+String _formatPlanDate(String isoDate) {
+  try {
+    final dt = DateTime.parse(isoDate);
+    return DateFormat('dd/MM/yyyy').format(dt);
+  } catch (_) {
+    return isoDate;
+  }
+}
 
 class DailyLearningScreen extends StatelessWidget {
   const DailyLearningScreen({Key? key}) : super(key: key);
@@ -10,11 +20,11 @@ class DailyLearningScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Daily Plan'),
+        title: const Text('Kế hoạch hôm nay'),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            tooltip: 'Generate New Plan',
+            tooltip: 'Tạo kế hoạch mới',
             onPressed: () {
               context.read<DailyLearningBloc>().add(const DailyLearningEvent.generateToday());
             },
@@ -30,13 +40,14 @@ class DailyLearningScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Failed to load plan: $message', style: const TextStyle(color: Colors.red)),
+                  Text('Lỗi tải kế hoạch: $message',
+                      style: const TextStyle(color: Colors.red)),
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {
                       context.read<DailyLearningBloc>().add(const DailyLearningEvent.loadToday());
                     },
-                    child: const Text('Retry'),
+                    child: const Text('Thử lại'),
                   ),
                 ],
               ),
@@ -57,16 +68,19 @@ class DailyLearningScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const Icon(Icons.menu_book_outlined, size: 64, color: Colors.grey),
+            const SizedBox(height: 16),
             const Text(
               'Hôm nay bạn chưa có bài học nào!',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
-            ElevatedButton(
+            ElevatedButton.icon(
               onPressed: () {
                 context.read<DailyLearningBloc>().add(const DailyLearningEvent.generateToday());
               },
-              child: const Text('Tạo kế hoạch hôm nay'),
+              icon: const Icon(Icons.add),
+              label: const Text('Tạo kế hoạch hôm nay'),
             ),
           ],
         ),
@@ -75,68 +89,102 @@ class DailyLearningScreen extends StatelessWidget {
 
     return Column(
       children: [
-        // Header info
+        // ── Header: ngày + tiến độ ──────────────────────────────────────────
         Container(
-          padding: const EdgeInsets.all(16),
-          color: Theme.of(context).primaryColor.withOpacity(0.1),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: const Color(0xFF4F6AF5).withValues(alpha: 0.06),
+            border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
+          ),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              const Icon(Icons.calendar_today, size: 16, color: Color(0xFF4F6AF5)),
+              const SizedBox(width: 6),
               Text(
-                'Date: ${todayLearning.planDate}',
-                style: const TextStyle(fontWeight: FontWeight.bold),
+                _formatPlanDate(todayLearning.planDate),
+                style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
               ),
-              Text(
-                '${todayLearning.completedCount} / ${todayLearning.totalSentences} completed',
-                style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontWeight: FontWeight.bold,
+              const Spacer(),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: todayLearning.completedCount >= todayLearning.totalSentences
+                      ? Colors.green
+                      : const Color(0xFF4F6AF5),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  '${todayLearning.completedCount}/${todayLearning.totalSentences} câu',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                  ),
                 ),
               ),
             ],
           ),
         ),
 
-        // List of sentences
+        // ── List câu ────────────────────────────────────────────────────────
         Expanded(
           child: ListView.separated(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             itemCount: todayLearning.items.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 12),
+            separatorBuilder: (_, __) => const SizedBox(height: 10),
             itemBuilder: (context, index) {
               final item = todayLearning.items[index];
               final sentence = item.sentence;
               final isCompleted = item.isCompletedToday || item.progressStatus == 'mastered';
-              
+
               return Card(
-                elevation: 2,
+                elevation: isCompleted ? 0 : 2,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                   side: BorderSide(
-                    color: isCompleted ? Colors.green : Colors.grey.shade300,
-                    width: isCompleted ? 2 : 1,
+                    color: isCompleted ? Colors.green.shade300 : Colors.grey.shade200,
+                    width: isCompleted ? 1.5 : 1,
                   ),
                 ),
+                color: isCompleted ? Colors.green.withValues(alpha: 0.04) : Colors.white,
                 child: ListTile(
-                  contentPadding: const EdgeInsets.all(16),
-                  leading: CircleAvatar(
-                    backgroundColor: isCompleted ? Colors.green.withOpacity(0.2) : Colors.blue.withOpacity(0.1),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  leading: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: isCompleted
+                          ? Colors.green.withValues(alpha: 0.15)
+                          : const Color(0xFF4F6AF5).withValues(alpha: 0.1),
+                      shape: BoxShape.circle,
+                    ),
                     child: Icon(
                       isCompleted ? Icons.check : Icons.play_arrow,
-                      color: isCompleted ? Colors.green : Colors.blue,
+                      color: isCompleted ? Colors.green : const Color(0xFF4F6AF5),
+                      size: 20,
                     ),
                   ),
                   title: Text(
                     sentence.englishText,
                     style: TextStyle(
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 15,
+                      color: isCompleted ? Colors.grey[500] : Colors.black87,
                       decoration: isCompleted ? TextDecoration.lineThrough : null,
+                      decorationColor: Colors.grey[400],
                     ),
                   ),
-                  subtitle: Text(sentence.vietnameseText),
-                  trailing: const Icon(Icons.chevron_right),
+                  subtitle: Padding(
+                    padding: const EdgeInsets.only(top: 3),
+                    child: Text(
+                      sentence.vietnameseText,
+                      style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+                    ),
+                  ),
+                  trailing: isCompleted
+                      ? const Icon(Icons.check_circle, color: Colors.green, size: 20)
+                      : const Icon(Icons.chevron_right, color: Colors.grey),
                   onTap: () {
-                    // Navigate to sentence study screen
                     context.push('/learn/study/${sentence.id}');
                   },
                 ),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:english_learning_app/features/auth/presentation/bloc/auth_bloc.dart';
 
 
@@ -148,7 +147,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.08),
+                              color: Colors.black.withValues(alpha: 0.08),
                               blurRadius: 16,
                               offset: const Offset(0, 4),
                             ),
@@ -162,13 +161,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                 controller: _emailController,
                                 keyboardType: TextInputType.emailAddress,
                                 style: const TextStyle(color: Colors.black),
+                                onFieldSubmitted: (_) => _submit(bloc),
                                 decoration: const InputDecoration(
                                   labelText: 'Email',
                                   prefixIcon: Icon(Icons.email_outlined),
                                   border: OutlineInputBorder(),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Color(0xFF4F6AF5), width: 2),
+                                  ),
+                                  errorStyle: TextStyle(color: Colors.red, fontSize: 12),
                                 ),
                                 validator: (v) =>
                                     (v == null || !v.contains('@')) ? 'Email không hợp lệ' : null,
+                                autovalidateMode: AutovalidateMode.onUserInteraction,
                               ),
                               const SizedBox(height: 16),
                               if (_isRegisterMode) ...[
@@ -179,9 +184,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                     labelText: 'Tên hiển thị',
                                     prefixIcon: Icon(Icons.person_outlined),
                                     border: OutlineInputBorder(),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(color: Color(0xFF4F6AF5), width: 2),
+                                    ),
+                                    errorStyle: TextStyle(color: Colors.red, fontSize: 12),
                                   ),
                                   validator: (v) =>
                                       (v == null || v.isEmpty) ? 'Nhập tên của bạn' : null,
+                                  autovalidateMode: AutovalidateMode.onUserInteraction,
                                 ),
                                 const SizedBox(height: 16),
                               ],
@@ -189,10 +199,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                 controller: _passwordController,
                                 obscureText: _obscurePassword,
                                 style: const TextStyle(color: Colors.black),
+                                onFieldSubmitted: (_) => _submit(bloc),
                                 decoration: InputDecoration(
                                   labelText: 'Mật khẩu',
                                   prefixIcon: const Icon(Icons.lock_outlined),
                                   border: const OutlineInputBorder(),
+                                  focusedBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(color: Color(0xFF4F6AF5), width: 2),
+                                  ),
+                                  errorStyle: const TextStyle(color: Colors.red, fontSize: 12),
                                   suffixIcon: IconButton(
                                     icon: Icon(_obscurePassword
                                         ? Icons.visibility_outlined
@@ -202,6 +217,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                                 validator: (v) =>
                                     (v == null || v.length < 6) ? 'Mật khẩu tối thiểu 6 ký tự' : null,
+                                autovalidateMode: AutovalidateMode.onUserInteraction,
                               ),
                               const SizedBox(height: 24),
                               SizedBox(
@@ -236,11 +252,33 @@ class _LoginScreenState extends State<LoginScreen> {
                       const SizedBox(height: 20),
                       TextButton(
                         onPressed: () => setState(() => _isRegisterMode = !_isRegisterMode),
-                        child: Text(
-                          _isRegisterMode
-                              ? 'Đã có tài khoản? Đăng nhập'
-                              : 'Chưa có tài khoản? Đăng ký',
-                          style: const TextStyle(color: Color(0xFF4F6AF5)),
+                        child: RichText(
+                          text: TextSpan(
+                            style: TextStyle(color: Colors.grey[700], fontSize: 14),
+                            children: _isRegisterMode
+                                ? [
+                                    const TextSpan(text: 'Đã có tài khoản? '),
+                                    const TextSpan(
+                                      text: 'Đăng nhập',
+                                      style: TextStyle(
+                                        color: Color(0xFF4F6AF5),
+                                        fontWeight: FontWeight.bold,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                    ),
+                                  ]
+                                : [
+                                    const TextSpan(text: 'Chưa có tài khoản? '),
+                                    const TextSpan(
+                                      text: 'Đăng ký',
+                                      style: TextStyle(
+                                        color: Color(0xFF4F6AF5),
+                                        fontWeight: FontWeight.bold,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                    ),
+                                  ],
+                          ),
                         ),
                       ),
                     ],
