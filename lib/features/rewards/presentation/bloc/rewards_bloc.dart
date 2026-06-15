@@ -187,7 +187,8 @@ class RewardsBloc extends Bloc<RewardsEvent, RewardsState> {
     LeaderboardLoadEvent event,
     Emitter<RewardsState> emit,
   ) async {
-    emit(const RewardsLoading());
+    // KHÔNG emit RewardsLoading() ở đây — sẽ xóa mất RewardsLoaded state
+    // Screen tự xử lý placeholder khi _leaderboardData == null
     try {
       final leaderboard = await _rewardsRepository.getLeaderboard(limit: 10);
       emit(LeaderboardLoaded(

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:english_learning_app/features/learning/presentation/bloc/daily_learning_bloc.dart';
 import 'package:english_learning_app/features/learning/data/dtos/daily_learning_dto.dart';
@@ -56,6 +57,20 @@ class _SentenceStudyScreenState extends State<SentenceStudyScreen> {
     _typingController.dispose();
     _quizController.dispose();
     super.dispose();
+  }
+
+  // ── Sanitize: bỏ dấu câu, trim, lowercase trước khi so khớp ────────────────
+  // Bug 7 fix: gõ đúng từ nhưng thiếu dấu phẩy/chấm vẫn được tính đúng
+  String _sanitize(String s) {
+    // Bug 7: xoá dấu câu ASCII + unicode quotes, chuẩn hoá whitespace
+    // Tách 2 pass để tránh escape hell trong char class
+    var r = s
+        .replaceAll(RegExp(r'[,\.!\?;:\-\(\)\[\]{}]'), '')   // ASCII punctuation
+        .replaceAll('\u2013', '').replaceAll('\u2014', '')     // en-dash, em-dash
+        .replaceAll('\u201c', '').replaceAll('\u201d', '')     // " "
+        .replaceAll('\u2018', '').replaceAll('\u2019', '')     // ' '
+        .replaceAll('"', '').replaceAll("'", '');              // straight quotes
+    return r.replaceAll(RegExp(r'\s+'), ' ').trim().toLowerCase();
   }
 
   // ── Audio helpers ─────────────────────────────────────────────────────────
@@ -244,7 +259,11 @@ class _SentenceStudyScreenState extends State<SentenceStudyScreen> {
         final idx      = i ~/ 2;
         final isActive = _currentStep == idx;
         final isDone   = _currentStep > idx;
-        return Column(
+        // Bug 4: click vào circle đã done → quay lại bước đó
+        final canGoBack = isDone && idx < _currentStep;
+        return GestureDetector(
+          onTap: canGoBack ? () => setState(() => _currentStep = idx) : null,
+          child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             CircleAvatar(
@@ -276,6 +295,7 @@ class _SentenceStudyScreenState extends State<SentenceStudyScreen> {
               ),
             ),
           ],
+        ),
         );
       }),
     );
@@ -897,9 +917,9 @@ class _SentenceStudyScreenState extends State<SentenceStudyScreen> {
                 ? null
                 : () {
                     final answer    = _quizController.text.trim();
-                    // So sánh với vietnameseText (user dịch VI)
-                    final isCorrect = answer.trim().toLowerCase() ==
-                        sentence.vietnameseText.trim().toLowerCase();
+                    // Bug 7 fix: so sánh sau khi bỏ dấu câu, case-insensitive
+                    final isCorrect = _sanitize(answer) ==
+                        _sanitize(sentence.vietnameseText);
                     final timeMs    = DateTime.now().difference(_quizStartTime).inMilliseconds;
                     context.read<DailyLearningBloc>().add(
                       DailyLearningEvent.quizSubmit(
@@ -960,26 +980,48 @@ class _SentenceStudyScreenState extends State<SentenceStudyScreen> {
         if (_pointsAwarded != null && _pointsAwarded! > 0) ...[
           const SizedBox(height: 12),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             decoration: BoxDecoration(
-              color: Colors.amber.shade50,
+              color: Colors.amber[700],
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: Colors.amber),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.amber.withValues(alpha: 0.4),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
-            child: Text('+$_pointsAwarded điểm',
+            child: Text('+$_pointsAwarded điểm 🌟',
                 style: const TextStyle(
-                    fontSize: 20, fontWeight: FontWeight.bold, color: Colors.amber)),
+                    fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
           ),
         ],
         const SizedBox(height: 32),
-        ElevatedButton.icon(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: const Icon(Icons.arrow_back),
-          label: const Text('Quay lại danh sách'),
-          style: ElevatedButton.styleFrom(
-            minimumSize: const Size(double.infinity, 50),
-            backgroundColor: Colors.green,
-            foregroundColor: Colors.white,
+        // Enter key handler — when user presses Enter, pop back
+        CallbackShortcuts(
+          bindings: {
+            const SingleActivator(LogicalKeyboardKey.enter): () {
+              if (mounted) Navigator.of(context).pop();
+            },
+          },
+          child: Focus(
+            autofocus: true,
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 320),
+                child: ElevatedButton.icon(
+                  onPressed: () => Navigator.of(context).pop(),
+                  icon: const Icon(Icons.arrow_back),
+                  label: const Text('Quay lại danh sách'),
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(double.infinity, 50),
+                    backgroundColor: Colors.green,
+                    foregroundColor: Colors.white,
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
       ],

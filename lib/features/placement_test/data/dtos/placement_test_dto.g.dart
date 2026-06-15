@@ -85,12 +85,18 @@ _$PlacementTestResultDtoImpl _$$PlacementTestResultDtoImplFromJson(
         Map<String, dynamic> json) =>
     _$PlacementTestResultDtoImpl(
       totalScore: (json['totalScore'] as num).toInt(),
+      totalMaxScore: (json['totalMaxScore'] as num?)?.toInt() ?? 40,
       resultLevel: json['resultLevel'] as String,
       phase1Score: (json['phase1Score'] as num).toInt(),
       phase2Score: (json['phase2Score'] as num).toInt(),
       phase3Score: (json['phase3Score'] as num).toInt(),
       phase4Score: (json['phase4Score'] as num).toInt(),
       phase5Score: (json['phase5Score'] as num).toInt(),
+      phase1MaxScore: (json['phase1MaxScore'] as num?)?.toInt() ?? 12,
+      phase2MaxScore: (json['phase2MaxScore'] as num?)?.toInt() ?? 8,
+      phase3MaxScore: (json['phase3MaxScore'] as num?)?.toInt() ?? 12,
+      phase4MaxScore: (json['phase4MaxScore'] as num?)?.toInt() ?? 4,
+      phase5MaxScore: (json['phase5MaxScore'] as num?)?.toInt() ?? 4,
       message: json['message'] as String,
       updatedSelfLevel: json['updatedSelfLevel'] as String,
     );
@@ -99,12 +105,18 @@ Map<String, dynamic> _$$PlacementTestResultDtoImplToJson(
         _$PlacementTestResultDtoImpl instance) =>
     <String, dynamic>{
       'totalScore': instance.totalScore,
+      'totalMaxScore': instance.totalMaxScore,
       'resultLevel': instance.resultLevel,
       'phase1Score': instance.phase1Score,
       'phase2Score': instance.phase2Score,
       'phase3Score': instance.phase3Score,
       'phase4Score': instance.phase4Score,
       'phase5Score': instance.phase5Score,
+      'phase1MaxScore': instance.phase1MaxScore,
+      'phase2MaxScore': instance.phase2MaxScore,
+      'phase3MaxScore': instance.phase3MaxScore,
+      'phase4MaxScore': instance.phase4MaxScore,
+      'phase5MaxScore': instance.phase5MaxScore,
       'message': instance.message,
       'updatedSelfLevel': instance.updatedSelfLevel,
     };

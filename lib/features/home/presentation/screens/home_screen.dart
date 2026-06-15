@@ -16,11 +16,25 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   bool _isVietnamese = false; // false = EN, true = VI
 
+  // Helper — trả text đúng ngôn ngữ
+  String _t(String vi, String en) => _isVietnamese ? vi : en;
+
+  @override
+  void initState() {
+    super.initState();
+    // Load dashboard data mỗi khi màn hình được tạo/resume
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        context.read<DashboardBloc>().add(const DashboardEvent.load());
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('App học Tiếng Anh của Thuỳ Vân'),
+        title: Text(_t('App học Tiếng Anh của Thuỳ Vân', "Thuỳ Vân English")),
         elevation: 0,
         actions: [
           // Switch EN/VI
@@ -70,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           IconButton(
             icon: const Icon(Icons.psychology_alt_outlined),
-            tooltip: 'Kiểm tra năng lực',
+            tooltip: _t('Kiểm tra năng lực', 'Placement Test'),
             onPressed: () => context.push('/placement-test'),
           ),
           IconButton(
@@ -112,13 +126,13 @@ class _HomeScreenState extends State<HomeScreen> {
           context.go('/placement-test');
         }
       });
-      return const Center(
+      return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircularProgressIndicator(),
-            SizedBox(height: 16),
-            Text('Đang chuyển đến bài kiểm tra năng lực...'),
+            const CircularProgressIndicator(),
+            const SizedBox(height: 16),
+            Text(_t('Đang chuyển đến bài kiểm tra năng lực...', 'Redirecting to placement test...')),
           ],
         ),
       );
@@ -191,14 +205,14 @@ class _HomeScreenState extends State<HomeScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Welcome back, $userDisplayName! 👋',
+          _t('Chào mừng trở lại, $userDisplayName! 👋', 'Welcome back, $userDisplayName! 👋'),
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
             fontWeight: FontWeight.bold,
           ),
         ),
         const SizedBox(height: 8),
         Text(
-          'Let\'s learn English together today',
+          _t('Hãy cùng học tiếng Anh hôm nay nhé', "Let's learn English together today"),
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
             color: Colors.grey[600],
           ),
@@ -250,7 +264,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Trình độ hiện tại',
+                    _t('Trình độ hiện tại', 'Current Level'),
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Colors.grey[600],
                     ),
@@ -269,7 +283,7 @@ class _HomeScreenState extends State<HomeScreen> {
             OutlinedButton.icon(
               onPressed: () => context.push('/placement-test'),
               icon: const Icon(Icons.refresh, size: 18),
-              label: const Text('Test lại'),
+              label: Text(_t('Test lại', 'Retest')),
               style: OutlinedButton.styleFrom(
                 foregroundColor: levelColor,
                 side: BorderSide(color: levelColor),
@@ -287,7 +301,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Expanded(
           child: _buildStatCard(
             context,
-            title: 'Streak',
+            title: _t('Chuỗi ngày', 'Streak'),
             value: '${dashboard.streakDays}',
             icon: Icons.local_fire_department,
             color: Colors.orange,
@@ -297,7 +311,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Expanded(
           child: _buildStatCard(
             context,
-            title: 'Points',
+            title: _t('Điểm', 'Points'),
             value: '${dashboard.totalPoints}',
             icon: Icons.star,
             color: Colors.amber,
@@ -307,7 +321,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Expanded(
           child: _buildStatCard(
             context,
-            title: 'Mastered',
+            title: _t('Đã thuộc', 'Mastered'),
             value: '${dashboard.totalSentencesMastered}',
             icon: Icons.check_circle,
             color: Colors.green,
@@ -375,7 +389,7 @@ class _HomeScreenState extends State<HomeScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Quick Actions',
+          _t('Hành động nhanh', 'Quick Actions'),
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
           ),
@@ -386,7 +400,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Expanded(
               child: _buildActionButton(
                 context,
-                label: 'Learn Today',
+                label: _t('Học hôm nay', 'Learn Today'),
                 icon: Icons.school,
                 onTap: () => context.push('/daily-learning'),
               ),
@@ -395,7 +409,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Expanded(
               child: _buildActionButton(
                 context,
-                label: 'Review',
+                label: _t('Ôn tập', 'Review'),
                 icon: Icons.refresh,
                 onTap: () => context.push('/review'),
               ),
@@ -408,7 +422,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Expanded(
               child: _buildActionButton(
                 context,
-                label: 'Rewards',
+                label: _t('Phần thưởng', 'Rewards'),
                 icon: Icons.card_giftcard,
                 onTap: () => context.push('/rewards'),
               ),
@@ -417,7 +431,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Expanded(
               child: _buildActionButton(
                 context,
-                label: 'Library',
+                label: _t('Thư viện', 'Library'),
                 icon: Icons.library_books,
                 onTap: () => context.push('/library'),
               ),
@@ -430,7 +444,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Expanded(
               child: _buildActionButton(
                 context,
-                label: 'Kế hoạch',
+                label: _t('Kế hoạch', 'Plans'),
                 icon: Icons.menu_book_rounded,
                 onTap: () => context.push('/plans'),
               ),
@@ -439,7 +453,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Expanded(
               child: _buildActionButton(
                 context,
-                label: 'Đã thuộc',
+                label: _t('Đã thuộc', 'Mastered'),
                 icon: Icons.workspace_premium_rounded,
                 onTap: () => context.push('/review/mastered'),
               ),
@@ -499,7 +513,7 @@ class _HomeScreenState extends State<HomeScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Today's Progress",
+          _t("Tiến độ hôm nay", "Today's Progress"),
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
           ),
@@ -524,7 +538,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Câu đã học hôm nay',
+                    _t('Câu đã học hôm nay', 'Sentences learned today'),
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   Text(
@@ -550,13 +564,15 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               if (progressValue >= 1.0) ...[
                 const SizedBox(height: 8),
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.check_circle, color: Colors.green, size: 16),
-                    SizedBox(width: 4),
-                    Text('Hoàn thành mục tiêu hôm nay! 🎉',
-                        style: TextStyle(color: Colors.green, fontWeight: FontWeight.w600, fontSize: 13)),
+                    const Icon(Icons.check_circle, color: Colors.green, size: 16),
+                    const SizedBox(width: 4),
+                    Text(
+                      _t('Hoàn thành mục tiêu hôm nay! 🎉', 'Daily goal achieved! 🎉'),
+                      style: const TextStyle(color: Colors.green, fontWeight: FontWeight.w600, fontSize: 13),
+                    ),
                   ],
                 ),
               ],

@@ -13,6 +13,12 @@ class _RewardsScreenState extends State<RewardsScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
+  // Bug 6 fix: giữ cả 2 state riêng — tránh mất data khi switch tab
+  RewardsLoaded?     _rewardsData;
+  LeaderboardLoaded? _leaderboardData;
+  String?            _errorMessage;
+  bool               _isLoading = true;
+
   @override
   void initState() {
     super.initState();
@@ -29,42 +35,96 @@ class _RewardsScreenState extends State<RewardsScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Rewards'),
-        elevation: 0,
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: const [
-            Tab(text: 'My Rewards'),
-            Tab(text: 'Leaderboard'),
+    return BlocListener<RewardsBloc, RewardsState>(
+      listener: (context, state) {
+        setState(() {
+          if (state is RewardsLoading) {
+            _isLoading = true;
+          } else {
+            _isLoading = false;
+          }
+          if (state is RewardsLoaded)     _rewardsData     = state;
+          if (state is LeaderboardLoaded) _leaderboardData = state;
+          if (state is RewardsError)      _errorMessage    = state.message;
+        });
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Phần thưởng'),
+          elevation: 0,
+          bottom: TabBar(
+            controller: _tabController,
+            tabs: const [
+              Tab(text: 'Điểm thưởng'),
+              Tab(text: 'Xếp hạng'),
+            ],
+          ),
+        ),
+        body: _isLoading && _rewardsData == null && _leaderboardData == null
+            ? const Center(child: CircularProgressIndicator())
+            : _errorMessage != null && _rewardsData == null && _leaderboardData == null
+                ? _buildFullError()
+                : TabBarView(
+                    controller: _tabController,
+                    children: [
+                      _rewardsData != null
+                          ? _buildRewardsTab(context, _rewardsData!)
+                          : _buildTabPlaceholder('Đang tải điểm thưởng...'),
+                      _leaderboardData != null
+                          ? _buildLeaderboardTab(context, _leaderboardData!)
+                          : _buildTabPlaceholder('Đang tải xếp hạng...'),
+                    ],
+                  ),
+      ),
+    );
+  }
+
+  Widget _buildFullError() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.emoji_events_outlined, size: 64, color: Colors.grey[400]),
+            const SizedBox(height: 16),
+            const Text(
+              'Không tải được dữ liệu phần thưởng',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              _errorMessage!.length > 100
+                  ? '${_errorMessage!.substring(0, 100)}...'
+                  : _errorMessage!,
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.grey[600], fontSize: 13),
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton.icon(
+              onPressed: () {
+                setState(() { _errorMessage = null; _isLoading = true; });
+                context.read<RewardsBloc>().add(const RewardsLoadEvent());
+                context.read<RewardsBloc>().add(const LeaderboardLoadEvent());
+              },
+              icon: const Icon(Icons.refresh),
+              label: const Text('Thử lại'),
+            ),
           ],
         ),
       ),
-      body: BlocBuilder<RewardsBloc, RewardsState>(
-        builder: (context, state) {
-          if (state is RewardsLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
+    );
+  }
 
-          if (state is RewardsError) {
-            return Center(child: Text(state.message));
-          }
-
-          return TabBarView(
-            controller: _tabController,
-            children: [
-              if (state is RewardsLoaded)
-                _buildRewardsTab(context, state)
-              else
-                const SizedBox(),
-              if (state is LeaderboardLoaded)
-                _buildLeaderboardTab(context, state)
-              else
-                const SizedBox(),
-            ],
-          );
-        },
+  Widget _buildTabPlaceholder(String message) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const CircularProgressIndicator(),
+          const SizedBox(height: 12),
+          Text(message, style: TextStyle(color: Colors.grey[600])),
+        ],
       ),
     );
   }
@@ -75,7 +135,7 @@ class _RewardsScreenState extends State<RewardsScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Main points card
+          // Card tổng điểm
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(24),
@@ -83,13 +143,13 @@ class _RewardsScreenState extends State<RewardsScreen>
               gradient: LinearGradient(
                 colors: [
                   Theme.of(context).primaryColor,
-                  Theme.of(context).primaryColor.withOpacity(0.7),
+                  Theme.of(context).primaryColor.withValues(alpha: 0.7),
                 ],
               ),
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Theme.of(context).primaryColor.withOpacity(0.3),
+                  color: Theme.of(context).primaryColor.withValues(alpha: 0.3),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
@@ -109,20 +169,17 @@ class _RewardsScreenState extends State<RewardsScreen>
                 ),
                 const SizedBox(height: 8),
                 const Text(
-                  'Total Points',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white70,
-                  ),
+                  'Tổng điểm',
+                  style: TextStyle(fontSize: 16, color: Colors.white70),
                 ),
               ],
             ),
           ),
           const SizedBox(height: 24),
 
-          // Stats grid
+          // Thống kê
           Text(
-            'Your Stats',
+            'Thành tích của bạn',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
             ),
@@ -135,37 +192,17 @@ class _RewardsScreenState extends State<RewardsScreen>
             crossAxisSpacing: 12,
             mainAxisSpacing: 12,
             children: [
-              _buildStatCard(
-                'Quiz Correct',
-                '${state.quizCorrectCount}',
-                Icons.check_circle,
-                Colors.green,
-              ),
-              _buildStatCard(
-                'Streak',
-                '${state.streakDaysCount}d',
-                Icons.local_fire_department,
-                Colors.orange,
-              ),
-              _buildStatCard(
-                'Plans Completed',
-                '${state.plansCompletedCount}',
-                Icons.flag,
-                Colors.blue,
-              ),
-              _buildStatCard(
-                'Next Milestone',
-                '${2000 - state.totalPoints}',
-                Icons.trending_up,
-                Colors.purple,
-              ),
+              _buildStatCard('Quiz đúng',         '${state.quizCorrectCount}',   Icons.check_circle,          Colors.green),
+              _buildStatCard('Chuỗi ngày',        '${state.streakDaysCount}d',   Icons.local_fire_department, Colors.orange),
+              _buildStatCard('Kế hoạch hoàn thành','${state.plansCompletedCount}',Icons.flag,                  Colors.blue),
+              _buildStatCard('Cấp độ',            state.currentLevel,            Icons.military_tech,         Colors.purple),
             ],
           ),
           const SizedBox(height: 24),
 
-          // Recent activity
+          // Lịch sử hoạt động
           Text(
-            'Recent Activity',
+            'Hoạt động gần đây',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
             ),
@@ -176,7 +213,7 @@ class _RewardsScreenState extends State<RewardsScreen>
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 32),
                 child: Text(
-                  'No activities yet',
+                  'Chưa có hoạt động nào',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Colors.grey[600],
                   ),
@@ -194,9 +231,15 @@ class _RewardsScreenState extends State<RewardsScreen>
                   margin: const EdgeInsets.only(bottom: 8),
                   child: ListTile(
                     leading: const Icon(Icons.star, color: Colors.amber),
-                    title: Text(activity.activityType ?? 'Activity'),
-                    subtitle: Text(activity.description ?? ''),
-                    trailing: Text('+${activity.points ?? 0}'),
+                    title: Text(_localizeActivity(activity.activityType)),
+                    subtitle: Text(activity.description),
+                    trailing: Text(
+                      '+${activity.points} điểm',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.amber,
+                      ),
+                    ),
                   ),
                 );
               },
@@ -206,12 +249,19 @@ class _RewardsScreenState extends State<RewardsScreen>
     );
   }
 
-  Widget _buildStatCard(
-    String label,
-    String value,
-    IconData icon,
-    Color color,
-  ) {
+  // Bug 6 fix: dịch activity type sang tiếng Việt
+  String _localizeActivity(String type) {
+    switch (type.toLowerCase()) {
+      case 'quiz_correct':      return 'Trả lời quiz đúng';
+      case 'sentence_complete': return 'Hoàn thành câu';
+      case 'plan_complete':     return 'Hoàn thành kế hoạch';
+      case 'streak_bonus':      return 'Thưởng chuỗi ngày';
+      case 'typing_correct':    return 'Gõ đúng câu';
+      default:                  return type.isNotEmpty ? type : 'Hoạt động';
+    }
+  }
+
+  Widget _buildStatCard(String label, String value, IconData icon, Color color) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -219,7 +269,7 @@ class _RewardsScreenState extends State<RewardsScreen>
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 8,
           ),
         ],
@@ -231,34 +281,42 @@ class _RewardsScreenState extends State<RewardsScreen>
           const SizedBox(height: 8),
           Text(
             value,
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
+            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 4),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey[600],
-            ),
-          ),
+          Text(label, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
         ],
       ),
     );
   }
 
   Widget _buildLeaderboardTab(BuildContext context, LeaderboardLoaded state) {
+    if (state.leaderboard.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.leaderboard_outlined, size: 64, color: Colors.grey[400]),
+            const SizedBox(height: 16),
+            Text(
+              'Chưa có dữ liệu xếp hạng',
+              style: TextStyle(color: Colors.grey[600], fontSize: 15),
+            ),
+          ],
+        ),
+      );
+    }
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
-          // User's rank
+          // Hạng của user hiện tại
           if (state.currentUserRank > 0)
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(16),
+              margin: const EdgeInsets.only(bottom: 16),
               decoration: BoxDecoration(
                 color: Colors.blue[50],
                 borderRadius: BorderRadius.circular(12),
@@ -267,8 +325,7 @@ class _RewardsScreenState extends State<RewardsScreen>
               child: Row(
                 children: [
                   Container(
-                    width: 40,
-                    height: 40,
+                    width: 40, height: 40,
                     decoration: BoxDecoration(
                       color: Colors.blue,
                       borderRadius: BorderRadius.circular(20),
@@ -277,8 +334,7 @@ class _RewardsScreenState extends State<RewardsScreen>
                       child: Text(
                         '${state.currentUserRank}',
                         style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                          color: Colors.white, fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
@@ -288,43 +344,40 @@ class _RewardsScreenState extends State<RewardsScreen>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Your Rank',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          '#${state.currentUserRank}',
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                        Text('Hạng của bạn',
+                            style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+                        Text('#${state.currentUserRank}',
+                            style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold,
+                            )),
                       ],
                     ),
                   ),
                 ],
               ),
             ),
-          const SizedBox(height: 24),
 
-          // Leaderboard list
-          Text(
-            'Top 10',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+          // Tiêu đề top 10
+          Row(
+            children: [
+              const Icon(Icons.emoji_events, color: Colors.amber, size: 20),
+              const SizedBox(width: 8),
+              Text(
+                'Top ${state.leaderboard.length}',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 12),
+
           ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: state.leaderboard.length,
             itemBuilder: (context, index) {
-              final entry = state.leaderboard[index];
+              final entry      = state.leaderboard[index];
               final isTopThree = index < 3;
 
               return Container(
@@ -340,8 +393,7 @@ class _RewardsScreenState extends State<RewardsScreen>
                 child: Row(
                   children: [
                     Container(
-                      width: 32,
-                      height: 32,
+                      width: 32, height: 32,
                       decoration: BoxDecoration(
                         color: _getRankColor(index),
                         borderRadius: BorderRadius.circular(16),
@@ -359,21 +411,16 @@ class _RewardsScreenState extends State<RewardsScreen>
                     ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            entry.userName ?? 'User',
-                            style: const TextStyle(fontWeight: FontWeight.w600),
-                          ),
-                        ],
+                      child: Text(
+                        entry.userName,
+                        style: const TextStyle(fontWeight: FontWeight.w600),
                       ),
                     ),
                     Text(
-                      '${entry.totalPoints ?? 0}',
+                      '${entry.totalPoints} điểm',
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                        fontSize: 15,
                       ),
                     ),
                   ],
@@ -388,14 +435,10 @@ class _RewardsScreenState extends State<RewardsScreen>
 
   Color _getRankColor(int index) {
     switch (index) {
-      case 0:
-        return Colors.amber[700]!;
-      case 1:
-        return Colors.grey[400]!;
-      case 2:
-        return Colors.orange[600]!;
-      default:
-        return Colors.blue;
+      case 0:  return Colors.amber[700]!;
+      case 1:  return Colors.grey[400]!;
+      case 2:  return Colors.orange[600]!;
+      default: return Colors.blue;
     }
   }
 }

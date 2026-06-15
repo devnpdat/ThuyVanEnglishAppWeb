@@ -12,6 +12,7 @@ class _AdminSentencesScreenState extends State<AdminSentencesScreen> {
   final _http = getIt<HttpClient>();
   List<dynamic> _sentences = [];
   List<dynamic> _topics = [];
+  int _totalCount = 0;
   bool _loading = true;
   String? _selectedTopicId;
   final _searchCtrl = TextEditingController();
@@ -35,6 +36,7 @@ class _AdminSentencesScreenState extends State<AdminSentencesScreen> {
       setState(() {
         _topics = (topicsResp.data['items'] ?? topicsResp.data) as List? ?? [];
         _sentences = (sentencesResp.data['items'] ?? []) as List;
+        _totalCount = (sentencesResp.data['totalCount'] as num?)?.toInt() ?? _sentences.length;
         _loading = false;
       });
     } catch (e) {
@@ -172,7 +174,7 @@ class _AdminSentencesScreenState extends State<AdminSentencesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Quản lý Sentences'),
+        title: Text('Quản lý Sentences${_totalCount > 0 ? " ($_totalCount câu)" : ""}'),
         actions: [
           IconButton(icon: const Icon(Icons.add), onPressed: () => _showForm()),
         ],

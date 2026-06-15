@@ -79,7 +79,7 @@ class PlacementResultScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(30),
                 ),
                 child: Text(
-                  '${result.totalScore}/25 câu đúng',
+                  '${result.totalScore}/${result.totalMaxScore} câu đúng',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -191,11 +191,11 @@ class _PhaseBreakdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final phases = [
-      ('Phase 1 — Beginner', result.phase1Score, 5, const Color(0xFF4CAF50)),
-      ('Phase 2 — Elementary', result.phase2Score, 5, const Color(0xFF2196F3)),
-      ('Phase 3 — Intermediate', result.phase3Score, 5, const Color(0xFF9C27B0)),
-      ('Phase 4 — Upper-Int.', result.phase4Score, 5, const Color(0xFFFF9800)),
-      ('Phase 5 — Advanced', result.phase5Score, 5, const Color(0xFFF44336)),
+      ('Phase 1 — Beginner', result.phase1Score, result.phase1MaxScore, const Color(0xFF4CAF50)),
+      ('Phase 2 — Elementary', result.phase2Score, result.phase2MaxScore, const Color(0xFF2196F3)),
+      ('Phase 3 — Intermediate', result.phase3Score, result.phase3MaxScore, const Color(0xFF9C27B0)),
+      ('Phase 4 — Upper-Int.', result.phase4Score, result.phase4MaxScore, const Color(0xFFFF9800)),
+      ('Phase 5 — Advanced', result.phase5Score, result.phase5MaxScore, const Color(0xFFF44336)),
     ];
 
     return Container(

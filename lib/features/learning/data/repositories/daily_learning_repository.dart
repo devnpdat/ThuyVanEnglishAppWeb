@@ -27,14 +27,21 @@ class DailyLearningRepository {
 
   Future<TodayLearningDto> generateTodayPlan() async {
     try {
-      final response = await _httpClient.post<Map<String, dynamic>>(
-        '${AppConfig.learningEndpoint}/today/generate',
+      // BE endpoint: POST /api/v1/learning/regenerate-today (bắt buộc dùng route này)
+      // Sau đó GET /today để lấy data mới
+      await _httpClient.post<dynamic>(
+        '${AppConfig.learningEndpoint}/regenerate-today',
+      );
+
+      // Lấy plan mới sau khi regenerate
+      final response = await _httpClient.get<Map<String, dynamic>>(
+        '${AppConfig.learningEndpoint}/today',
       );
 
       if (response.statusCode == 200 && response.data != null) {
         return TodayLearningDto.fromJson(response.data!);
       }
-      throw Exception('Failed to generate today plan: ${response.statusCode}');
+      throw Exception('Failed to fetch plan after regenerate: ${response.statusCode}');
     } on DioException catch (e) {
       throw _handleDioError(e);
     }

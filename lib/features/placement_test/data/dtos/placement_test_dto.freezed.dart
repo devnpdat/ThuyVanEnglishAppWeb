@@ -823,12 +823,19 @@ PlacementTestResultDto _$PlacementTestResultDtoFromJson(
 /// @nodoc
 mixin _$PlacementTestResultDto {
   int get totalScore => throw _privateConstructorUsedError;
+  int get totalMaxScore =>
+      throw _privateConstructorUsedError; // tổng câu tối đa (BE trả về, default 40)
   String get resultLevel => throw _privateConstructorUsedError;
   int get phase1Score => throw _privateConstructorUsedError;
   int get phase2Score => throw _privateConstructorUsedError;
   int get phase3Score => throw _privateConstructorUsedError;
   int get phase4Score => throw _privateConstructorUsedError;
   int get phase5Score => throw _privateConstructorUsedError;
+  int get phase1MaxScore => throw _privateConstructorUsedError;
+  int get phase2MaxScore => throw _privateConstructorUsedError;
+  int get phase3MaxScore => throw _privateConstructorUsedError;
+  int get phase4MaxScore => throw _privateConstructorUsedError;
+  int get phase5MaxScore => throw _privateConstructorUsedError;
   String get message => throw _privateConstructorUsedError;
   String get updatedSelfLevel => throw _privateConstructorUsedError;
 
@@ -846,12 +853,18 @@ abstract class $PlacementTestResultDtoCopyWith<$Res> {
   @useResult
   $Res call(
       {int totalScore,
+      int totalMaxScore,
       String resultLevel,
       int phase1Score,
       int phase2Score,
       int phase3Score,
       int phase4Score,
       int phase5Score,
+      int phase1MaxScore,
+      int phase2MaxScore,
+      int phase3MaxScore,
+      int phase4MaxScore,
+      int phase5MaxScore,
       String message,
       String updatedSelfLevel});
 }
@@ -871,12 +884,18 @@ class _$PlacementTestResultDtoCopyWithImpl<$Res,
   @override
   $Res call({
     Object? totalScore = null,
+    Object? totalMaxScore = null,
     Object? resultLevel = null,
     Object? phase1Score = null,
     Object? phase2Score = null,
     Object? phase3Score = null,
     Object? phase4Score = null,
     Object? phase5Score = null,
+    Object? phase1MaxScore = null,
+    Object? phase2MaxScore = null,
+    Object? phase3MaxScore = null,
+    Object? phase4MaxScore = null,
+    Object? phase5MaxScore = null,
     Object? message = null,
     Object? updatedSelfLevel = null,
   }) {
@@ -884,6 +903,10 @@ class _$PlacementTestResultDtoCopyWithImpl<$Res,
       totalScore: null == totalScore
           ? _value.totalScore
           : totalScore // ignore: cast_nullable_to_non_nullable
+              as int,
+      totalMaxScore: null == totalMaxScore
+          ? _value.totalMaxScore
+          : totalMaxScore // ignore: cast_nullable_to_non_nullable
               as int,
       resultLevel: null == resultLevel
           ? _value.resultLevel
@@ -908,6 +931,26 @@ class _$PlacementTestResultDtoCopyWithImpl<$Res,
       phase5Score: null == phase5Score
           ? _value.phase5Score
           : phase5Score // ignore: cast_nullable_to_non_nullable
+              as int,
+      phase1MaxScore: null == phase1MaxScore
+          ? _value.phase1MaxScore
+          : phase1MaxScore // ignore: cast_nullable_to_non_nullable
+              as int,
+      phase2MaxScore: null == phase2MaxScore
+          ? _value.phase2MaxScore
+          : phase2MaxScore // ignore: cast_nullable_to_non_nullable
+              as int,
+      phase3MaxScore: null == phase3MaxScore
+          ? _value.phase3MaxScore
+          : phase3MaxScore // ignore: cast_nullable_to_non_nullable
+              as int,
+      phase4MaxScore: null == phase4MaxScore
+          ? _value.phase4MaxScore
+          : phase4MaxScore // ignore: cast_nullable_to_non_nullable
+              as int,
+      phase5MaxScore: null == phase5MaxScore
+          ? _value.phase5MaxScore
+          : phase5MaxScore // ignore: cast_nullable_to_non_nullable
               as int,
       message: null == message
           ? _value.message
@@ -932,12 +975,18 @@ abstract class _$$PlacementTestResultDtoImplCopyWith<$Res>
   @useResult
   $Res call(
       {int totalScore,
+      int totalMaxScore,
       String resultLevel,
       int phase1Score,
       int phase2Score,
       int phase3Score,
       int phase4Score,
       int phase5Score,
+      int phase1MaxScore,
+      int phase2MaxScore,
+      int phase3MaxScore,
+      int phase4MaxScore,
+      int phase5MaxScore,
       String message,
       String updatedSelfLevel});
 }
@@ -956,12 +1005,18 @@ class __$$PlacementTestResultDtoImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? totalScore = null,
+    Object? totalMaxScore = null,
     Object? resultLevel = null,
     Object? phase1Score = null,
     Object? phase2Score = null,
     Object? phase3Score = null,
     Object? phase4Score = null,
     Object? phase5Score = null,
+    Object? phase1MaxScore = null,
+    Object? phase2MaxScore = null,
+    Object? phase3MaxScore = null,
+    Object? phase4MaxScore = null,
+    Object? phase5MaxScore = null,
     Object? message = null,
     Object? updatedSelfLevel = null,
   }) {
@@ -969,6 +1024,10 @@ class __$$PlacementTestResultDtoImplCopyWithImpl<$Res>
       totalScore: null == totalScore
           ? _value.totalScore
           : totalScore // ignore: cast_nullable_to_non_nullable
+              as int,
+      totalMaxScore: null == totalMaxScore
+          ? _value.totalMaxScore
+          : totalMaxScore // ignore: cast_nullable_to_non_nullable
               as int,
       resultLevel: null == resultLevel
           ? _value.resultLevel
@@ -994,6 +1053,26 @@ class __$$PlacementTestResultDtoImplCopyWithImpl<$Res>
           ? _value.phase5Score
           : phase5Score // ignore: cast_nullable_to_non_nullable
               as int,
+      phase1MaxScore: null == phase1MaxScore
+          ? _value.phase1MaxScore
+          : phase1MaxScore // ignore: cast_nullable_to_non_nullable
+              as int,
+      phase2MaxScore: null == phase2MaxScore
+          ? _value.phase2MaxScore
+          : phase2MaxScore // ignore: cast_nullable_to_non_nullable
+              as int,
+      phase3MaxScore: null == phase3MaxScore
+          ? _value.phase3MaxScore
+          : phase3MaxScore // ignore: cast_nullable_to_non_nullable
+              as int,
+      phase4MaxScore: null == phase4MaxScore
+          ? _value.phase4MaxScore
+          : phase4MaxScore // ignore: cast_nullable_to_non_nullable
+              as int,
+      phase5MaxScore: null == phase5MaxScore
+          ? _value.phase5MaxScore
+          : phase5MaxScore // ignore: cast_nullable_to_non_nullable
+              as int,
       message: null == message
           ? _value.message
           : message // ignore: cast_nullable_to_non_nullable
@@ -1011,12 +1090,18 @@ class __$$PlacementTestResultDtoImplCopyWithImpl<$Res>
 class _$PlacementTestResultDtoImpl implements _PlacementTestResultDto {
   const _$PlacementTestResultDtoImpl(
       {required this.totalScore,
+      this.totalMaxScore = 40,
       required this.resultLevel,
       required this.phase1Score,
       required this.phase2Score,
       required this.phase3Score,
       required this.phase4Score,
       required this.phase5Score,
+      this.phase1MaxScore = 12,
+      this.phase2MaxScore = 8,
+      this.phase3MaxScore = 12,
+      this.phase4MaxScore = 4,
+      this.phase5MaxScore = 4,
       required this.message,
       required this.updatedSelfLevel});
 
@@ -1025,6 +1110,10 @@ class _$PlacementTestResultDtoImpl implements _PlacementTestResultDto {
 
   @override
   final int totalScore;
+  @override
+  @JsonKey()
+  final int totalMaxScore;
+// tổng câu tối đa (BE trả về, default 40)
   @override
   final String resultLevel;
   @override
@@ -1038,13 +1127,28 @@ class _$PlacementTestResultDtoImpl implements _PlacementTestResultDto {
   @override
   final int phase5Score;
   @override
+  @JsonKey()
+  final int phase1MaxScore;
+  @override
+  @JsonKey()
+  final int phase2MaxScore;
+  @override
+  @JsonKey()
+  final int phase3MaxScore;
+  @override
+  @JsonKey()
+  final int phase4MaxScore;
+  @override
+  @JsonKey()
+  final int phase5MaxScore;
+  @override
   final String message;
   @override
   final String updatedSelfLevel;
 
   @override
   String toString() {
-    return 'PlacementTestResultDto(totalScore: $totalScore, resultLevel: $resultLevel, phase1Score: $phase1Score, phase2Score: $phase2Score, phase3Score: $phase3Score, phase4Score: $phase4Score, phase5Score: $phase5Score, message: $message, updatedSelfLevel: $updatedSelfLevel)';
+    return 'PlacementTestResultDto(totalScore: $totalScore, totalMaxScore: $totalMaxScore, resultLevel: $resultLevel, phase1Score: $phase1Score, phase2Score: $phase2Score, phase3Score: $phase3Score, phase4Score: $phase4Score, phase5Score: $phase5Score, phase1MaxScore: $phase1MaxScore, phase2MaxScore: $phase2MaxScore, phase3MaxScore: $phase3MaxScore, phase4MaxScore: $phase4MaxScore, phase5MaxScore: $phase5MaxScore, message: $message, updatedSelfLevel: $updatedSelfLevel)';
   }
 
   @override
@@ -1054,6 +1158,8 @@ class _$PlacementTestResultDtoImpl implements _PlacementTestResultDto {
             other is _$PlacementTestResultDtoImpl &&
             (identical(other.totalScore, totalScore) ||
                 other.totalScore == totalScore) &&
+            (identical(other.totalMaxScore, totalMaxScore) ||
+                other.totalMaxScore == totalMaxScore) &&
             (identical(other.resultLevel, resultLevel) ||
                 other.resultLevel == resultLevel) &&
             (identical(other.phase1Score, phase1Score) ||
@@ -1066,6 +1172,16 @@ class _$PlacementTestResultDtoImpl implements _PlacementTestResultDto {
                 other.phase4Score == phase4Score) &&
             (identical(other.phase5Score, phase5Score) ||
                 other.phase5Score == phase5Score) &&
+            (identical(other.phase1MaxScore, phase1MaxScore) ||
+                other.phase1MaxScore == phase1MaxScore) &&
+            (identical(other.phase2MaxScore, phase2MaxScore) ||
+                other.phase2MaxScore == phase2MaxScore) &&
+            (identical(other.phase3MaxScore, phase3MaxScore) ||
+                other.phase3MaxScore == phase3MaxScore) &&
+            (identical(other.phase4MaxScore, phase4MaxScore) ||
+                other.phase4MaxScore == phase4MaxScore) &&
+            (identical(other.phase5MaxScore, phase5MaxScore) ||
+                other.phase5MaxScore == phase5MaxScore) &&
             (identical(other.message, message) || other.message == message) &&
             (identical(other.updatedSelfLevel, updatedSelfLevel) ||
                 other.updatedSelfLevel == updatedSelfLevel));
@@ -1076,12 +1192,18 @@ class _$PlacementTestResultDtoImpl implements _PlacementTestResultDto {
   int get hashCode => Object.hash(
       runtimeType,
       totalScore,
+      totalMaxScore,
       resultLevel,
       phase1Score,
       phase2Score,
       phase3Score,
       phase4Score,
       phase5Score,
+      phase1MaxScore,
+      phase2MaxScore,
+      phase3MaxScore,
+      phase4MaxScore,
+      phase5MaxScore,
       message,
       updatedSelfLevel);
 
@@ -1103,12 +1225,18 @@ class _$PlacementTestResultDtoImpl implements _PlacementTestResultDto {
 abstract class _PlacementTestResultDto implements PlacementTestResultDto {
   const factory _PlacementTestResultDto(
       {required final int totalScore,
+      final int totalMaxScore,
       required final String resultLevel,
       required final int phase1Score,
       required final int phase2Score,
       required final int phase3Score,
       required final int phase4Score,
       required final int phase5Score,
+      final int phase1MaxScore,
+      final int phase2MaxScore,
+      final int phase3MaxScore,
+      final int phase4MaxScore,
+      final int phase5MaxScore,
       required final String message,
       required final String updatedSelfLevel}) = _$PlacementTestResultDtoImpl;
 
@@ -1118,6 +1246,8 @@ abstract class _PlacementTestResultDto implements PlacementTestResultDto {
   @override
   int get totalScore;
   @override
+  int get totalMaxScore;
+  @override // tổng câu tối đa (BE trả về, default 40)
   String get resultLevel;
   @override
   int get phase1Score;
@@ -1129,6 +1259,16 @@ abstract class _PlacementTestResultDto implements PlacementTestResultDto {
   int get phase4Score;
   @override
   int get phase5Score;
+  @override
+  int get phase1MaxScore;
+  @override
+  int get phase2MaxScore;
+  @override
+  int get phase3MaxScore;
+  @override
+  int get phase4MaxScore;
+  @override
+  int get phase5MaxScore;
   @override
   String get message;
   @override

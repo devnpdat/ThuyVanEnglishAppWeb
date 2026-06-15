@@ -132,7 +132,7 @@ void main() {
       bloc.add(const DailyLearningEvent.loadToday());
       await Future.delayed(const Duration(milliseconds: 200));
 
-      bloc.add(const DailyLearningEvent.typingAttempt('sent-1', 'Hello world'));
+      bloc.add(const DailyLearningEvent.typingAttempt('sent-1', 'Hello world', 10));
       await Future.delayed(const Duration(milliseconds: 200));
 
       bloc.state.maybeWhen(
@@ -163,7 +163,7 @@ void main() {
       bloc.add(const DailyLearningEvent.loadToday());
       await Future.delayed(const Duration(milliseconds: 200));
 
-      bloc.add(const DailyLearningEvent.typingAttempt('sent-1', 'helo wrold'));
+      bloc.add(const DailyLearningEvent.typingAttempt('sent-1', 'helo wrold', 10));
       await Future.delayed(const Duration(milliseconds: 200));
 
       bloc.state.maybeWhen(
@@ -191,7 +191,7 @@ void main() {
       bloc.add(const DailyLearningEvent.loadToday());
       await Future.delayed(const Duration(milliseconds: 200));
 
-      bloc.add(const DailyLearningEvent.typingAttempt('sent-1', 'Hello world'));
+      bloc.add(const DailyLearningEvent.typingAttempt('sent-1', 'Hello world', 10));
       await Future.delayed(const Duration(milliseconds: 200));
 
       bloc.state.maybeWhen(
@@ -285,7 +285,7 @@ void main() {
       bloc.add(const DailyLearningEvent.loadToday());
       await Future.delayed(const Duration(milliseconds: 200));
 
-      bloc.add(const DailyLearningEvent.typingAttempt('sent-1', 'Hello world'));
+      bloc.add(const DailyLearningEvent.typingAttempt('sent-1', 'Hello world', 10));
       await Future.delayed(const Duration(milliseconds: 200));
 
       // Collect all states emitted during completeSession
@@ -334,7 +334,7 @@ void main() {
       bloc.add(const DailyLearningEvent.loadToday());
       await Future.delayed(const Duration(milliseconds: 200));
 
-      bloc.add(const DailyLearningEvent.typingAttempt('sent-1', 'Hello world'));
+      bloc.add(const DailyLearningEvent.typingAttempt('sent-1', 'Hello world', 10));
       await Future.delayed(const Duration(milliseconds: 200));
 
       bloc.add(const DailyLearningEvent.completeSession('sent-1'));

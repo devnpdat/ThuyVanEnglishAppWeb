@@ -185,7 +185,13 @@ class DailyLearningScreen extends StatelessWidget {
                       ? const Icon(Icons.check_circle, color: Colors.green, size: 20)
                       : const Icon(Icons.chevron_right, color: Colors.grey),
                   onTap: () {
-                    context.push('/learn/study/${sentence.id}');
+                    // Bug 3 fix: reload BLoC khi quay lại để cập nhật completion state
+                    context.push('/learn/study/${sentence.id}').then((_) {
+                      if (context.mounted) {
+                        context.read<DailyLearningBloc>()
+                            .add(const DailyLearningEvent.loadToday());
+                      }
+                    });
                   },
                 ),
               );

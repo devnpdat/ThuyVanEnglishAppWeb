@@ -106,6 +106,10 @@ class _PlaceholderScreen extends StatelessWidget {
 
 final _authBloc = AuthBloc()..add(const AuthCheckStatusEvent());
 
+// ─── DashboardBloc singleton — tồn tại suốt app lifecycle ────────────────────
+// Dùng singleton để có thể reload từ bất kỳ đâu (e.g. sau khi học xong câu)
+final _dashboardBloc = DashboardBloc()..add(const DashboardEvent.load());
+
 // Wire 401 handler — đá về login và logout AuthBloc
 void _setup401Handler() {
   HttpClient.onUnauthorized = () {
@@ -118,6 +122,7 @@ void _setup401Handler() {
 
 final _router = GoRouter(
   initialLocation: '/login',
+  observers: [_DashboardReloadObserver()],
   refreshListenable: _GoRouterRefreshStream(_authBloc.stream),
   redirect: (context, state) {
     final authState = _authBloc.state;
@@ -156,9 +161,8 @@ final _router = GoRouter(
       builder: (context, state) => MultiBlocProvider(
         providers: [
           BlocProvider.value(value: _authBloc),
-          BlocProvider(
-            create: (_) => DashboardBloc()..add(const DashboardEvent.load()),
-          ),
+          // Dùng singleton _dashboardBloc để reload được từ bất kỳ đâu
+          BlocProvider.value(value: _dashboardBloc),
         ],
         child: const HomeScreen(),
       ),
@@ -240,11 +244,12 @@ final _router = GoRouter(
       ),
     ),
 
-    // Rewards screen
+    // Rewards screen — BLoC được khởi tạo không add event,
+    // RewardsScreen.initState() tự dispatch RewardsLoadEvent + LeaderboardLoadEvent
     GoRoute(
       path: '/rewards',
       builder: (context, state) => BlocProvider(
-        create: (_) => RewardsBloc()..add(const RewardsLoadEvent()),
+        create: (_) => RewardsBloc(),
         child: const RewardsScreen(),
       ),
     ),
@@ -408,4 +413,28 @@ void notifyLoginSuccess() {
 /// Trigger logout từ bất kỳ đâu
 void triggerLogout() {
   _authBloc.add(const AuthLogoutEvent());
+}
+
+// ─── Dashboard reload observer ────────────────────────────────────────────────
+/// NavigatorObserver để tự động reload DashboardBloc khi navigate về '/'
+/// Giải quyết vấn đề dashboard stale sau khi học xong câu.
+class _DashboardReloadObserver extends NavigatorObserver {
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    super.didPop(route, previousRoute);
+    // Khi pop về '/' (HomeScreen) → reload dashboard
+    if (previousRoute?.settings.name == '/' ||
+        previousRoute?.settings.name == null) {
+      _dashboardBloc.add(const DashboardEvent.load());
+    }
+  }
+
+  @override
+  void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
+    super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
+    // Khi go('/') replace route hiện tại → reload dashboard
+    if (newRoute?.settings.name == '/') {
+      _dashboardBloc.add(const DashboardEvent.load());
+    }
+  }
 }

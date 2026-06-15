@@ -63,12 +63,18 @@ class PlacementTestSubmitDto with _$PlacementTestSubmitDto {
 class PlacementTestResultDto with _$PlacementTestResultDto {
   const factory PlacementTestResultDto({
     required int totalScore,
+    @Default(40) int totalMaxScore,   // tổng câu tối đa (BE trả về, default 40)
     required String resultLevel,
     required int phase1Score,
     required int phase2Score,
     required int phase3Score,
     required int phase4Score,
     required int phase5Score,
+    @Default(12) int phase1MaxScore,
+    @Default(8)  int phase2MaxScore,
+    @Default(12) int phase3MaxScore,
+    @Default(4)  int phase4MaxScore,
+    @Default(4)  int phase5MaxScore,
     required String message,
     required String updatedSelfLevel,
   }) = _PlacementTestResultDto;

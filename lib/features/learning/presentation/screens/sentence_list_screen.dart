@@ -53,7 +53,7 @@ class _SentenceListScreenState extends State<SentenceListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Practice Sentences'),
+        title: const Text('Thư Viện Câu'),
         elevation: 0,
       ),
       body: BlocBuilder<SentenceListBloc, SentenceListState>(
@@ -64,26 +64,38 @@ class _SentenceListScreenState extends State<SentenceListScreen> {
 
           if (state is SentenceListError) {
             return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.error_outline,
-                    size: 48,
-                    color: Colors.red[400],
-                  ),
-                  const SizedBox(height: 16),
-                  Text(state.message),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      context
-                          .read<SentenceListBloc>()
-                          .add(const SentenceListRefreshEvent());
-                    },
-                    child: const Text('Retry'),
-                  ),
-                ],
+              child: Padding(
+                padding: const EdgeInsets.all(32),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.wifi_off_rounded, size: 64, color: Colors.grey[400]),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'Không tải được danh sách câu',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      // Hiện message ngắn gọn, không để lộ stack trace
+                      state.message.length > 120
+                          ? '${state.message.substring(0, 120)}...'
+                          : state.message,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.grey[600], fontSize: 13),
+                    ),
+                    const SizedBox(height: 24),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        context
+                            .read<SentenceListBloc>()
+                            .add(const SentenceListRefreshEvent());
+                      },
+                      icon: const Icon(Icons.refresh),
+                      label: const Text('Thử lại'),
+                    ),
+                  ],
+                ),
               ),
             );
           }
@@ -182,7 +194,7 @@ class _SentenceListScreenState extends State<SentenceListScreen> {
 
   Widget _buildSentenceCard(
     BuildContext context,
-    dynamic sentence,
+    SentenceDto sentence,
     int index,
   ) {
     return Card(
@@ -190,8 +202,9 @@ class _SentenceListScreenState extends State<SentenceListScreen> {
       child: ListTile(
         contentPadding: const EdgeInsets.all(16),
         title: Text(
-          sentence.englishText ?? 'Sample text',
-          style: const TextTheme().titleMedium?.copyWith(
+          sentence.englishText,
+          // Bug 8 fix: const TextTheme().titleMedium là null → dùng Theme.of()
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -200,15 +213,17 @@ class _SentenceListScreenState extends State<SentenceListScreen> {
           children: [
             const SizedBox(height: 8),
             Text(
-              sentence.vietnameseText ?? 'Văn bản mẫu',
+              sentence.vietnameseText.isNotEmpty
+                  ? sentence.vietnameseText
+                  : '(Chưa có bản dịch)',
               style: TextStyle(color: Colors.grey[600]),
             ),
             const SizedBox(height: 12),
             Row(
               children: [
-                _buildTag(sentence.difficultyLevel ?? 'beginner'),
+                _buildTag(sentence.difficultyLevel),
                 const SizedBox(width: 8),
-                _buildTag(sentence.sentenceType ?? 'conversation'),
+                _buildTag(sentence.sentenceType),
               ],
             ),
           ],
@@ -217,7 +232,6 @@ class _SentenceListScreenState extends State<SentenceListScreen> {
           icon: const Icon(Icons.play_circle),
           color: Theme.of(context).primaryColor,
           onPressed: () {
-            // TODO: Navigate to quiz screen
             context.push('/quiz/${sentence.id}');
           },
         ),
