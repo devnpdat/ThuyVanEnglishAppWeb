@@ -112,6 +112,22 @@ class _SentenceStudyScreenState extends State<SentenceStudyScreen> {
     );
   }
 
+  void _goBackStep() {
+    setState(() {
+      final prevStep = _currentStep - 1;
+      if (prevStep == 2) {
+        // Quay lại Quiz → reset quiz state để user làm lại
+        _quizAnswered = false;
+        _quizCorrect  = false;
+        _quizController.clear();
+      } else if (prevStep == 1) {
+        // Quay lại Gõ → reset typing
+        _typingController.clear();
+      }
+      _currentStep = prevStep;
+    });
+  }
+
   void _toggleAutoRepeat() {
     setState(() => _autoRepeat = !_autoRepeat);
     if (_autoRepeat) {
@@ -164,12 +180,11 @@ class _SentenceStudyScreenState extends State<SentenceStudyScreen> {
                 _pointsAwarded = result.pointsAwarded;
               });
             } else if (result.unmetConditions.isNotEmpty) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('${result.unmetConditions.join(', ')}'),
-                  backgroundColor: Colors.orange[700],
-                ),
-              );
+              // Bỏ qua quiz sai → vẫn cho hoàn thành (0 điểm), không báo lỗi
+              setState(() {
+                _currentStep   = 3;
+                _pointsAwarded = 0;
+              });
             }
           },
           orElse: () {},
@@ -209,7 +224,7 @@ class _SentenceStudyScreenState extends State<SentenceStudyScreen> {
           canPop: _currentStep == 0,  // chỉ pop ra ngoài khi đang ở bước Nghe
           onPopInvokedWithResult: (didPop, _) {
             if (!didPop && _currentStep > 0) {
-              setState(() => _currentStep = _currentStep - 1);
+              _goBackStep();
             }
           },
           child: Scaffold(
@@ -218,7 +233,7 @@ class _SentenceStudyScreenState extends State<SentenceStudyScreen> {
             leading: _currentStep > 0
                 ? IconButton(
                     icon: const Icon(Icons.arrow_back),
-                    onPressed: () => setState(() => _currentStep = _currentStep - 1),
+                    onPressed: _goBackStep,
                   )
                 : null,
             bottom: PreferredSize(
