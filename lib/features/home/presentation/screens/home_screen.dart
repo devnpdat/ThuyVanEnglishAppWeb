@@ -170,7 +170,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     // Lấy displayName từ AuthState — đã được parse từ JWT khi login
     final userDisplayName = authState.maybeWhen(
-      authenticated: (_, __, displayName, ___) =>
+      authenticated: (userId, email, token, displayName) =>
           displayName.isNotEmpty ? displayName : 'Learner',
       orElse: () => 'Learner',
     );
