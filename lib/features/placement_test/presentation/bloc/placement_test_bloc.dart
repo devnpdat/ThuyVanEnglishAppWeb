@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:english_learning_app/core/di/service_locator.dart';
+import 'package:get_it/get_it.dart';
 import 'package:english_learning_app/features/placement_test/data/dtos/placement_test_dto.dart';
 import 'package:english_learning_app/features/placement_test/data/repositories/placement_test_repository.dart';
 
@@ -127,7 +127,7 @@ class PlacementTestBloc extends Bloc<PlacementTestEvent, PlacementTestState> {
   final PlacementTestRepository _repository;
 
   PlacementTestBloc({PlacementTestRepository? repository})
-      : _repository = repository ?? getIt<PlacementTestRepository>(),
+      : _repository = repository ?? GetIt.instance<PlacementTestRepository>(),
         super(const PlacementTestInitial()) {
     on<PlacementTestLoadQuestionsEvent>(_onLoadQuestions);
     on<PlacementTestAnswerSelectedEvent>(_onAnswerSelected);

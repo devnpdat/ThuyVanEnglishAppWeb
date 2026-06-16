@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:english_learning_app/features/auth/data/repositories/auth_repository.dart';
@@ -77,6 +78,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final displayName = usernameFromJwt.isNotEmpty
           ? usernameFromJwt
           : (profile?.emailAddress ?? event.email);
+
+      debugPrint('🔍 [AuthBloc] usernameFromJwt="$usernameFromJwt" displayName="$displayName"');
 
       // Lưu toàn bộ user data (token + userId + email + displayName) 1 lần duy nhất
       await _authRepository.saveUserLocally(

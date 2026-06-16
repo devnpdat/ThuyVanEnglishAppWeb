@@ -35,6 +35,7 @@ import 'package:english_learning_app/features/placement_test/presentation/bloc/p
 import 'package:english_learning_app/features/placement_test/presentation/screens/placement_test_screen.dart';
 import 'package:english_learning_app/features/placement_test/presentation/screens/placement_result_screen.dart';
 import 'package:english_learning_app/features/placement_test/data/dtos/placement_test_dto.dart';
+import 'package:english_learning_app/core/theme/app_theme.dart';
 
 
 // ─── Placeholder screen ───────────────────────────────────────────────────────
@@ -386,17 +387,9 @@ class EnglishLearningApp extends StatelessWidget {
       child: MaterialApp.router(
         title: 'English Learning App',
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorSchemeSeed: const Color(0xFF4F6AF5),
-          useMaterial3: true,
-          brightness: Brightness.light,
-        ),
-        darkTheme: ThemeData(
-          colorSchemeSeed: const Color(0xFF4F6AF5),
-          useMaterial3: true,
-          brightness: Brightness.dark,
-        ),
-        themeMode: ThemeMode.system,
+        theme: buildLightTheme(),
+        darkTheme: buildLightTheme(), // tạm dùng light cho cả dark
+        themeMode: ThemeMode.light,
         routerConfig: _router,
       ),
     );

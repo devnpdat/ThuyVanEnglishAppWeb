@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:english_learning_app/core/di/service_locator.dart';
+import 'package:get_it/get_it.dart';
 import 'package:english_learning_app/features/home/data/dtos/dashboard_dto.dart';
 import 'package:english_learning_app/features/home/data/repositories/dashboard_repository.dart';
 
@@ -26,7 +26,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   final DashboardRepository _repository;
 
   DashboardBloc({DashboardRepository? repository})
-      : _repository = repository ?? getIt<DashboardRepository>(),
+      : _repository = repository ?? GetIt.instance<DashboardRepository>(),
         super(const DashboardState.initial()) {
     on<_Load>(_onLoad);
   }

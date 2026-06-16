@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
-import 'package:english_learning_app/core/di/service_locator.dart';
+import 'package:get_it/get_it.dart';
 import 'package:english_learning_app/features/rewards/data/repositories/rewards_repository.dart';
 
 // ─── Events ──────────────────────────────────────────────────────────────────
@@ -116,7 +116,7 @@ class RewardsBloc extends Bloc<RewardsEvent, RewardsState> {
   final RewardsRepository _rewardsRepository;
 
   RewardsBloc({RewardsRepository? rewardsRepository})
-      : _rewardsRepository = rewardsRepository ?? getIt<RewardsRepository>(),
+      : _rewardsRepository = rewardsRepository ?? GetIt.instance<RewardsRepository>(),
         super(const RewardsInitial()) {
     on<RewardsLoadEvent>(_onLoad);
     on<RewardsLoadHistoryEvent>(_onLoadHistory);
