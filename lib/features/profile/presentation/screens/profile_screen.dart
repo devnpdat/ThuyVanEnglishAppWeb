@@ -93,6 +93,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   _buildProfileHeader(context, state),
                   const SizedBox(height: 32),
 
+                  // Level card
+                  _buildLevelCard(context, state),
+                  const SizedBox(height: 24),
+
                   // Stats
                   _buildStatsGrid(state),
                   const SizedBox(height: 32),
@@ -179,6 +183,140 @@ class _ProfileScreenState extends State<ProfileScreen> {
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
             color: Colors.grey[600],
           ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLevelCard(BuildContext context, ProfileLoaded state) {
+    final nextXp = (state.xpLevel * 100);
+    final ratio = state.totalPointsEarned / (nextXp > 0 ? nextXp : 1);
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF4F6AF5), Color(0xFF7C4DFF)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF4F6AF5).withValues(alpha: 0.3),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Center(
+                  child: Icon(Icons.auto_awesome, color: Colors.white, size: 28),
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Level ${state.xpLevel}',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      state.selfLevel.isNotEmpty ? state.selfLevel : 'Beginner',
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.8),
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          // XP progress bar
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: LinearProgressIndicator(
+              value: ratio.clamp(0.0, 1.0),
+              backgroundColor: Colors.white.withValues(alpha: 0.2),
+              valueColor: const AlwaysStoppedAnimation<Color>(Colors.amber),
+              minHeight: 8,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                '${state.totalPointsEarned} XP',
+                style: const TextStyle(color: Colors.white70, fontSize: 12),
+              ),
+              Text(
+                '${nextXp} XP → Level ${state.xpLevel + 1}',
+                style: const TextStyle(color: Colors.white70, fontSize: 12),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          // Mastered & Learned
+          Row(
+            children: [
+              _buildLevelStat(
+                Icons.check_circle,
+                '${state.totalSentencesMastered}',
+                'Đã thuộc',
+                Colors.greenAccent,
+              ),
+              const SizedBox(width: 24),
+              _buildLevelStat(
+                Icons.menu_book,
+                '${state.totalSentencesLearned}',
+                'Đã học',
+                Colors.lightBlueAccent,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLevelStat(IconData icon, String value, String label, Color color) {
+    return Row(
+      children: [
+        Icon(icon, color: color, size: 18),
+        const SizedBox(width: 6),
+        Text(
+          value,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(width: 4),
+        Text(
+          label,
+          style: const TextStyle(color: Colors.white70, fontSize: 13),
         ),
       ],
     );
