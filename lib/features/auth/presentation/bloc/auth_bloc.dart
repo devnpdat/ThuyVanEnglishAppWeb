@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:english_learning_app/features/auth/data/repositories/auth_repository.dart';
@@ -22,6 +23,25 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthCheckStatusEvent>(_onCheckStatus);
   }
 
+  /// Parse JWT để lấy preferred_username (hoặc unique_name / sub)
+  static String _parseUsernameFromJwt(String token) {
+    try {
+      final parts = token.split('.');
+      if (parts.length != 3) return '';
+      String payload = parts[1].replaceAll('-', '+').replaceAll('_', '/');
+      while (payload.length % 4 != 0) payload += '=';
+      final decoded = utf8.decode(base64.decode(payload));
+      final Map<String, dynamic> claims = jsonDecode(decoded);
+      // Ưu tiên: preferred_username → unique_name → sub
+      return claims['preferred_username'] as String? ??
+          claims['unique_name'] as String? ??
+          claims['sub'] as String? ??
+          '';
+    } catch (_) {
+      return '';
+    }
+  }
+
   /// Login với username/email và password thật
   Future<void> _onLogin(AuthLoginEvent event, Emitter<AuthState> emit) async {
     emit(const AuthState.loading());
@@ -33,32 +53,40 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         ),
       );
 
-      // Lấy profile để có userId, displayName
       final token = response.accessToken ?? '';
       if (token.isEmpty) {
         throw Exception('Không lấy được token từ server');
       }
-      
-      await _authRepository.setAuthToken(token);
+
+      // Lấy username từ JWT (preferred_username claim) — không cần gọi getProfile
+      final usernameFromJwt = _parseUsernameFromJwt(token);
+
+      // Vẫn gọi getProfile để lấy userId, email — nhưng không dùng displayName từ đó
       UserProfileResponse? profile;
       try {
+        await _authRepository.setAuthToken(token);
         profile = await _authRepository.getProfile();
       } catch (_) {
-        // Profile call failed — vẫn login được, dùng email làm displayName
+        // Profile call failed — vẫn login được
       }
+
+      // displayName: ưu tiên JWT username, fallback email
+      final displayName = usernameFromJwt.isNotEmpty
+          ? usernameFromJwt
+          : (profile?.emailAddress ?? event.email);
 
       await _authRepository.saveUserLocally(
         token,
         profile?.id ?? '',
         profile?.emailAddress ?? event.email,
-        profile?.displayName ?? event.email,
+        displayName,
       );
 
       emit(AuthState.authenticated(
         userId: profile?.id ?? '',
         email: profile?.emailAddress ?? event.email,
         token: token,
-        displayName: profile?.displayName ?? event.email,
+        displayName: displayName,
       ));
     } catch (e) {
       emit(AuthState.error(e.toString().replaceAll('Exception: ', '')));

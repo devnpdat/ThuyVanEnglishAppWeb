@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -168,37 +167,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildGreetingSection(BuildContext context) {
     final authState = context.read<AuthBloc>().state;
-    
-    String userDisplayName = 'Learner';
-    authState.maybeWhen(
-      authenticated: (_, __, displayName, token) {
-        // Nếu displayName là token (quá dài), parse JWT để lấy tên
-        if (displayName.length > 50) {
-          // Parse JWT token để lấy claim "name" hoặc "sub"
-          try {
-            final parts = token.split('.');
-            if (parts.length == 3) {
-              final payload = parts[1];
-              // Base64 decode (thêm padding nếu cần)
-              String normalized = payload.replaceAll('-', '+').replaceAll('_', '/');
-              while (normalized.length % 4 != 0) {
-                normalized += '=';
-              }
-              final decoded = const Utf8Decoder().convert(base64.decode(normalized));
-              final Map<String, dynamic> json = jsonDecode(decoded);
-              userDisplayName = json['name'] as String? ?? 
-                                json['unique_name'] as String? ?? 
-                                json['sub'] as String? ?? 
-                                'Learner';
-            }
-          } catch (_) {
-            userDisplayName = 'Learner';
-          }
-        } else {
-          userDisplayName = displayName;
-        }
-      },
-      orElse: () {},
+
+    // Lấy displayName từ AuthState — đã được parse từ JWT khi login
+    final userDisplayName = authState.maybeWhen(
+      authenticated: (_, __, displayName, ___) =>
+          displayName.isNotEmpty ? displayName : 'Learner',
+      orElse: () => 'Learner',
     );
 
     return Column(
