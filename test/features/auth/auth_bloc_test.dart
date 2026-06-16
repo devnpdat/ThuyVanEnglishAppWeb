@@ -73,6 +73,7 @@ void main() {
             'email': 'user@test.com',
             'displayName': 'Test User',
           });
+      when(() => mockRepo.setHttpToken(any())).thenAnswer((_) async {});
       when(() => mockRepo.saveUserLocally(any(), any(), any(), any()))
           .thenAnswer((_) async {});
 
@@ -109,6 +110,7 @@ void main() {
             success: true,
             accessToken: kFakeJwt,
           ));
+      when(() => mockRepo.setHttpToken(any())).thenAnswer((_) async {});
       when(() => mockRepo.getProfile()).thenAnswer((_) async => UserProfileResponse(
             id: 'uid-123',
             userName: 'devdatnp',
@@ -141,6 +143,7 @@ void main() {
             success: true,
             accessToken: kFakeJwt,
           ));
+      when(() => mockRepo.setHttpToken(any())).thenAnswer((_) async {});
       // getProfile thất bại
       when(() => mockRepo.getProfile()).thenThrow(Exception('Network error'));
       when(() => mockRepo.saveUserLocally(any(), any(), any(), any()))

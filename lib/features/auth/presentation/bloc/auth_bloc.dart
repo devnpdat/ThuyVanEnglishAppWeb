@@ -61,10 +61,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       // Lấy username từ JWT (preferred_username claim) — không cần gọi getProfile
       final usernameFromJwt = _parseUsernameFromJwt(token);
 
+      // Set token vào HttpClient (memory only) để gọi getProfile
+      // KHÔNG dùng extension setAuthToken vì nó ghi đè SharedPrefs trước khi có displayName
+      await _authRepository.setHttpToken(token);
+
       // Vẫn gọi getProfile để lấy userId, email — nhưng không dùng displayName từ đó
       UserProfileResponse? profile;
       try {
-        await _authRepository.setAuthToken(token);
         profile = await _authRepository.getProfile();
       } catch (_) {
         // Profile call failed — vẫn login được
@@ -75,6 +78,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           ? usernameFromJwt
           : (profile?.emailAddress ?? event.email);
 
+      // Lưu toàn bộ user data (token + userId + email + displayName) 1 lần duy nhất
       await _authRepository.saveUserLocally(
         token,
         profile?.id ?? '',
@@ -120,24 +124,27 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         throw Exception('Không lấy được token từ server');
       }
 
-      await _authRepository.setAuthToken(token);
+      // Set token vào HttpClient (memory only) để gọi getProfile
+      await _authRepository.setHttpToken(token);
       UserProfileResponse? profile;
       try {
         profile = await _authRepository.getProfile();
       } catch (_) {}
 
+      final displayName = event.displayName.isNotEmpty ? event.displayName : event.email;
+
       await _authRepository.saveUserLocally(
         token,
         profile?.id ?? '',
         event.email,
-        event.displayName.isNotEmpty ? event.displayName : event.email,
+        displayName,
       );
 
       emit(AuthState.authenticated(
         userId: profile?.id ?? '',
         email: event.email,
         token: token,
-        displayName: event.displayName.isNotEmpty ? event.displayName : event.email,
+        displayName: displayName,
       ));
     } catch (e) {
       emit(AuthState.error(e.toString().replaceAll('Exception: ', '')));
@@ -159,8 +166,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       final stored = await _authRepository.getStoredUser();
       if (stored != null) {
-        // Có token — restore session
-        await _authRepository.setAuthToken(stored['token']!);
+        // Có token — chỉ set vào HttpClient memory, KHÔNG overwrite SharedPrefs
+        await _authRepository.setHttpToken(stored['token']!);
         emit(AuthState.authenticated(
           userId: stored['userId']!,
           email: stored['email']!,
@@ -173,20 +180,5 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     } catch (_) {
       emit(const AuthState.initial());
     }
-  }
-}
-
-// Helper extension on AuthRepository to expose setAuthToken publicly
-extension on AuthRepository {
-  Future<void> setAuthToken(String token) async {
-    // Only set the HTTP client token — don't overwrite userId/email/displayName with empty strings
-    // Use HttpClient directly via saveUserLocally with preserved existing values
-    final existing = await getStoredUser();
-    await saveUserLocally(
-      token,
-      existing?['userId'] ?? '',
-      existing?['email'] ?? '',
-      existing?['displayName'] ?? '',
-    );
   }
 }

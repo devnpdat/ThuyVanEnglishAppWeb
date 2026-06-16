@@ -222,6 +222,13 @@ class AuthRepository {
     }
   }
 
+  /// Set token vào HttpClient memory only — KHÔNG ghi SharedPreferences
+  /// Dùng khi cần gọi API (getProfile) trước khi lưu user data đầy đủ,
+  /// hoặc khi restore session (chỉ cần set token vào memory, không overwrite prefs).
+  Future<void> setHttpToken(String token) async {
+    await _httpClient.setAuthToken(token);
+  }
+
   /// Save user info to SharedPreferences
   Future<void> saveUserLocally(
       String token, String userId, String email, String displayName) async {
