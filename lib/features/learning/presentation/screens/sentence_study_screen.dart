@@ -41,6 +41,7 @@ class _SentenceStudyScreenState extends State<SentenceStudyScreen> {
   int?  _pointsAwarded;
   bool  _quizAnswered  = false;
   bool  _quizCorrect   = false;
+  bool  _quizPassed    = false;   // true: làm đúng, false: bỏ qua
 
   // ── Sentence cache ────────────────────────────────────────────────────────
   SentenceDto? _cachedSentence;
@@ -162,6 +163,7 @@ class _SentenceStudyScreenState extends State<SentenceStudyScreen> {
             setState(() {
               _quizAnswered = true;
               _quizCorrect  = result.isCorrect;
+              if (result.isCorrect) _quizPassed = true;
             });
             if (result.canComplete) {
               Future.delayed(const Duration(milliseconds: 1200), () {
@@ -184,6 +186,7 @@ class _SentenceStudyScreenState extends State<SentenceStudyScreen> {
               setState(() {
                 _currentStep   = 3;
                 _pointsAwarded = 0;
+                _quizPassed    = false;
               });
             }
           },
@@ -1036,17 +1039,28 @@ class _SentenceStudyScreenState extends State<SentenceStudyScreen> {
   // ── Step 3: Xong ─────────────────────────────────────────────────────────
 
   Widget _buildCompleteStep() {
+    final isPerfect = _quizPassed;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Icon(Icons.star, size: 80, color: Colors.amber),
+        Icon(
+          isPerfect ? Icons.star : Icons.check_circle_outline,
+          size: 80,
+          color: isPerfect ? Colors.amber : Colors.green,
+        ),
         const SizedBox(height: 16),
-        const Text('Hoàn thành xuất sắc!',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center),
+        Text(
+          isPerfect ? 'Hoàn thành xuất sắc!' : 'Đã hoàn thành',
+          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          textAlign: TextAlign.center,
+        ),
         const SizedBox(height: 8),
-        const Text('Bạn đã hoàn thành việc học câu này.',
-            style: TextStyle(color: Colors.grey)),
+        Text(
+          isPerfect
+              ? 'Bạn đã hoàn thành việc học câu này.'
+              : 'Bạn đã học qua câu này, cố gắng lần sau nhé!',
+          style: const TextStyle(color: Colors.grey),
+        ),
         if (_pointsAwarded != null && _pointsAwarded! > 0) ...[
           const SizedBox(height: 12),
           Container(
