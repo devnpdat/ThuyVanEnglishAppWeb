@@ -205,9 +205,22 @@ class _SentenceStudyScreenState extends State<SentenceStudyScreen> {
 
         final isLoading = state.maybeWhen(loading: () => true, orElse: () => false);
 
-        return Scaffold(
+        return PopScope(
+          canPop: _currentStep == 0,  // chỉ pop ra ngoài khi đang ở bước Nghe
+          onPopInvokedWithResult: (didPop, _) {
+            if (!didPop && _currentStep > 0) {
+              setState(() => _currentStep = _currentStep - 1);
+            }
+          },
+          child: Scaffold(
           appBar: AppBar(
             title: const Text('Học câu'),
+            leading: _currentStep > 0
+                ? IconButton(
+                    icon: const Icon(Icons.arrow_back),
+                    onPressed: () => setState(() => _currentStep = _currentStep - 1),
+                  )
+                : null,
             bottom: PreferredSize(
               preferredSize: const Size.fromHeight(4),
               child: LinearProgressIndicator(
@@ -234,7 +247,8 @@ class _SentenceStudyScreenState extends State<SentenceStudyScreen> {
                     ],
                   ),
                 ),
-        );
+        ),  // end Scaffold
+        );  // end PopScope
       },
     );
   }
@@ -851,9 +865,29 @@ class _SentenceStudyScreenState extends State<SentenceStudyScreen> {
           ),
           child: Column(
             children: [
-              const Icon(Icons.volume_up_outlined, color: Color(0xFF4F6AF5), size: 20),
+              GestureDetector(
+                onTap: () => _playAudio(sentence.audioUrl ?? '', sentence.englishText),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(_isPlaying ? Icons.graphic_eq : Icons.volume_up_outlined,
+                        color: const Color(0xFF4F6AF5), size: 20),
+                    const SizedBox(width: 6),
+                    Text(
+                      _isPlaying ? 'Đang phát...' : 'Bấm để nghe',
+                      style: TextStyle(
+                        color: _isPlaying ? Colors.blue : const Color(0xFF4F6AF5),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               const SizedBox(height: 6),
-              Text(
+              GestureDetector(
+                onTap: () => _playAudio(sentence.audioUrl ?? '', sentence.englishText),
+                child: Text(
                 sentence.englishText,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
@@ -862,6 +896,7 @@ class _SentenceStudyScreenState extends State<SentenceStudyScreen> {
                   color: Color(0xFF1A1A2E),
                   height: 1.4,
                 ),
+              ),
               ),
             ],
           ),
@@ -954,10 +989,9 @@ class _SentenceStudyScreenState extends State<SentenceStudyScreen> {
         else if (!_quizCorrect)
           ElevatedButton.icon(
             onPressed: () {
-              final timeMs = DateTime.now().difference(_quizStartTime).inMilliseconds;
+              // Bỏ qua quiz sai → gọi completeSession trực tiếp (không submit lại)
               context.read<DailyLearningBloc>().add(
-                DailyLearningEvent.quizSubmit(
-                    widget.sentenceId, false, _quizController.text.trim(), timeMs),
+                DailyLearningEvent.completeSession(widget.sentenceId),
               );
             },
             icon: const Icon(Icons.skip_next),
