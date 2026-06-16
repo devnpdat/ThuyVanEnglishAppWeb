@@ -181,12 +181,12 @@ class _SentenceStudyScreenState extends State<SentenceStudyScreen> {
                 _currentStep   = 3;
                 _pointsAwarded = result.pointsAwarded;
               });
-            } else if (result.unmetConditions.isNotEmpty) {
-              // Bỏ qua quiz sai → vẫn cho hoàn thành (0 điểm), không báo lỗi
+            } else {
+              // Catch-all: mọi trường hợp success=false (kể cả unmetConditions rỗng)
+              // đều cho qua bước Xong để không treo spinner
               setState(() {
                 _currentStep   = 3;
-                _pointsAwarded = 0;
-                _quizPassed    = false;
+                _pointsAwarded = result.pointsAwarded > 0 ? result.pointsAwarded : 0;
               });
             }
           },
