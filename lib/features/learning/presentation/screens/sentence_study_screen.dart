@@ -652,50 +652,71 @@ class _SentenceStudyScreenState extends State<SentenceStudyScreen> {
 
         const SizedBox(height: 10),
 
-        // Diff feedback
+        // Diff feedback — hiện khi sai hoặc gần đúng
         if (lastResult != null && !lastResult.isCorrect && lastResult.diffSegments.isNotEmpty)
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(10),
             margin: const EdgeInsets.only(bottom: 8),
             decoration: BoxDecoration(
-              color: Colors.red.shade50,
+              color: lastResult.isNearlyCorrect ? Colors.orange.shade50 : Colors.red.shade50,
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.red.shade200),
+              border: Border.all(
+                color: lastResult.isNearlyCorrect ? Colors.orange.shade300 : Colors.red.shade200,
+              ),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Gần đúng! (${lastResult.totalCorrectTypings} lần đúng)',
-                  style: TextStyle(color: Colors.red[700], fontWeight: FontWeight.bold, fontSize: 12),
+                  lastResult.isNearlyCorrect
+                      ? 'Gần đúng rồi! Xem câu đúng bên dưới, phần gạch chân là chỗ cần sửa:'
+                      : 'Sai rồi! Câu đúng là:',
+                  style: TextStyle(
+                    color: lastResult.isNearlyCorrect ? Colors.orange[800] : Colors.red[700],
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
                 ),
                 const SizedBox(height: 4),
+                // Hiển thị câu ĐÚNG với highlight chỗ sai
                 Wrap(
-                  spacing: 2, runSpacing: 2,
+                  spacing: 0, runSpacing: 2,
                   children: lastResult.diffSegments.map((seg) {
-                    Color color;
-                    TextDecoration deco = TextDecoration.none;
                     switch (seg.type) {
                       case 'wrong':
-                      case 'extra':
-                        color = Colors.red;
-                        deco  = TextDecoration.lineThrough;
-                        break;
+                        // 2 ký tự sai: gạch chân đậm đỏ trên câu đúng
+                        return Text(seg.text,
+                            style: const TextStyle(
+                              color: Colors.red,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                              decoration: TextDecoration.underline,
+                              decorationColor: Colors.red,
+                              decorationThickness: 2.5,
+                            ));
                       case 'missing':
-                        color = Colors.orange;
-                        break;
+                        // Từ user bỏ sót: màu cam
+                        return Text(seg.text,
+                            style: TextStyle(
+                              color: Colors.orange[700],
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                            ));
                       default:
-                        color = Colors.green[700]!;
+                        // correct: màu xanh bình thường
+                        return Text(seg.text,
+                            style: TextStyle(
+                              color: Colors.green[700],
+                              fontSize: 15,
+                            ));
                     }
-                    return Text(seg.text,
-                        style: TextStyle(
-                          color: color,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                          decoration: deco,
-                        ));
                   }).toList(),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  '(${lastResult.totalCorrectTypings} lần đúng)',
+                  style: TextStyle(color: Colors.grey[600], fontSize: 11),
                 ),
               ],
             ),

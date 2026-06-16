@@ -52,6 +52,7 @@ class TypingAttemptDto with _$TypingAttemptDto {
 class TypingResultDto with _$TypingResultDto {
   const factory TypingResultDto({
     required bool isCorrect,
+    @Default(false) bool isNearlyCorrect,
     required String correctText,
     required String userInput,
     @Default([]) List<TypingDiffSegmentDto> diffSegments,

@@ -783,6 +783,7 @@ TypingResultDto _$TypingResultDtoFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$TypingResultDto {
   bool get isCorrect => throw _privateConstructorUsedError;
+  bool get isNearlyCorrect => throw _privateConstructorUsedError;
   String get correctText => throw _privateConstructorUsedError;
   String get userInput => throw _privateConstructorUsedError;
   List<TypingDiffSegmentDto> get diffSegments =>
@@ -804,6 +805,7 @@ abstract class $TypingResultDtoCopyWith<$Res> {
   @useResult
   $Res call(
       {bool isCorrect,
+      bool isNearlyCorrect,
       String correctText,
       String userInput,
       List<TypingDiffSegmentDto> diffSegments,
@@ -825,6 +827,7 @@ class _$TypingResultDtoCopyWithImpl<$Res, $Val extends TypingResultDto>
   @override
   $Res call({
     Object? isCorrect = null,
+    Object? isNearlyCorrect = null,
     Object? correctText = null,
     Object? userInput = null,
     Object? diffSegments = null,
@@ -835,6 +838,10 @@ class _$TypingResultDtoCopyWithImpl<$Res, $Val extends TypingResultDto>
       isCorrect: null == isCorrect
           ? _value.isCorrect
           : isCorrect // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isNearlyCorrect: null == isNearlyCorrect
+          ? _value.isNearlyCorrect
+          : isNearlyCorrect // ignore: cast_nullable_to_non_nullable
               as bool,
       correctText: null == correctText
           ? _value.correctText
@@ -870,6 +877,7 @@ abstract class _$$TypingResultDtoImplCopyWith<$Res>
   @useResult
   $Res call(
       {bool isCorrect,
+      bool isNearlyCorrect,
       String correctText,
       String userInput,
       List<TypingDiffSegmentDto> diffSegments,
@@ -889,6 +897,7 @@ class __$$TypingResultDtoImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? isCorrect = null,
+    Object? isNearlyCorrect = null,
     Object? correctText = null,
     Object? userInput = null,
     Object? diffSegments = null,
@@ -899,6 +908,10 @@ class __$$TypingResultDtoImplCopyWithImpl<$Res>
       isCorrect: null == isCorrect
           ? _value.isCorrect
           : isCorrect // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isNearlyCorrect: null == isNearlyCorrect
+          ? _value.isNearlyCorrect
+          : isNearlyCorrect // ignore: cast_nullable_to_non_nullable
               as bool,
       correctText: null == correctText
           ? _value.correctText
@@ -929,6 +942,7 @@ class __$$TypingResultDtoImplCopyWithImpl<$Res>
 class _$TypingResultDtoImpl implements _TypingResultDto {
   const _$TypingResultDtoImpl(
       {required this.isCorrect,
+      this.isNearlyCorrect = false,
       required this.correctText,
       required this.userInput,
       final List<TypingDiffSegmentDto> diffSegments = const [],
@@ -941,6 +955,9 @@ class _$TypingResultDtoImpl implements _TypingResultDto {
 
   @override
   final bool isCorrect;
+  @override
+  @JsonKey()
+  final bool isNearlyCorrect;
   @override
   final String correctText;
   @override
@@ -963,7 +980,7 @@ class _$TypingResultDtoImpl implements _TypingResultDto {
 
   @override
   String toString() {
-    return 'TypingResultDto(isCorrect: $isCorrect, correctText: $correctText, userInput: $userInput, diffSegments: $diffSegments, totalCorrectTypings: $totalCorrectTypings, canProceedToQuiz: $canProceedToQuiz)';
+    return 'TypingResultDto(isCorrect: $isCorrect, isNearlyCorrect: $isNearlyCorrect, correctText: $correctText, userInput: $userInput, diffSegments: $diffSegments, totalCorrectTypings: $totalCorrectTypings, canProceedToQuiz: $canProceedToQuiz)';
   }
 
   @override
@@ -973,6 +990,8 @@ class _$TypingResultDtoImpl implements _TypingResultDto {
             other is _$TypingResultDtoImpl &&
             (identical(other.isCorrect, isCorrect) ||
                 other.isCorrect == isCorrect) &&
+            (identical(other.isNearlyCorrect, isNearlyCorrect) ||
+                other.isNearlyCorrect == isNearlyCorrect) &&
             (identical(other.correctText, correctText) ||
                 other.correctText == correctText) &&
             (identical(other.userInput, userInput) ||
@@ -990,6 +1009,7 @@ class _$TypingResultDtoImpl implements _TypingResultDto {
   int get hashCode => Object.hash(
       runtimeType,
       isCorrect,
+      isNearlyCorrect,
       correctText,
       userInput,
       const DeepCollectionEquality().hash(_diffSegments),
@@ -1014,6 +1034,7 @@ class _$TypingResultDtoImpl implements _TypingResultDto {
 abstract class _TypingResultDto implements TypingResultDto {
   const factory _TypingResultDto(
       {required final bool isCorrect,
+      final bool isNearlyCorrect,
       required final String correctText,
       required final String userInput,
       final List<TypingDiffSegmentDto> diffSegments,
@@ -1025,6 +1046,8 @@ abstract class _TypingResultDto implements TypingResultDto {
 
   @override
   bool get isCorrect;
+  @override
+  bool get isNearlyCorrect;
   @override
   String get correctText;
   @override

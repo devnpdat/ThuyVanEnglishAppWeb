@@ -78,6 +78,7 @@ _$TypingResultDtoImpl _$$TypingResultDtoImplFromJson(
         Map<String, dynamic> json) =>
     _$TypingResultDtoImpl(
       isCorrect: json['isCorrect'] as bool,
+      isNearlyCorrect: json['isNearlyCorrect'] as bool? ?? false,
       correctText: json['correctText'] as String,
       userInput: json['userInput'] as String,
       diffSegments: (json['diffSegments'] as List<dynamic>?)
@@ -93,6 +94,7 @@ Map<String, dynamic> _$$TypingResultDtoImplToJson(
         _$TypingResultDtoImpl instance) =>
     <String, dynamic>{
       'isCorrect': instance.isCorrect,
+      'isNearlyCorrect': instance.isNearlyCorrect,
       'correctText': instance.correctText,
       'userInput': instance.userInput,
       'diffSegments': instance.diffSegments,
