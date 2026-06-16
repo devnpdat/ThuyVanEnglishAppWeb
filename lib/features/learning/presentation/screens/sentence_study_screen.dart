@@ -62,16 +62,114 @@ class _SentenceStudyScreenState extends State<SentenceStudyScreen> {
 
   // ── Sanitize: bỏ dấu câu, trim, lowercase trước khi so khớp ────────────────
   // Bug 7 fix: gõ đúng từ nhưng thiếu dấu phẩy/chấm vẫn được tính đúng
+  // Normalize NFC/NFD về chung 1 dạng để so sánh tiếng Việt chính xác
   String _sanitize(String s) {
-    // Bug 7: xoá dấu câu ASCII + unicode quotes, chuẩn hoá whitespace
-    // Tách 2 pass để tránh escape hell trong char class
+    // Bước 1: xoá dấu câu và ký tự đặc biệt
     var r = s
-        .replaceAll(RegExp(r'[,\.!\?;:\-\(\)\[\]{}]'), '')   // ASCII punctuation
-        .replaceAll('\u2013', '').replaceAll('\u2014', '')     // en-dash, em-dash
-        .replaceAll('\u201c', '').replaceAll('\u201d', '')     // " "
-        .replaceAll('\u2018', '').replaceAll('\u2019', '')     // ' '
-        .replaceAll('"', '').replaceAll("'", '');              // straight quotes
-    return r.replaceAll(RegExp(r'\s+'), ' ').trim().toLowerCase();
+        .replaceAll(RegExp(r"[,.!?;:\-()\[\]{}']"), '')
+        .replaceAll('"', '')
+        // Xoá unicode quotes/dashes thật (không phải escape sai)
+        .replaceAll('\u2013', '').replaceAll('\u2014', '')
+        .replaceAll('\u201c', '').replaceAll('\u201d', '')
+        .replaceAll('\u2018', '').replaceAll('\u2019', '');
+    // Bước 2: chuẩn hoá whitespace (fix: dùng r'\s+' thay vì r'\\s+')
+    r = r.replaceAll(RegExp(r'\s+'), ' ').trim().toLowerCase();
+    // Bước 3: normalise NFC/NFD → chuyển về NFD để so sánh đồng nhất
+    // Tiếng Việt có thể lưu 'à' dạng NFC (1 code point) hoặc 'a'+dấu huyền (2 CP)
+    // Cả 2 đều decompose về 'a\u0300', so sánh chuẩn
+    return _toNfd(r);
+  }
+
+  /// Chuyển pre-composed Vietnamese characters về NFD (decomposed form)
+  /// để so sánh NFC và NFD đồng nhất. Chỉ xử lý ký tự tiếng Việt phổ biến.
+  String _toNfd(String s) {
+    // Latin-1 Supplement: các chữ có dấu cơ bản
+    return s
+        // A
+        .replaceAll('\u00C0', 'A\u0300').replaceAll('\u00E0', 'a\u0300')
+        .replaceAll('\u00C1', 'A\u0301').replaceAll('\u00E1', 'a\u0301')
+        .replaceAll('\u00C2', 'A\u0302').replaceAll('\u00E2', 'a\u0302')
+        .replaceAll('\u00C3', 'A\u0303').replaceAll('\u00E3', 'a\u0303')
+        // E
+        .replaceAll('\u00C8', 'E\u0300').replaceAll('\u00E8', 'e\u0300')
+        .replaceAll('\u00C9', 'E\u0301').replaceAll('\u00E9', 'e\u0301')
+        .replaceAll('\u00CA', 'E\u0302').replaceAll('\u00EA', 'e\u0302')
+        .replaceAll('\u00CB', 'E\u0308').replaceAll('\u00EB', 'e\u0308')
+        // I
+        .replaceAll('\u00CC', 'I\u0300').replaceAll('\u00EC', 'i\u0300')
+        .replaceAll('\u00CD', 'I\u0301').replaceAll('\u00ED', 'i\u0301')
+        .replaceAll('\u00CE', 'I\u0302').replaceAll('\u00EE', 'i\u0302')
+        // O
+        .replaceAll('\u00D2', 'O\u0300').replaceAll('\u00F2', 'o\u0300')
+        .replaceAll('\u00D3', 'O\u0301').replaceAll('\u00F3', 'o\u0301')
+        .replaceAll('\u00D4', 'O\u0302').replaceAll('\u00F4', 'o\u0302')
+        .replaceAll('\u00D5', 'O\u0303').replaceAll('\u00F5', 'o\u0303')
+        // U
+        .replaceAll('\u00D9', 'U\u0300').replaceAll('\u00F9', 'u\u0300')
+        .replaceAll('\u00DA', 'U\u0301').replaceAll('\u00FA', 'u\u0301')
+        .replaceAll('\u00DB', 'U\u0302').replaceAll('\u00FB', 'u\u0302')
+        // Y
+        .replaceAll('\u00DD', 'Y\u0301').replaceAll('\u00FD', 'y\u0301')
+        .replaceAll('\u0178', 'Y\u0308').replaceAll('\u00FF', 'y\u0308')
+        // Ă/ă, Â/â, Đ/đ, Ê/ê, Ô/ô, Ơ/ơ, Ư/ư
+        .replaceAll('\u0102', 'A\u0306').replaceAll('\u0103', 'a\u0306')
+        .replaceAll('\u00C2', 'A\u0302').replaceAll('\u00E2', 'a\u0302')
+        .replaceAll('\u0110', 'D\u0301').replaceAll('\u0111', 'd\u0301')
+        .replaceAll('\u00CA', 'E\u0302').replaceAll('\u00EA', 'e\u0302')
+        .replaceAll('\u00D4', 'O\u0302').replaceAll('\u00F4', 'o\u0302')
+        .replaceAll('\u01A0', 'O\u031B').replaceAll('\u01A1', 'o\u031B')
+        .replaceAll('\u01AF', 'U\u031B').replaceAll('\u01B0', 'u\u031B')
+        // Latin Extended Additional: chữ việt có dấu kép (A+circumflex+grave...)
+        .replaceAll('\u1EA0', 'a\u0323').replaceAll('\u1EA1', 'a\u0323')
+        .replaceAll('\u1EA2', 'a\u0309').replaceAll('\u1EA3', 'a\u0309')
+        .replaceAll('\u1EA4', 'a\u0302\u0301').replaceAll('\u1EA5', 'a\u0302\u0301')
+        .replaceAll('\u1EA6', 'a\u0302\u0300').replaceAll('\u1EA7', 'a\u0302\u0300')
+        .replaceAll('\u1EA8', 'a\u0302\u0309').replaceAll('\u1EA9', 'a\u0302\u0309')
+        .replaceAll('\u1EAA', 'a\u0302\u0303').replaceAll('\u1EAB', 'a\u0302\u0303')
+        .replaceAll('\u1EAC', 'a\u0302\u0323').replaceAll('\u1EAD', 'a\u0302\u0323')
+        .replaceAll('\u1EAE', 'a\u0306\u0301').replaceAll('\u1EAF', 'a\u0306\u0301')
+        .replaceAll('\u1EB0', 'a\u0306\u0300').replaceAll('\u1EB1', 'a\u0306\u0300')
+        .replaceAll('\u1EB2', 'a\u0306\u0309').replaceAll('\u1EB3', 'a\u0306\u0309')
+        .replaceAll('\u1EB4', 'a\u0306\u0303').replaceAll('\u1EB5', 'a\u0306\u0303')
+        .replaceAll('\u1EB6', 'a\u0306\u0323').replaceAll('\u1EB7', 'a\u0306\u0323')
+        // E dấu kép
+        .replaceAll('\u1EB8', 'e\u0323').replaceAll('\u1EB9', 'e\u0323')
+        .replaceAll('\u1EBA', 'e\u0309').replaceAll('\u1EBB', 'e\u0309')
+        .replaceAll('\u1EBC', 'e\u0303').replaceAll('\u1EBD', 'e\u0303')
+        .replaceAll('\u1EBE', 'e\u0302\u0301').replaceAll('\u1EBF', 'e\u0302\u0301')
+        .replaceAll('\u1EC0', 'e\u0302\u0300').replaceAll('\u1EC1', 'e\u0302\u0300')
+        .replaceAll('\u1EC2', 'e\u0302\u0309').replaceAll('\u1EC3', 'e\u0302\u0309')
+        .replaceAll('\u1EC4', 'e\u0302\u0303').replaceAll('\u1EC5', 'e\u0302\u0303')
+        .replaceAll('\u1EC6', 'e\u0302\u0323').replaceAll('\u1EC7', 'e\u0302\u0323')
+        // I
+        .replaceAll('\u1EC8', 'i\u0309').replaceAll('\u1EC9', 'i\u0309')
+        .replaceAll('\u1ECA', 'i\u0323').replaceAll('\u1ECB', 'i\u0323')
+        // O dấu kép
+        .replaceAll('\u1ECC', 'o\u0323').replaceAll('\u1ECD', 'o\u0323')
+        .replaceAll('\u1ECE', 'o\u0309').replaceAll('\u1ECF', 'o\u0309')
+        .replaceAll('\u1ED0', 'o\u0302\u0301').replaceAll('\u1ED1', 'o\u0302\u0301')
+        .replaceAll('\u1ED2', 'o\u0302\u0300').replaceAll('\u1ED3', 'o\u0302\u0300')
+        .replaceAll('\u1ED4', 'o\u0302\u0309').replaceAll('\u1ED5', 'o\u0302\u0309')
+        .replaceAll('\u1ED6', 'o\u0302\u0303').replaceAll('\u1ED7', 'o\u0302\u0303')
+        .replaceAll('\u1ED8', 'o\u0302\u0323').replaceAll('\u1ED9', 'o\u0302\u0323')
+        .replaceAll('\u1EDA', 'o\u031B\u0301').replaceAll('\u1EDB', 'o\u031B\u0301')
+        .replaceAll('\u1EDC', 'o\u031B\u0300').replaceAll('\u1EDD', 'o\u031B\u0300')
+        .replaceAll('\u1EDE', 'o\u031B\u0309').replaceAll('\u1EDF', 'o\u031B\u0309')
+        .replaceAll('\u1EE0', 'o\u031B\u0303').replaceAll('\u1EE1', 'o\u031B\u0303')
+        .replaceAll('\u1EE2', 'o\u031B\u0323').replaceAll('\u1EE3', 'o\u031B\u0323')
+        // U dấu kép
+        .replaceAll('\u1EE4', 'u\u0323').replaceAll('\u1EE5', 'u\u0323')
+        .replaceAll('\u1EE6', 'u\u0309').replaceAll('\u1EE7', 'u\u0309')
+        .replaceAll('\u1EE8', 'u\u031B\u0301').replaceAll('\u1EE9', 'u\u031B\u0301')
+        .replaceAll('\u1EEA', 'u\u031B\u0300').replaceAll('\u1EEB', 'u\u031B\u0300')
+        .replaceAll('\u1EEC', 'u\u031B\u0309').replaceAll('\u1EED', 'u\u031B\u0309')
+        .replaceAll('\u1EEE', 'u\u031B\u0303').replaceAll('\u1EEF', 'u\u031B\u0303')
+        .replaceAll('\u1EF0', 'u\u031B\u0323').replaceAll('\u1EF1', 'u\u031B\u0323')
+        // Y
+        .replaceAll('\u1EF2', 'y\u0300').replaceAll('\u1EF3', 'y\u0300')
+        .replaceAll('\u1EF4', 'y\u0323').replaceAll('\u1EF5', 'y\u0323')
+        .replaceAll('\u1EF6', 'y\u0309').replaceAll('\u1EF7', 'y\u0309')
+        .replaceAll('\u1EF8', 'y\u0303').replaceAll('\u1EF9', 'y\u0303');
   }
 
   // ── Audio helpers ─────────────────────────────────────────────────────────
