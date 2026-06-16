@@ -138,6 +138,7 @@ class ReviewScreen extends StatelessWidget {
           // Quality buttons (0-5)
           _buildQualityButton(
             context,
+            sentenceId: currentItem.sentenceId,
             quality: 0,
             label: 'Complete blackout',
             color: Colors.red,
@@ -146,6 +147,7 @@ class ReviewScreen extends StatelessWidget {
           const SizedBox(height: 8),
           _buildQualityButton(
             context,
+            sentenceId: currentItem.sentenceId,
             quality: 3,
             label: 'Hard (incorrect, but remembered)',
             color: Colors.orange,
@@ -154,6 +156,7 @@ class ReviewScreen extends StatelessWidget {
           const SizedBox(height: 8),
           _buildQualityButton(
             context,
+            sentenceId: currentItem.sentenceId,
             quality: 4,
             label: 'Good (correct with hesitation)',
             color: Colors.lightGreen,
@@ -162,6 +165,7 @@ class ReviewScreen extends StatelessWidget {
           const SizedBox(height: 8),
           _buildQualityButton(
             context,
+            sentenceId: currentItem.sentenceId,
             quality: 5,
             label: 'Perfect (instant recall)',
             color: Colors.green,
@@ -183,6 +187,7 @@ class ReviewScreen extends StatelessWidget {
 
   Widget _buildQualityButton(
     BuildContext context, {
+    required String sentenceId,
     required int quality,
     required String label,
     required Color color,
@@ -192,10 +197,9 @@ class ReviewScreen extends StatelessWidget {
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () {
-          // TODO: Get actual sentence ID
           context.read<ReviewBloc>().add(
             ReviewSubmitEvent(
-              sentenceId: 'mock-id',
+              sentenceId: sentenceId,
               quality: quality,
             ),
           );
