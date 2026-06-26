@@ -244,6 +244,44 @@ class AuthRepository {
     await _httpClient.clearAuthToken();
   }
 
+  /// Send password reset code to email
+  Future<void> sendPasswordResetCode(String email) async {
+    try {
+      await _httpClient.post<dynamic>(
+        AppConfig.authForgotPasswordEndpoint,
+        data: {
+          'appName': AppConfig.appName,
+          'email': email,
+        },
+        options: Options(headers: {'Content-Type': 'application/json'}),
+      );
+      // ABP trả 200 không có body — mọi status 2xx là thành công
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Reset password with token from email link
+  Future<void> resetPassword({
+    required String userId,
+    required String resetToken,
+    required String password,
+  }) async {
+    try {
+      await _httpClient.post<dynamic>(
+        AppConfig.authResetPasswordEndpoint,
+        data: {
+          'userId': userId,
+          'resetToken': resetToken,
+          'password': password,
+        },
+        options: Options(headers: {'Content-Type': 'application/json'}),
+      );
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
   /// Check if user is still logged in (has stored token)
   Future<Map<String, String>?> getStoredUser() async {
     try {

@@ -33,6 +33,8 @@ class AppConfig {
   static String get authRegisterEndpoint => kReleaseMode ? prod.AppConfig.authRegisterEndpoint : dev.AppConfig.authRegisterEndpoint;
   static String get authProfileEndpoint => kReleaseMode ? prod.AppConfig.authProfileEndpoint : dev.AppConfig.authProfileEndpoint;
   static String get authChangePasswordEndpoint => kReleaseMode ? prod.AppConfig.authChangePasswordEndpoint : dev.AppConfig.authChangePasswordEndpoint;
+  static String get authForgotPasswordEndpoint => kReleaseMode ? prod.AppConfig.authForgotPasswordEndpoint : dev.AppConfig.authForgotPasswordEndpoint;
+  static String get authResetPasswordEndpoint => kReleaseMode ? prod.AppConfig.authResetPasswordEndpoint : dev.AppConfig.authResetPasswordEndpoint;
 
   // HTTP Configuration
   static int get connectionTimeout => kReleaseMode ? prod.AppConfig.connectionTimeout : dev.AppConfig.connectionTimeout;

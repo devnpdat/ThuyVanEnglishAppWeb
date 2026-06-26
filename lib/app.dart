@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:english_learning_app/core/services/http_client.dart';
 import 'package:english_learning_app/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:english_learning_app/features/auth/presentation/screens/forgot_password_screen.dart';
+import 'package:english_learning_app/features/auth/presentation/screens/reset_password_screen.dart';
 import 'package:english_learning_app/features/auth/presentation/screens/login_screen.dart';
 import 'package:english_learning_app/features/home/presentation/screens/home_screen.dart';
 import 'package:english_learning_app/features/learning/presentation/screens/sentence_list_screen.dart';
@@ -138,11 +140,15 @@ final _router = GoRouter(
     final loc = state.matchedLocation;
     final onLogin = loc == '/login';
     final onPlacementTest = loc.startsWith('/placement-test');
+    // Whitelist — public routes không cần auth
+    final onPublicRoute = onLogin ||
+        loc == '/forgot-password' ||
+        loc.startsWith('/account/reset-password');
 
     // Đang check status — không redirect
     if (isLoading) return null;
 
-    if (!isAuthenticated && !onLogin) return '/login';
+    if (!isAuthenticated && !onPublicRoute) return '/login';
     if (isAuthenticated && onLogin) return '/';
     return null;
   },
@@ -154,6 +160,28 @@ final _router = GoRouter(
         value: _authBloc,
         child: const LoginScreen(),
       ),
+    ),
+
+    // Forgot Password — public route
+    GoRoute(
+      path: '/forgot-password',
+      builder: (context, state) => const ForgotPasswordScreen(),
+    ),
+
+    // Reset Password — public route, nhận userId + resetToken từ query params
+    // ABP gửi link dạng: /account/reset-password?userId=...&resetToken=...
+    GoRoute(
+      path: '/account/reset-password',
+      builder: (context, state) {
+        final userId = state.uri.queryParameters['userId'] ?? '';
+        // ABP URL-encode resetToken → decode trước khi dùng
+        final rawToken = state.uri.queryParameters['resetToken'] ?? '';
+        final resetToken = Uri.decodeComponent(rawToken);
+        return ResetPasswordScreen(
+          userId: userId,
+          resetToken: resetToken,
+        );
+      },
     ),
 
     // Home

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:english_learning_app/features/auth/presentation/bloc/auth_bloc.dart';
 
 
@@ -250,6 +251,22 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       const SizedBox(height: 20),
+                      // Link Quên mật khẩu — chỉ hiển thị ở chế độ đăng nhập
+                      if (!_isRegisterMode)
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: () => context.go('/forgot-password'),
+                            child: const Text(
+                              'Quên mật khẩu?',
+                              style: TextStyle(
+                                color: Color(0xFF4F6AF5),
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ),
                       TextButton(
                         onPressed: () => setState(() => _isRegisterMode = !_isRegisterMode),
                         child: RichText(

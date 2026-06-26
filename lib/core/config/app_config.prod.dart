@@ -21,6 +21,8 @@ class AppConfig {
   static const String authRegisterEndpoint = '$apiBaseUrl/api/account/register';
   static const String authProfileEndpoint = '$apiBaseUrl/api/account/profile-extended';
   static const String authChangePasswordEndpoint = '$apiBaseUrl/api/account/change-password';
+  static const String authForgotPasswordEndpoint = '$apiBaseUrl/api/account/send-password-reset-code';
+  static const String authResetPasswordEndpoint = '$apiBaseUrl/api/account/reset-password';
 
   // HTTP Configuration
   static const int connectionTimeout = 30;
