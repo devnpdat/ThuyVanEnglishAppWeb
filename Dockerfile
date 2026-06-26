@@ -34,6 +34,7 @@ COPY pubspec.yaml pubspec.lock ./
 RUN flutter pub get --no-example
 
 COPY . .
+RUN dart run build_runner build --delete-conflicting-outputs
 RUN flutter build web --release
 
 # ── Stage 2: Serve with nginx ─────────────────────────────────────────────────

@@ -126,7 +126,9 @@ class __$$AuthLoginEventImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$AuthLoginEventImpl implements AuthLoginEvent {
+class _$AuthLoginEventImpl
+    with DiagnosticableTreeMixin
+    implements AuthLoginEvent {
   const _$AuthLoginEventImpl({required this.email, required this.password});
 
   @override
@@ -135,8 +137,17 @@ class _$AuthLoginEventImpl implements AuthLoginEvent {
   final String password;
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'AuthEvent.login(email: $email, password: $password)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'AuthEvent.login'))
+      ..add(DiagnosticsProperty('email', email))
+      ..add(DiagnosticsProperty('password', password));
   }
 
   @override
@@ -292,7 +303,9 @@ class __$$AuthRegisterEventImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$AuthRegisterEventImpl implements AuthRegisterEvent {
+class _$AuthRegisterEventImpl
+    with DiagnosticableTreeMixin
+    implements AuthRegisterEvent {
   const _$AuthRegisterEventImpl(
       {required this.email, required this.password, required this.displayName});
 
@@ -304,8 +317,18 @@ class _$AuthRegisterEventImpl implements AuthRegisterEvent {
   final String displayName;
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'AuthEvent.register(email: $email, password: $password, displayName: $displayName)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'AuthEvent.register'))
+      ..add(DiagnosticsProperty('email', email))
+      ..add(DiagnosticsProperty('password', password))
+      ..add(DiagnosticsProperty('displayName', displayName));
   }
 
   @override
@@ -440,12 +463,20 @@ class __$$AuthLogoutEventImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$AuthLogoutEventImpl implements AuthLogoutEvent {
+class _$AuthLogoutEventImpl
+    with DiagnosticableTreeMixin
+    implements AuthLogoutEvent {
   const _$AuthLogoutEventImpl();
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'AuthEvent.logout()';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty('type', 'AuthEvent.logout'));
   }
 
   @override
@@ -557,12 +588,20 @@ class __$$AuthCheckStatusEventImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$AuthCheckStatusEventImpl implements AuthCheckStatusEvent {
+class _$AuthCheckStatusEventImpl
+    with DiagnosticableTreeMixin
+    implements AuthCheckStatusEvent {
   const _$AuthCheckStatusEventImpl();
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'AuthEvent.checkStatus()';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty('type', 'AuthEvent.checkStatus'));
   }
 
   @override
@@ -752,12 +791,18 @@ class __$$InitialImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$InitialImpl implements _Initial {
+class _$InitialImpl with DiagnosticableTreeMixin implements _Initial {
   const _$InitialImpl();
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'AuthState.initial()';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty('type', 'AuthState.initial'));
   }
 
   @override
@@ -872,12 +917,18 @@ class __$$LoadingImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$LoadingImpl implements _Loading {
+class _$LoadingImpl with DiagnosticableTreeMixin implements _Loading {
   const _$LoadingImpl();
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'AuthState.loading()';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty('type', 'AuthState.loading'));
   }
 
   @override
@@ -1022,7 +1073,9 @@ class __$$AuthenticatedImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$AuthenticatedImpl implements _Authenticated {
+class _$AuthenticatedImpl
+    with DiagnosticableTreeMixin
+    implements _Authenticated {
   const _$AuthenticatedImpl(
       {required this.userId,
       required this.email,
@@ -1040,8 +1093,19 @@ class _$AuthenticatedImpl implements _Authenticated {
   final String displayName;
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'AuthState.authenticated(userId: $userId, email: $email, token: $token, displayName: $displayName)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'AuthState.authenticated'))
+      ..add(DiagnosticsProperty('userId', userId))
+      ..add(DiagnosticsProperty('email', email))
+      ..add(DiagnosticsProperty('token', token))
+      ..add(DiagnosticsProperty('displayName', displayName));
   }
 
   @override
@@ -1196,15 +1260,23 @@ class __$$ErrorImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$ErrorImpl implements _Error {
+class _$ErrorImpl with DiagnosticableTreeMixin implements _Error {
   const _$ErrorImpl(this.message);
 
   @override
   final String message;
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'AuthState.error(message: $message)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'AuthState.error'))
+      ..add(DiagnosticsProperty('message', message));
   }
 
   @override
