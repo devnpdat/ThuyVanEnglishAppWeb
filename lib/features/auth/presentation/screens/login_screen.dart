@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:google_sign_in_web/web_only.dart' as google_sign_in_web;
 import 'package:english_learning_app/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:english_learning_app/core/config/app_config.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -34,9 +33,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _initGoogleSignIn() async {
     try {
-      await _googleSignIn.initialize(
-        serverClientId: AppConfig.googleServerClientId,
-      );
+      // Web: chỉ dùng clientId (serverClientId không hỗ trợ trên Web)
+      // Meta tag google-signin-client_id đã có trong index.html → gọi không tham số
+      await _googleSignIn.initialize();
       // Lắng nghe authenticationEvents — phát ra khi user nhấn renderButton
       _googleAuthSub = _googleSignIn.authenticationEvents.listen(
         (event) async {
