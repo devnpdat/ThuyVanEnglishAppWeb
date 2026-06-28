@@ -54424,8 +54424,8 @@ return new A.a4J(new A.bc(null,t.am),new A.eR(B.bE,s),new A.eR(B.bE,s),new A.eR(
 A.a4J.prototype={
 an(){this.aC()
 this.aiG()},
-aiG(){var s,r=v.G,q=r.window.location.pathname,p=r.window.location.hash
-if(q==="/google-callback"&&B.c.bv(p,"#")&&B.c.n(p,"id_token")){s=A.bnh(p)
+aiG(){var s,r=v.G,q=r.window.location.hash
+if(B.c.bv(q,"#")&&B.c.n(q,"id_token")){s=A.bnh(q)
 if(s!=null&&s.length!==0){r.window.history.replaceState(null,"","/")
 $.a6.ok$.push(new A.aJw(this,s))}}},
 l(){var s=this,r=s.e,q=r.N$=$.aj()
@@ -54558,7 +54558,7 @@ A.aJG.prototype={
 $0(){return this.a.Ni(this.b)},
 $S:0}
 A.aJH.prototype={
-$0(){var s=A.blC("952037731608-ln7gfjupt77125arhq2oe1as49q978pp.apps.googleusercontent.com","https://thuyvan-english.com/google-callback")
+$0(){var s=A.blC("952037731608-ln7gfjupt77125arhq2oe1as49q978pp.apps.googleusercontent.com","https://thuyvan-english.com/")
 v.G.window.location.href=s
 return null},
 $S:0}

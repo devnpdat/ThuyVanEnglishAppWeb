@@ -22,7 +22,6 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _obscurePassword = true;
 
   AuthBloc? _bloc;
-  static const _googleCallbackPath = '/google-callback';
 
   @override
   void initState() {
@@ -31,12 +30,12 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   /// Kiểm tra nếu URL chứa id_token từ Google OAuth redirect
+  /// Hoạt động với mọi path (redirect_uri là root URL)
   void _checkGoogleCallback() {
-    final path = web.window.location.pathname;
     final hash = web.window.location.hash;
 
-    // Chỉ xử lý nếu path là /google-callback và hash chứa id_token
-    if (path == _googleCallbackPath && hash.startsWith('#') && hash.contains('id_token')) {
+    // Kiểm tra hash chứa id_token (từ Google OAuth fragment redirect)
+    if (hash.startsWith('#') && hash.contains('id_token')) {
       final idToken = parseIdTokenFromHash(hash);
       if (idToken != null && idToken.isNotEmpty) {
         // Xoá hash khỏi URL ngay (tránh xử lý lại khi rebuild)
@@ -336,7 +335,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: ElevatedButton.icon(
                         onPressed: () => redirectToGoogleOAuth(
                           clientId: AppConfig.googleServerClientId,
-                          redirectUri: 'https://thuyvan-english.com$_googleCallbackPath',
+                          redirectUri: 'https://thuyvan-english.com/',
                         ),
                         icon: Image.network(
                           'https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg',
