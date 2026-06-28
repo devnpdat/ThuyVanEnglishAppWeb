@@ -11,6 +11,7 @@ extension type GoogleIdConfig._(JSObject _) implements JSObject {
     required String client_id,
     required JSFunction callback,
     String? ux_mode,
+    String? response_mode,
     bool? auto_select,
     bool? cancel_on_tap_outside,
   });
@@ -62,6 +63,7 @@ void initGoogleSignIn({
       onCredential(response.credential);
     }).toJS,
     ux_mode: 'redirect', // redirect mode — không dùng popup, tránh COOP block
+    response_mode: 'query', // query mode — Google redirect bằng GET, tránh nginx 405 POST
     auto_select: false,
     cancel_on_tap_outside: true,
   ));
