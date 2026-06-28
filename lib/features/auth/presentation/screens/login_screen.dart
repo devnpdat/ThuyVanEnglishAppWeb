@@ -399,9 +399,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           width: 20, height: 20,
                           errorBuilder: (_, __, ___) => const Icon(Icons.g_mobiledata, size: 24),
                         ),
-                        label: const Text(
-                          'Đăng nhập với Google',
-                          style: TextStyle(fontSize: 15, color: Colors.black87),
+                        label: Text(
+                          _isRegisterMode ? 'Đăng ký với Google' : 'Đăng nhập với Google',
+                          style: const TextStyle(fontSize: 15, color: Colors.black87),
                         ),
                         style: OutlinedButton.styleFrom(
                           side: BorderSide(color: Colors.grey[300]!),
