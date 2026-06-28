@@ -1,5 +1,3 @@
-import 'dart:async';
-import 'dart:ui_web' as ui_web;
 import 'package:web/web.dart' as web;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,49 +22,34 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _obscurePassword = true;
 
   AuthBloc? _bloc;
-  static const _googleButtonViewId = 'google-signin-button';
-  bool _gisInited = false;
+  static const _googleCallbackPath = '/google-callback';
 
   @override
   void initState() {
     super.initState();
-    _registerGoogleButtonView();
+    _checkGoogleCallback();
   }
 
-  void _registerGoogleButtonView() {
-    // Đăng ký HtmlElementView factory — tạo div để GIS renderButton vào
-    // ignore: undefined_prefixed_name
-    ui_web.platformViewRegistry.registerViewFactory(
-      _googleButtonViewId,
-      (int viewId) {
-        final div = web.HTMLDivElement()
-          ..id = 'gsi-button-container'
-          ..style.width = '100%'
-          ..style.height = '48px'
-          ..style.display = 'flex'
-          ..style.alignItems = 'center'
-          ..style.justifyContent = 'center';
-        return div;
-      },
-    );
-  }
+  /// Kiểm tra nếu URL chứa id_token từ Google OAuth redirect
+  void _checkGoogleCallback() {
+    final path = web.window.location.pathname;
+    final hash = web.window.location.hash;
 
-  void _initGis() {
-    if (_gisInited) return;
-    _gisInited = true;
-    // Init GIS + đăng ký callback nhận idToken
-    initGoogleSignIn(
-      clientId: AppConfig.googleServerClientId,
-      buttonDivId: 'gsi-button-container',
-      onCredential: (idToken) {
-        if (!mounted) return;
-        _bloc?.add(AuthSocialLoginEvent(provider: 'google', idToken: idToken));
-      },
-    );
-    // Render button sau 1 frame để div kịp mount
-    Future.delayed(const Duration(milliseconds: 300), () {
-      renderGoogleButton('gsi-button-container');
-    });
+    // Chỉ xử lý nếu path là /google-callback và hash chứa id_token
+    if (path == _googleCallbackPath && hash.startsWith('#') && hash.contains('id_token')) {
+      final idToken = parseIdTokenFromHash(hash);
+      if (idToken != null && idToken.isNotEmpty) {
+        // Xoá hash khỏi URL ngay (tránh xử lý lại khi rebuild)
+        web.window.history.replaceState(null, '', '/');
+
+        // Gửi id_token lên BE sau frame đầu (khi _bloc đã được set)
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            _bloc?.add(AuthSocialLoginEvent(provider: 'google', idToken: idToken));
+          }
+        });
+      }
+    }
   }
 
   @override
@@ -210,9 +193,6 @@ class _LoginScreenState extends State<LoginScreen> {
           return _buildEmailConfirmationScreen(context, emailConfirmInfo, bloc);
         }
 
-        // Init GIS sau khi build frame đầu
-        WidgetsBinding.instance.addPostFrameCallback((_) => _initGis());
-
         return Scaffold(
           backgroundColor: const Color(0xFFF5F7FF),
           body: Center(
@@ -349,11 +329,37 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     const SizedBox(height: 12),
 
-                    // GIS Button — native HTML div, GIS renderButton vào đây
+                    // Google Sign-In button — redirect OAuth với response_mode=fragment
                     SizedBox(
                       width: double.infinity,
                       height: 50,
-                      child: HtmlElementView(viewType: _googleButtonViewId),
+                      child: ElevatedButton.icon(
+                        onPressed: () => redirectToGoogleOAuth(
+                          clientId: AppConfig.googleServerClientId,
+                          redirectUri: 'https://thuyvan-english.com$_googleCallbackPath',
+                        ),
+                        icon: Image.network(
+                          'https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg',
+                          width: 20,
+                          height: 20,
+                        ),
+                        label: const Text(
+                          'Đăng nhập với Google',
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.black87,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            side: const BorderSide(color: Colors.grey, width: 0.5),
+                          ),
+                        ),
+                      ),
                     ),
 
                     const SizedBox(height: 20),

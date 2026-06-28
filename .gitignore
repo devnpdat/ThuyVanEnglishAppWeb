@@ -3,3 +3,14 @@
 pubspec.lock
 .flutter-plugins
 .flutter-plugins-dependencies
+
+# Build cache (not web output)
+build/*.dill
+build/*cache*
+build/flutter_assets/
+build/native_assets/
+build/test_cache/
+build/unit_test_assets/
+build/c44fcd35227171aa1427b452df757a75/
+build/e26aaee35837b44367a69c1be37a3c4d/
+fix_nginx.conf*

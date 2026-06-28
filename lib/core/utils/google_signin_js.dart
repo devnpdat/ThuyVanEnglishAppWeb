@@ -1,89 +1,60 @@
-import 'dart:js_interop';
-import 'dart:js_interop_unsafe';
+import 'dart:math';
+import 'package:web/web.dart' as web;
 
-// JS types
-extension type GoogleCredentialResponse._(JSObject _) implements JSObject {
-  external String get credential;
+/// Sinh nonce ngẫu nhiên (20 byte hex)
+String _generateNonce() {
+  final rand = Random.secure();
+  final bytes = List<int>.generate(20, (_) => rand.nextInt(256));
+  return bytes.map((b) => b.toRadixString(16).padLeft(2, '0')).join();
 }
 
-extension type GoogleIdConfig._(JSObject _) implements JSObject {
-  external factory GoogleIdConfig({
-    required String client_id,
-    required JSFunction callback,
-    String? ux_mode,
-    String? response_mode,
-    bool? auto_select,
-    bool? cancel_on_tap_outside,
-  });
-}
-
-extension type GoogleButtonConfig._(JSObject _) implements JSObject {
-  external factory GoogleButtonConfig({
-    String? type,
-    String? shape,
-    String? theme,
-    String? size,
-    String? text,
-    String? locale,
-    int? width,
-  });
-}
-
-@JS('google.accounts.id.initialize')
-external void _googleInitialize(GoogleIdConfig config);
-
-@JS('google.accounts.id.renderButton')
-external void _googleRenderButton(JSObject element, GoogleButtonConfig config);
-
-@JS('document.getElementById')
-external JSObject? _getElementById(String id);
-
-/// Đăng ký Dart callback để nhận credential từ GIS (qua window._dartGoogleCallback)
-void registerGoogleCallback(void Function(String idToken) onCredential) {
-  globalContext.setProperty(
-    '_dartGoogleCallback'.toJS,
-    ((String credential) => onCredential(credential)).toJS,
-  );
-}
-
-/// Init GIS + render button vào div có id [buttonDivId]
-/// ux_mode: redirect — tránh COOP block
-void initGoogleSignIn({
+/// Google OAuth redirect URL builder
+/// Dùng direct OAuth endpoint với response_mode=fragment
+/// để tránh form_post (nginx không xử lý POST body)
+String buildGoogleOAuthUrl({
   required String clientId,
-  required String buttonDivId,
-  required void Function(String idToken) onCredential,
+  required String redirectUri,
 }) {
-  // Đăng ký callback
-  registerGoogleCallback(onCredential);
+  final nonce = _generateNonce();
+  final state = _generateNonce();
 
-  // Initialize GIS
-  _googleInitialize(GoogleIdConfig(
-    client_id: clientId,
-    callback: ((GoogleCredentialResponse response) {
-      onCredential(response.credential);
-    }).toJS,
-    ux_mode: 'redirect', // redirect mode — không dùng popup, tránh COOP block
-    response_mode: 'fragment', // fragment mode — Google redirect bằng GET #credential, tránh nginx 405
-    auto_select: false,
-    cancel_on_tap_outside: true,
-  ));
+  // Lưu state vào sessionStorage để verify khi redirect về
+  web.window.sessionStorage.setItem('google_oauth_state', state);
+
+  final params = {
+    'client_id': clientId,
+    'redirect_uri': redirectUri,
+    'response_type': 'id_token',
+    'scope': 'openid email profile',
+    'state': state,
+    'nonce': nonce,
+    'response_mode': 'fragment',
+  };
+
+  final queryString = params.entries
+      .map((e) =>
+          '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+      .join('&');
+
+  return 'https://accounts.google.com/o/oauth2/v2/auth?$queryString';
 }
 
-/// Render GIS button vào div element sau khi Flutter build xong
-void renderGoogleButton(String buttonDivId) {
-  final el = _getElementById(buttonDivId);
-  if (el != null) {
-    _googleRenderButton(
-      el,
-      GoogleButtonConfig(
-        type: 'standard',
-        shape: 'rectangular',
-        theme: 'outline',
-        size: 'large',
-        text: 'signin_with',
-        locale: 'vi',
-        width: 400,
-      ),
-    );
-  }
+/// Redirect browser đến Google OAuth — gọi từ Flutter khi click button
+void redirectToGoogleOAuth({
+  required String clientId,
+  required String redirectUri,
+}) {
+  final url = buildGoogleOAuthUrl(
+    clientId: clientId,
+    redirectUri: redirectUri,
+  );
+  web.window.location.href = url;
+}
+
+/// Parse id_token từ URL hash (returned by Google OAuth fragment redirect)
+/// Hash format: #id_token=xxx&state=yyy
+String? parseIdTokenFromHash(String hash) {
+  if (hash.isEmpty || !hash.startsWith('#')) return null;
+  final params = Uri.splitQueryString(hash.substring(1));
+  return params['id_token'];
 }
