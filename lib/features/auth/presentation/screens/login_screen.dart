@@ -435,54 +435,37 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     const SizedBox(height: 20),
 
-                    // Link Quên mật khẩu
-                    if (!_isRegisterMode)
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: TextButton(
-                          onPressed: () => context.go('/forgot-password'),
-                          child: const Text(
-                            'Quên mật khẩu?',
-                            style: TextStyle(
-                              color: Color(0xFF4F6AF5),
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
+                    // Quên mật khẩu + Switch login/register — 1 dòng ngang
+                    Row(
+                      mainAxisAlignment: _isRegisterMode
+                          ? MainAxisAlignment.center
+                          : MainAxisAlignment.spaceBetween,
+                      children: [
+                        if (!_isRegisterMode)
+                          TextButton(
+                            onPressed: () => context.go('/forgot-password'),
+                            style: TextButton.styleFrom(padding: EdgeInsets.zero, minimumSize: Size.zero, tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+                            child: const Text('Quên mật khẩu?',
+                                style: TextStyle(color: Color(0xFF4F6AF5), fontSize: 14, fontWeight: FontWeight.w500)),
+                          ),
+                        GestureDetector(
+                          onTap: () => setState(() => _isRegisterMode = !_isRegisterMode),
+                          child: RichText(
+                            text: TextSpan(
+                              style: TextStyle(color: Colors.grey[600], fontSize: 14),
+                              children: _isRegisterMode
+                                  ? [
+                                      const TextSpan(text: 'Đã có tài khoản? '),
+                                      const TextSpan(text: 'Đăng nhập', style: TextStyle(color: Color(0xFF4F6AF5), fontWeight: FontWeight.w600)),
+                                    ]
+                                  : [
+                                      const TextSpan(text: 'Chưa có tài khoản? '),
+                                      const TextSpan(text: 'Đăng ký', style: TextStyle(color: Color(0xFF4F6AF5), fontWeight: FontWeight.w600)),
+                                    ],
                             ),
                           ),
                         ),
-                      ),
-
-                    // Switch login/register
-                    TextButton(
-                      onPressed: () => setState(() => _isRegisterMode = !_isRegisterMode),
-                      child: RichText(
-                        text: TextSpan(
-                          style: TextStyle(color: Colors.grey[700], fontSize: 14),
-                          children: _isRegisterMode
-                              ? [
-                                  const TextSpan(text: 'Đã có tài khoản? '),
-                                  const TextSpan(
-                                    text: 'Đăng nhập',
-                                    style: TextStyle(
-                                      color: Color(0xFF4F6AF5),
-                                      fontWeight: FontWeight.bold,
-                                      decoration: TextDecoration.underline,
-                                    ),
-                                  ),
-                                ]
-                              : [
-                                  const TextSpan(text: 'Chưa có tài khoản? '),
-                                  const TextSpan(
-                                    text: 'Đăng ký',
-                                    style: TextStyle(
-                                      color: Color(0xFF4F6AF5),
-                                      fontWeight: FontWeight.bold,
-                                      decoration: TextDecoration.underline,
-                                    ),
-                                  ),
-                                ],
-                        ),
-                      ),
+                      ],
                     ),
                   ],
                 ),
