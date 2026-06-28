@@ -29,25 +29,20 @@ class _LoginScreenState extends State<LoginScreen> {
     _checkGoogleCallback();
   }
 
-  /// Kiểm tra nếu URL chứa id_token từ Google OAuth redirect
-  /// Hoạt động với mọi path (redirect_uri là root URL)
+  /// Kiểm tra nếu sessionStorage có id_token (được lưu bởi index.html script trước khi Flutter init)
   void _checkGoogleCallback() {
-    final hash = web.window.location.hash;
+    final idToken = web.window.sessionStorage.getItem('google_id_token');
 
-    // Kiểm tra hash chứa id_token (từ Google OAuth fragment redirect)
-    if (hash.startsWith('#') && hash.contains('id_token')) {
-      final idToken = parseIdTokenFromHash(hash);
-      if (idToken != null && idToken.isNotEmpty) {
-        // Xoá hash khỏi URL ngay (tránh xử lý lại khi rebuild)
-        web.window.history.replaceState(null, '', '/');
+    if (idToken != null && idToken.isNotEmpty) {
+      // Xoá khỏi sessionStorage ngay (tránh xử lý lại)
+      web.window.sessionStorage.removeItem('google_id_token');
 
-        // Gửi id_token lên BE sau frame đầu (khi _bloc đã được set)
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted) {
-            _bloc?.add(AuthSocialLoginEvent(provider: 'google', idToken: idToken));
-          }
-        });
-      }
+      // Gửi id_token lên BE sau frame đầu (khi _bloc đã được set)
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _bloc?.add(AuthSocialLoginEvent(provider: 'google', idToken: idToken));
+        }
+      });
     }
   }
 
