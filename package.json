@@ -1,0 +1,13 @@
+{
+  "name": "thuyvan-english-app-web",
+  "version": "1.0.0",
+  "description": "ThuyVan English App - Flutter Web FE",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build": "flutter build web --release --no-pub"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
