@@ -14,33 +14,32 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
 
-  void _showTopError(BuildContext context, String msg) {
+  @override
+  void dispose() {
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  void _showTopMessage(BuildContext context, String msg, {bool isError = true}) {
     final overlay = Overlay.of(context);
     late OverlayEntry entry;
     entry = OverlayEntry(
       builder: (_) => Positioned(
-        top: 24,
-        right: 16,
-        left: 16,
+        top: 24, right: 16, left: 16,
         child: Material(
           color: Colors.transparent,
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: Colors.red[700],
+              color: isError ? Colors.red[700] : Colors.green[700],
               borderRadius: BorderRadius.circular(10),
-              boxShadow: const [
-                BoxShadow(color: Colors.black26, blurRadius: 8, offset: Offset(0, 3)),
-              ],
+              boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 8, offset: Offset(0, 3))],
             ),
             child: Row(
               children: [
-                const Icon(Icons.error_outline, color: Colors.white, size: 20),
+                Icon(isError ? Icons.error_outline : Icons.check_circle_outline, color: Colors.white, size: 20),
                 const SizedBox(width: 10),
-                Expanded(
-                  child: Text(msg,
-                      style: const TextStyle(color: Colors.white, fontSize: 14)),
-                ),
+                Expanded(child: Text(msg, style: const TextStyle(color: Colors.white, fontSize: 14))),
                 GestureDetector(
                   onTap: () => entry.remove(),
                   child: const Icon(Icons.close, color: Colors.white70, size: 18),
@@ -52,15 +51,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       ),
     );
     overlay.insert(entry);
-    Future.delayed(const Duration(seconds: 4), () {
-      if (entry.mounted) entry.remove();
-    });
-  }
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    super.dispose();
+    Future.delayed(const Duration(seconds: 4), () { if (entry.mounted) entry.remove(); });
   }
 
   @override
@@ -70,7 +61,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       child: BlocConsumer<ForgotPasswordBloc, ForgotPasswordState>(
         listener: (context, state) {
           state.maybeWhen(
-            error: (msg) => _showTopError(context, msg),
+            error: (msg) => _showTopMessage(context, msg),
             orElse: () {},
           );
         },
@@ -80,102 +71,91 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
           return Scaffold(
             backgroundColor: const Color(0xFFF5F7FF),
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back_ios, color: Color(0xFF4F6AF5), size: 20),
+                onPressed: () => context.go('/login'),
+              ),
+            ),
             body: Center(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(24),
+                padding: const EdgeInsets.fromLTRB(24, 0, 24, 40),
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 400),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Logo
-                      Container(
-                        width: 80,
-                        height: 80,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF4F6AF5),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: const Icon(Icons.lock_reset, color: Colors.white, size: 44),
-                      ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 8),
                       Text(
-                        'Quên Mật Khẩu',
-                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: const Color(0xFF1A1A2E),
+                        isCodeSent ? 'Kiểm tra email' : 'Quên mật khẩu?',
+                        style: const TextStyle(
+                          fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFF1A1A2E),
                         ),
                       ),
                       const SizedBox(height: 8),
                       Text(
                         isCodeSent
-                            ? 'Kiểm tra hộp thư email của bạn'
-                            : 'Nhập email để nhận link đặt lại mật khẩu',
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.grey[600],
-                        ),
+                            ? 'Email đặt lại mật khẩu đã được gửi đến:'
+                            : 'Nhập email tài khoản, chúng tôi sẽ gửi link đặt lại mật khẩu.',
+                        style: TextStyle(color: Colors.grey[600], fontSize: 15, height: 1.5),
                       ),
                       const SizedBox(height: 32),
 
                       if (isCodeSent) ...[
-                        // Success card
+                        // ── Success state ──────────────────────────
                         Container(
+                          width: double.infinity,
                           padding: const EdgeInsets.all(24),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(16),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.08),
-                                blurRadius: 16,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
+                            boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 16, offset: const Offset(0, 4))],
                           ),
                           child: Column(
                             children: [
                               Container(
-                                width: 64,
-                                height: 64,
-                                decoration: BoxDecoration(
-                                  color: Colors.green[50],
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Icon(Icons.mark_email_read_outlined,
-                                    color: Colors.green[600], size: 36),
+                                width: 72, height: 72,
+                                decoration: BoxDecoration(color: Colors.green[50], shape: BoxShape.circle),
+                                child: Icon(Icons.mark_email_read_outlined, color: Colors.green[600], size: 40),
                               ),
                               const SizedBox(height: 16),
                               Text(
-                                'Email đã được gửi!',
-                                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: const Color(0xFF1A1A2E),
-                                ),
+                                _emailController.text.trim(),
+                                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Color(0xFF1A1A2E)),
                               ),
                               const SizedBox(height: 8),
                               Text(
-                                'Chúng tôi đã gửi link đặt lại mật khẩu đến\n${_emailController.text.trim()}\nVui lòng kiểm tra hộp thư (kể cả thư rác).',
+                                'Kiểm tra cả thư mục Spam/Junk nếu không thấy email trong hộp thư đến.',
                                 textAlign: TextAlign.center,
-                                style: TextStyle(color: Colors.grey[600], fontSize: 14),
+                                style: TextStyle(color: Colors.grey[500], fontSize: 13, height: 1.5),
                               ),
                             ],
                           ),
                         ),
+                        const SizedBox(height: 24),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 48,
+                          child: OutlinedButton(
+                            onPressed: () => context.go('/login'),
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(color: Color(0xFF4F6AF5)),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            ),
+                            child: const Text('Quay lại đăng nhập',
+                                style: TextStyle(color: Color(0xFF4F6AF5), fontSize: 15, fontWeight: FontWeight.w600)),
+                          ),
+                        ),
                       ] else ...[
-                        // Form card
+                        // ── Form state ────────────────────────────
                         Container(
                           padding: const EdgeInsets.all(24),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(16),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.08),
-                                blurRadius: 16,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
+                            boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 16, offset: const Offset(0, 4))],
                           ),
                           child: Form(
                             key: _formKey,
@@ -184,61 +164,46 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                 TextFormField(
                                   controller: _emailController,
                                   keyboardType: TextInputType.emailAddress,
-                                  style: const TextStyle(color: Colors.black),
-                                  decoration: const InputDecoration(
+                                  autofocus: true,
+                                  style: const TextStyle(color: Colors.black87),
+                                  decoration: InputDecoration(
                                     labelText: 'Email',
-                                    prefixIcon: Icon(Icons.email_outlined),
-                                    border: OutlineInputBorder(),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Color(0xFF4F6AF5), width: 2),
-                                    ),
-                                    errorStyle:
-                                        TextStyle(color: Colors.red, fontSize: 12),
+                                    hintText: 'example@gmail.com',
+                                    prefixIcon: const Icon(Icons.email_outlined, color: Color(0xFF4F6AF5)),
+                                    filled: true,
+                                    fillColor: const Color(0xFFF8F9FF),
+                                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                                    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Colors.grey[200]!)),
+                                    focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFF4F6AF5), width: 2)),
+                                    errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Colors.red[400]!)),
+                                    focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Colors.red[400]!)),
+                                    errorStyle: const TextStyle(fontSize: 12),
                                   ),
-                                  validator: (v) =>
-                                      (v == null || !v.contains('@'))
-                                          ? 'Email không hợp lệ'
-                                          : null,
-                                  autovalidateMode:
-                                      AutovalidateMode.onUserInteraction,
+                                  validator: (v) => (v == null || !v.contains('@')) ? 'Email không hợp lệ' : null,
+                                  autovalidateMode: AutovalidateMode.onUserInteraction,
                                 ),
-                                const SizedBox(height: 24),
+                                const SizedBox(height: 20),
                                 SizedBox(
                                   width: double.infinity,
-                                  height: 48,
+                                  height: 50,
                                   child: ElevatedButton(
-                                    onPressed: isLoading
-                                        ? null
-                                        : () {
-                                            if (_formKey.currentState!.validate()) {
-                                              context.read<ForgotPasswordBloc>().add(
-                                                    ForgotPasswordEvent.sendCode(
-                                                      email: _emailController.text.trim(),
-                                                    ),
-                                                  );
-                                            }
-                                          },
+                                    onPressed: isLoading ? null : () {
+                                      if (_formKey.currentState!.validate()) {
+                                        context.read<ForgotPasswordBloc>().add(
+                                          ForgotPasswordEvent.sendCode(email: _emailController.text.trim()),
+                                        );
+                                      }
+                                    },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: const Color(0xFF4F6AF5),
                                       foregroundColor: Colors.white,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
+                                      disabledBackgroundColor: const Color(0xFF4F6AF5).withValues(alpha: 0.5),
+                                      elevation: 0,
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                                     ),
                                     child: isLoading
-                                        ? const SizedBox(
-                                            width: 20,
-                                            height: 20,
-                                            child: CircularProgressIndicator(
-                                                color: Colors.white, strokeWidth: 2),
-                                          )
-                                        : const Text(
-                                            'Gửi link đặt lại',
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w600),
-                                          ),
+                                        ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5))
+                                        : const Text('Gửi link đặt lại', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                                   ),
                                 ),
                               ],
@@ -246,20 +211,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           ),
                         ),
                       ],
-
-                      const SizedBox(height: 20),
-                      TextButton.icon(
-                        onPressed: () => context.go('/login'),
-                        icon: const Icon(Icons.arrow_back,
-                            size: 16, color: Color(0xFF4F6AF5)),
-                        label: const Text(
-                          'Quay lại đăng nhập',
-                          style: TextStyle(
-                            color: Color(0xFF4F6AF5),
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),

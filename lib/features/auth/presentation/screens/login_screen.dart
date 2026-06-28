@@ -23,6 +23,24 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _obscurePassword = true;
 
   final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
+  bool _googleInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initGoogleSignIn();
+  }
+
+  Future<void> _initGoogleSignIn() async {
+    try {
+      await _googleSignIn.initialize(
+        serverClientId: AppConfig.googleServerClientId,
+      );
+      _googleInitialized = true;
+    } catch (_) {
+      // ignore — sẽ retry khi user nhấn nút
+    }
+  }
 
   /// Hiển thị thông báo dạng Overlay widget (top-right)
   void _showTopMessage(BuildContext context, String msg, {bool isError = true}) {
@@ -72,10 +90,13 @@ class _LoginScreenState extends State<LoginScreen> {
   /// Google Sign-In — dùng google_sign_in v7 API
   Future<void> _handleGoogleSignIn(AuthBloc bloc) async {
     try {
-      // Khởi tạo GoogleSignIn (safe to call nhiều lần)
-      await _googleSignIn.initialize(
-        serverClientId: AppConfig.googleServerClientId,
-      );
+      // Nếu chưa init (hiếm), thử init lại
+      if (!_googleInitialized) {
+        await _googleSignIn.initialize(
+          serverClientId: AppConfig.googleServerClientId,
+        );
+        _googleInitialized = true;
+      }
 
       // Mở popup đăng nhập Google
       final GoogleSignInAccount account = await _googleSignIn.authenticate();
