@@ -63,7 +63,7 @@ void initGoogleSignIn({
       onCredential(response.credential);
     }).toJS,
     ux_mode: 'redirect', // redirect mode — không dùng popup, tránh COOP block
-    response_mode: 'query', // query mode — Google redirect bằng GET, tránh nginx 405 POST
+    response_mode: 'fragment', // fragment mode — Google redirect bằng GET #credential, tránh nginx 405
     auto_select: false,
     cancel_on_tap_outside: true,
   ));
