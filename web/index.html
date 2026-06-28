@@ -42,7 +42,8 @@
   <link rel="icon" type="image/png" href="favicon.png"/>
 
   <!-- Google Identity Services (GIS) - One Tap + Button, không dùng popup -->
-  <script src="https://accounts.google.com/gsi/client" async></script>
+  <!-- KHÔNG async — Flutter gọi google.accounts.id.initialize ngay sau first frame, cần script load đồng bộ -->
+  <script src="https://accounts.google.com/gsi/client" defer></script>
   <script>
     function handleGoogleCredential(response) {
       if (window._dartGoogleCallback) {
