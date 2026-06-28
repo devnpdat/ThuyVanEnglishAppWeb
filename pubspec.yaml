@@ -44,7 +44,7 @@ dependencies:
   intl: ^0.19.0
   connectivity_plus: ^5.0.2
   logger: ^2.1.0
-  google_sign_in: ^7.2.0
+  # Google Sign-In: dùng GIS JS trực tiếp (dart:js_interop), không dùng package này
 
 dev_dependencies:
   flutter_test:

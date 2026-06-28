@@ -2,6 +2,9 @@
 # Build context: frontend/ directory (Railway rootDirectory)
 FROM debian:bookworm-slim AS builder
 
+# Cache bust: update this value to force full rebuild
+ARG CACHE_BUST=2
+
 ENV DEBIAN_FRONTEND=noninteractive
 ENV FLUTTER_VERSION=3.44.1
 ENV FLUTTER_HOME=/opt/flutter

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:english_learning_app/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:english_learning_app/core/config/app_config.dart';
 import 'package:english_learning_app/features/home/presentation/bloc/dashboard_bloc.dart';
 import 'package:english_learning_app/features/home/data/dtos/dashboard_dto.dart';
 
@@ -66,11 +67,11 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          // Admin icon - chỉ hiện cho devdatnp@gmail.com
+          // Admin icon - chỉ hiện cho adminEmails trong config
           BlocBuilder<AuthBloc, AuthState>(
             builder: (context, authState) {
               final isAdmin = authState.maybeWhen(
-                authenticated: (_, email, __, ___) => email == 'devdatnp@gmail.com',
+                authenticated: (_, email, __, ___) => AppConfig.adminEmails.contains(email),
                 orElse: () => false,
               );
               if (!isAdmin) return const SizedBox.shrink();

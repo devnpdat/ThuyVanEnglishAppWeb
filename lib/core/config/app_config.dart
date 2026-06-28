@@ -61,6 +61,9 @@ class AppConfig {
   // SSL Configuration
   static bool get allowSelfSignedCerts => kReleaseMode ? prod.AppConfig.allowSelfSignedCerts : dev.AppConfig.allowSelfSignedCerts;
 
+  // Admin emails
+  static Set<String> get adminEmails => kReleaseMode ? prod.AppConfig.adminEmails : dev.AppConfig.adminEmails;
+
   // Google Sign-In (for server-side auth)
   static String get googleServerClientId => kReleaseMode
       ? prod.AppConfig.googleServerClientId

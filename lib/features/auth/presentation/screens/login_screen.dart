@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:ui_web' as ui_web;
+import 'package:web/web.dart' as web;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:google_sign_in_web/web_only.dart' as google_sign_in_web;
 import 'package:english_learning_app/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:english_learning_app/core/config/app_config.dart';
+import 'package:english_learning_app/core/utils/google_signin_js.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -21,47 +23,54 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isRegisterMode = false;
   bool _obscurePassword = true;
 
-  final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
-  StreamSubscription<GoogleSignInAuthenticationEvent>? _googleAuthSub;
-  AuthBloc? _bloc; // ref để dùng trong stream callback
+  AuthBloc? _bloc;
+  static const _googleButtonViewId = 'google-signin-button';
+  bool _gisInited = false;
 
   @override
   void initState() {
     super.initState();
-    _initGoogleSignIn();
+    _registerGoogleButtonView();
   }
 
-  Future<void> _initGoogleSignIn() async {
-    try {
-      // Web: chỉ dùng clientId (serverClientId không hỗ trợ trên Web)
-      // Meta tag google-signin-client_id đã có trong index.html → gọi không tham số
-      await _googleSignIn.initialize();
-      // Lắng nghe authenticationEvents — phát ra khi user nhấn renderButton
-      _googleAuthSub = _googleSignIn.authenticationEvents.listen(
-        (event) async {
-          if (event is GoogleSignInAuthenticationEventSignIn) {
-            final idToken = event.user.authentication.idToken;
-            if (idToken == null || idToken.isEmpty) {
-              if (mounted) _showTopMessage(context, 'Không lấy được idToken từ Google');
-              return;
-            }
-            _bloc?.add(AuthSocialLoginEvent(provider: 'google', idToken: idToken));
-          }
-        },
-        onError: (e) {
-          final msg = e.toString();
-          if (msg.contains('cancel') || msg.contains('Cancel')) return;
-          if (mounted) _showTopMessage(context, 'Lỗi Google: ${msg.replaceAll('Exception: ', '')}');
-        },
-      );
-    } catch (_) {
-      // ignore
-    }
+  void _registerGoogleButtonView() {
+    // Đăng ký HtmlElementView factory — tạo div để GIS renderButton vào
+    // ignore: undefined_prefixed_name
+    ui_web.platformViewRegistry.registerViewFactory(
+      _googleButtonViewId,
+      (int viewId) {
+        final div = web.HTMLDivElement()
+          ..id = 'gsi-button-container'
+          ..style.width = '100%'
+          ..style.height = '48px'
+          ..style.display = 'flex'
+          ..style.alignItems = 'center'
+          ..style.justifyContent = 'center';
+        return div;
+      },
+    );
+  }
+
+  void _initGis() {
+    if (_gisInited) return;
+    _gisInited = true;
+    // Init GIS + đăng ký callback nhận idToken
+    initGoogleSignIn(
+      clientId: AppConfig.googleServerClientId,
+      buttonDivId: 'gsi-button-container',
+      onCredential: (idToken) {
+        if (!mounted) return;
+        _bloc?.add(AuthSocialLoginEvent(provider: 'google', idToken: idToken));
+      },
+    );
+    // Render button sau 1 frame để div kịp mount
+    Future.delayed(const Duration(milliseconds: 300), () {
+      renderGoogleButton('gsi-button-container');
+    });
   }
 
   @override
   void dispose() {
-    _googleAuthSub?.cancel();
     _emailController.dispose();
     _passwordController.dispose();
     _displayNameController.dispose();
@@ -191,7 +200,7 @@ class _LoginScreenState extends State<LoginScreen> {
       },
       builder: (context, state) {
         final bloc = context.read<AuthBloc>();
-        _bloc = bloc; // giữ ref cho stream callback
+        _bloc = bloc;
         final isLoading = state.maybeWhen(loading: () => true, orElse: () => false);
 
         final emailConfirmInfo = state.whenOrNull<String?>(
@@ -200,6 +209,9 @@ class _LoginScreenState extends State<LoginScreen> {
         if (emailConfirmInfo != null) {
           return _buildEmailConfirmationScreen(context, emailConfirmInfo, bloc);
         }
+
+        // Init GIS sau khi build frame đầu
+        WidgetsBinding.instance.addPostFrameCallback((_) => _initGis());
 
         return Scaffold(
           backgroundColor: const Color(0xFFF5F7FF),
@@ -335,19 +347,18 @@ class _LoginScreenState extends State<LoginScreen> {
                       ],
                     ),
 
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 12),
 
-                    // Google renderButton — SDK tự render, xử lý click nội bộ
-                    // idToken trả về qua authenticationEvents stream (initState)
+                    // GIS Button — native HTML div, GIS renderButton vào đây
                     SizedBox(
                       width: double.infinity,
-                      height: 48,
-                      child: google_sign_in_web.renderButton(),
+                      height: 50,
+                      child: HtmlElementView(viewType: _googleButtonViewId),
                     ),
 
                     const SizedBox(height: 20),
 
-                    // Quên mật khẩu + Switch login/register — 1 dòng ngang
+                    // Quên mật khẩu + Switch login/register
                     Row(
                       mainAxisAlignment: _isRegisterMode
                           ? MainAxisAlignment.center

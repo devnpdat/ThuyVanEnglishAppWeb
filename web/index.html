@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- build: gis-redirect-mode -->
 <html>
 <head>
   <!--
@@ -40,8 +41,15 @@
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <!-- Google Sign-In -->
-  <meta name="google-signin-client_id" content="952037731608-ln7gfjupt77125arhq2oe1as49q978pp.apps.googleusercontent.com">
+  <!-- Google Identity Services (GIS) - One Tap + Button, không dùng popup -->
+  <script src="https://accounts.google.com/gsi/client" async></script>
+  <script>
+    function handleGoogleCredential(response) {
+      if (window._dartGoogleCallback) {
+        window._dartGoogleCallback(response.credential);
+      }
+    }
+  </script>
 
   <title>Thuỳ Vân English - Học tiếng Anh mỗi ngày</title>
   <link rel="manifest" href="manifest.json">

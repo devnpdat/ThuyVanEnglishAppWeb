@@ -46,6 +46,12 @@ class AppConfig {
   static const bool enableDebugLogging = false; // Prod: tắt debug log
   static const bool enableApiCaching = true;
 
+  // Admin emails — hardcode tạm thời, sau này chuyển sang server-side role check
+  static const Set<String> adminEmails = {
+    'devdatnp@gmail.com',
+    'devnpdat@gmail.com',
+  };
+
   // Google Sign-In
   static const String googleServerClientId = '952037731608-ln7gfjupt77125arhq2oe1as49q978pp.apps.googleusercontent.com';
 
