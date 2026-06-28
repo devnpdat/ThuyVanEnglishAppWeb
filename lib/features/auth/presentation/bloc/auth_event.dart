@@ -13,6 +13,11 @@ class AuthEvent with _$AuthEvent {
     required String displayName,
   }) = AuthRegisterEvent;
 
+  const factory AuthEvent.socialLogin({
+    required String provider,
+    required String idToken,
+  }) = AuthSocialLoginEvent;
+
   const factory AuthEvent.logout() = AuthLogoutEvent;
 
   const factory AuthEvent.checkStatus() = AuthCheckStatusEvent;

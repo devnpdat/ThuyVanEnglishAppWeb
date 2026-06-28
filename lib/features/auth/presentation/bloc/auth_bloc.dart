@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:english_learning_app/features/auth/data/repositories/auth_repository.dart';
+import 'package:english_learning_app/core/config/app_config.dart';
 import 'package:get_it/get_it.dart';
 
 part 'auth_bloc.freezed.dart';
@@ -20,6 +21,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         super(const AuthState.initial()) {
     on<AuthLoginEvent>(_onLogin);
     on<AuthRegisterEvent>(_onRegister);
+    on<AuthSocialLoginEvent>(_onSocialLogin);
     on<AuthLogoutEvent>(_onLogout);
     on<AuthCheckStatusEvent>(_onCheckStatus);
   }
@@ -56,32 +58,28 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       final token = response.accessToken ?? '';
       if (token.isEmpty) {
-        throw Exception('Không lấy được token từ server');
+        throw Exception('Sai email hoặc mật khẩu, hoặc email chưa được xác nhận');
       }
 
-      // Lấy username từ JWT (preferred_username claim) — không cần gọi getProfile
+      // Lấy username từ JWT (preferred_username claim)
       final usernameFromJwt = _parseUsernameFromJwt(token);
 
       // Set token vào HttpClient (memory only) để gọi getProfile
-      // KHÔNG dùng extension setAuthToken vì nó ghi đè SharedPrefs trước khi có displayName
       await _authRepository.setHttpToken(token);
 
-      // Vẫn gọi getProfile để lấy userId, email — nhưng không dùng displayName từ đó
+      // Gọi getProfile để lấy userId, email
       UserProfileResponse? profile;
       try {
         profile = await _authRepository.getProfile();
-      } catch (_) {
-        // Profile call failed — vẫn login được
-      }
+      } catch (_) {}
 
-      // displayName: ưu tiên JWT username, fallback email
       final displayName = usernameFromJwt.isNotEmpty
           ? usernameFromJwt
           : (profile?.emailAddress ?? event.email);
 
       debugPrint('🔍 [AuthBloc] usernameFromJwt="$usernameFromJwt" displayName="$displayName"');
 
-      // Lưu toàn bộ user data (token + userId + email + displayName) 1 lần duy nhất
+      // Lưu toàn bộ user data
       await _authRepository.saveUserLocally(
         token,
         profile?.id ?? '',
@@ -100,7 +98,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
-  /// Register rồi tự động login
+  /// Register — KHÔNG auto-login, gửi email xác thực
   Future<void> _onRegister(
       AuthRegisterEvent event, Emitter<AuthState> emit) async {
     emit(const AuthState.loading());
@@ -114,38 +112,63 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         ),
       );
 
-      // Bước 2: Auto-login sau khi register
-      final loginResp = await _authRepository.login(
-        LoginRequest(
-          userNameOrEmailAddress: event.email,
-          password: event.password,
-        ),
+      // Bước 2: Gửi email xác thực
+      try {
+        await _authRepository.sendEmailConfirmation(event.email);
+      } catch (e) {
+        debugPrint('⚠️ [AuthBloc] sendEmailConfirmation error (non-fatal): $e');
+      }
+
+      // Bước 3: Emit emailConfirmationRequired — KHÔNG auto-login
+      emit(AuthState.emailConfirmationRequired(
+        email: event.email,
+        message: 'Vui lòng kiểm tra email $event.email để xác nhận tài khoản.\n'
+            'Sau đó bạn có thể đăng nhập bình thường.',
+      ));
+    } catch (e) {
+      emit(AuthState.error(e.toString().replaceAll('Exception: ', '')));
+    }
+  }
+
+  /// Google login — verify token server-side, nhận OAuth token về
+  Future<void> _onSocialLogin(
+      AuthSocialLoginEvent event, Emitter<AuthState> emit) async {
+    emit(const AuthState.loading());
+    try {
+      // Gửi idToken lên BE để server verify
+      final response = await _authRepository.socialLogin(
+        provider: event.provider,
+        idToken: event.idToken,
       );
 
-      final token = loginResp.accessToken ?? '';
+      final token = response.accessToken ?? '';
       if (token.isEmpty) {
         throw Exception('Không lấy được token từ server');
       }
 
-      // Set token vào HttpClient (memory only) để gọi getProfile
+      final usernameFromJwt = _parseUsernameFromJwt(token);
+
       await _authRepository.setHttpToken(token);
+
       UserProfileResponse? profile;
       try {
         profile = await _authRepository.getProfile();
       } catch (_) {}
 
-      final displayName = event.displayName.isNotEmpty ? event.displayName : event.email;
+      final displayName = usernameFromJwt.isNotEmpty
+          ? usernameFromJwt
+          : (profile?.emailAddress ?? event.provider);
 
       await _authRepository.saveUserLocally(
         token,
         profile?.id ?? '',
-        event.email,
+        profile?.emailAddress ?? '',
         displayName,
       );
 
       emit(AuthState.authenticated(
         userId: profile?.id ?? '',
-        email: event.email,
+        email: profile?.emailAddress ?? '',
         token: token,
         displayName: displayName,
       ));

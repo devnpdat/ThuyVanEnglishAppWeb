@@ -206,6 +206,51 @@ class AuthRepository {
     }
   }
 
+  /// Google login — gửi idToken lên BE, nhận OAuth token về
+  Future<LoginResponse> socialLogin({
+    required String provider,
+    required String idToken,
+  }) async {
+    try {
+      final response = await _httpClient.post<Map<String, dynamic>>(
+        '${AppConfig.apiBaseUrl}/api/account/google-login',
+        data: {
+          'idToken': idToken,
+        },
+        options: Options(headers: {'Content-Type': 'application/json'}),
+      );
+
+      if (response.statusCode == 200 && response.data != null) {
+        final token = response.data!['access_token'] as String? ??
+            response.data!['accessToken'] as String? ??
+            '';
+        return LoginResponse(
+          success: token.isNotEmpty,
+          accessToken: token,
+          expireInSeconds: response.data!['expires_in'] as int? ?? 86400,
+        );
+      }
+      throw Exception('Google login failed: ${response.statusCode}');
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Gửi email xác thực sau khi đăng ký
+  Future<void> sendEmailConfirmation(String email) async {
+    try {
+      await _httpClient.post<dynamic>(
+        '${AppConfig.apiBaseUrl}/api/account/send-email-confirmation',
+        data: {
+          'email': email,
+        },
+        options: Options(headers: {'Content-Type': 'application/json'}),
+      );
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
   /// Get current user profile (ABP)
   Future<UserProfileResponse> getProfile() async {
     try {

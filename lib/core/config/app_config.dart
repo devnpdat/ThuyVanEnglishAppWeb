@@ -61,6 +61,11 @@ class AppConfig {
   // SSL Configuration
   static bool get allowSelfSignedCerts => kReleaseMode ? prod.AppConfig.allowSelfSignedCerts : dev.AppConfig.allowSelfSignedCerts;
 
+  // Google Sign-In (for server-side auth)
+  static String get googleServerClientId => kReleaseMode
+      ? prod.AppConfig.googleServerClientId
+      : dev.AppConfig.googleServerClientId;
+
   // Debug info
   static String get currentEnv => kReleaseMode ? 'PRODUCTION' : 'DEVELOPMENT';
 }

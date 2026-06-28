@@ -46,6 +46,9 @@ class AppConfig {
   static const bool enableDebugLogging = false; // Prod: tắt debug log
   static const bool enableApiCaching = true;
 
+  // Google Sign-In
+  static const String googleServerClientId = '952037731608-ln7gfjupt77125arhq2oe1as49q978pp.apps.googleusercontent.com';
+
   // SSL Configuration
   static const bool allowSelfSignedCerts = false;  // Prod: strict SSL
 }

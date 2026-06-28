@@ -21,6 +21,7 @@ mixin _$AuthEvent {
     required TResult Function(String email, String password) login,
     required TResult Function(String email, String password, String displayName)
         register,
+    required TResult Function(String provider, String idToken) socialLogin,
     required TResult Function() logout,
     required TResult Function() checkStatus,
   }) =>
@@ -30,6 +31,7 @@ mixin _$AuthEvent {
     TResult? Function(String email, String password)? login,
     TResult? Function(String email, String password, String displayName)?
         register,
+    TResult? Function(String provider, String idToken)? socialLogin,
     TResult? Function()? logout,
     TResult? Function()? checkStatus,
   }) =>
@@ -39,6 +41,7 @@ mixin _$AuthEvent {
     TResult Function(String email, String password)? login,
     TResult Function(String email, String password, String displayName)?
         register,
+    TResult Function(String provider, String idToken)? socialLogin,
     TResult Function()? logout,
     TResult Function()? checkStatus,
     required TResult orElse(),
@@ -48,6 +51,7 @@ mixin _$AuthEvent {
   TResult map<TResult extends Object?>({
     required TResult Function(AuthLoginEvent value) login,
     required TResult Function(AuthRegisterEvent value) register,
+    required TResult Function(AuthSocialLoginEvent value) socialLogin,
     required TResult Function(AuthLogoutEvent value) logout,
     required TResult Function(AuthCheckStatusEvent value) checkStatus,
   }) =>
@@ -56,6 +60,7 @@ mixin _$AuthEvent {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(AuthLoginEvent value)? login,
     TResult? Function(AuthRegisterEvent value)? register,
+    TResult? Function(AuthSocialLoginEvent value)? socialLogin,
     TResult? Function(AuthLogoutEvent value)? logout,
     TResult? Function(AuthCheckStatusEvent value)? checkStatus,
   }) =>
@@ -64,6 +69,7 @@ mixin _$AuthEvent {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(AuthLoginEvent value)? login,
     TResult Function(AuthRegisterEvent value)? register,
+    TResult Function(AuthSocialLoginEvent value)? socialLogin,
     TResult Function(AuthLogoutEvent value)? logout,
     TResult Function(AuthCheckStatusEvent value)? checkStatus,
     required TResult orElse(),
@@ -176,6 +182,7 @@ class _$AuthLoginEventImpl
     required TResult Function(String email, String password) login,
     required TResult Function(String email, String password, String displayName)
         register,
+    required TResult Function(String provider, String idToken) socialLogin,
     required TResult Function() logout,
     required TResult Function() checkStatus,
   }) {
@@ -188,6 +195,7 @@ class _$AuthLoginEventImpl
     TResult? Function(String email, String password)? login,
     TResult? Function(String email, String password, String displayName)?
         register,
+    TResult? Function(String provider, String idToken)? socialLogin,
     TResult? Function()? logout,
     TResult? Function()? checkStatus,
   }) {
@@ -200,6 +208,7 @@ class _$AuthLoginEventImpl
     TResult Function(String email, String password)? login,
     TResult Function(String email, String password, String displayName)?
         register,
+    TResult Function(String provider, String idToken)? socialLogin,
     TResult Function()? logout,
     TResult Function()? checkStatus,
     required TResult orElse(),
@@ -215,6 +224,7 @@ class _$AuthLoginEventImpl
   TResult map<TResult extends Object?>({
     required TResult Function(AuthLoginEvent value) login,
     required TResult Function(AuthRegisterEvent value) register,
+    required TResult Function(AuthSocialLoginEvent value) socialLogin,
     required TResult Function(AuthLogoutEvent value) logout,
     required TResult Function(AuthCheckStatusEvent value) checkStatus,
   }) {
@@ -226,6 +236,7 @@ class _$AuthLoginEventImpl
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(AuthLoginEvent value)? login,
     TResult? Function(AuthRegisterEvent value)? register,
+    TResult? Function(AuthSocialLoginEvent value)? socialLogin,
     TResult? Function(AuthLogoutEvent value)? logout,
     TResult? Function(AuthCheckStatusEvent value)? checkStatus,
   }) {
@@ -237,6 +248,7 @@ class _$AuthLoginEventImpl
   TResult maybeMap<TResult extends Object?>({
     TResult Function(AuthLoginEvent value)? login,
     TResult Function(AuthRegisterEvent value)? register,
+    TResult Function(AuthSocialLoginEvent value)? socialLogin,
     TResult Function(AuthLogoutEvent value)? logout,
     TResult Function(AuthCheckStatusEvent value)? checkStatus,
     required TResult orElse(),
@@ -359,6 +371,7 @@ class _$AuthRegisterEventImpl
     required TResult Function(String email, String password) login,
     required TResult Function(String email, String password, String displayName)
         register,
+    required TResult Function(String provider, String idToken) socialLogin,
     required TResult Function() logout,
     required TResult Function() checkStatus,
   }) {
@@ -371,6 +384,7 @@ class _$AuthRegisterEventImpl
     TResult? Function(String email, String password)? login,
     TResult? Function(String email, String password, String displayName)?
         register,
+    TResult? Function(String provider, String idToken)? socialLogin,
     TResult? Function()? logout,
     TResult? Function()? checkStatus,
   }) {
@@ -383,6 +397,7 @@ class _$AuthRegisterEventImpl
     TResult Function(String email, String password)? login,
     TResult Function(String email, String password, String displayName)?
         register,
+    TResult Function(String provider, String idToken)? socialLogin,
     TResult Function()? logout,
     TResult Function()? checkStatus,
     required TResult orElse(),
@@ -398,6 +413,7 @@ class _$AuthRegisterEventImpl
   TResult map<TResult extends Object?>({
     required TResult Function(AuthLoginEvent value) login,
     required TResult Function(AuthRegisterEvent value) register,
+    required TResult Function(AuthSocialLoginEvent value) socialLogin,
     required TResult Function(AuthLogoutEvent value) logout,
     required TResult Function(AuthCheckStatusEvent value) checkStatus,
   }) {
@@ -409,6 +425,7 @@ class _$AuthRegisterEventImpl
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(AuthLoginEvent value)? login,
     TResult? Function(AuthRegisterEvent value)? register,
+    TResult? Function(AuthSocialLoginEvent value)? socialLogin,
     TResult? Function(AuthLogoutEvent value)? logout,
     TResult? Function(AuthCheckStatusEvent value)? checkStatus,
   }) {
@@ -420,6 +437,7 @@ class _$AuthRegisterEventImpl
   TResult maybeMap<TResult extends Object?>({
     TResult Function(AuthLoginEvent value)? login,
     TResult Function(AuthRegisterEvent value)? register,
+    TResult Function(AuthSocialLoginEvent value)? socialLogin,
     TResult Function(AuthLogoutEvent value)? logout,
     TResult Function(AuthCheckStatusEvent value)? checkStatus,
     required TResult orElse(),
@@ -443,6 +461,186 @@ abstract class AuthRegisterEvent implements AuthEvent {
   @JsonKey(ignore: true)
   _$$AuthRegisterEventImplCopyWith<_$AuthRegisterEventImpl> get copyWith =>
       throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$AuthSocialLoginEventImplCopyWith<$Res> {
+  factory _$$AuthSocialLoginEventImplCopyWith(_$AuthSocialLoginEventImpl value,
+          $Res Function(_$AuthSocialLoginEventImpl) then) =
+      __$$AuthSocialLoginEventImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String provider, String idToken});
+}
+
+/// @nodoc
+class __$$AuthSocialLoginEventImplCopyWithImpl<$Res>
+    extends _$AuthEventCopyWithImpl<$Res, _$AuthSocialLoginEventImpl>
+    implements _$$AuthSocialLoginEventImplCopyWith<$Res> {
+  __$$AuthSocialLoginEventImplCopyWithImpl(_$AuthSocialLoginEventImpl _value,
+      $Res Function(_$AuthSocialLoginEventImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? provider = null,
+    Object? idToken = null,
+  }) {
+    return _then(_$AuthSocialLoginEventImpl(
+      provider: null == provider
+          ? _value.provider
+          : provider // ignore: cast_nullable_to_non_nullable
+              as String,
+      idToken: null == idToken
+          ? _value.idToken
+          : idToken // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$AuthSocialLoginEventImpl
+    with DiagnosticableTreeMixin
+    implements AuthSocialLoginEvent {
+  const _$AuthSocialLoginEventImpl(
+      {required this.provider, required this.idToken});
+
+  @override
+  final String provider;
+  @override
+  final String idToken;
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'AuthEvent.socialLogin(provider: $provider, idToken: $idToken)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'AuthEvent.socialLogin'))
+      ..add(DiagnosticsProperty('provider', provider))
+      ..add(DiagnosticsProperty('idToken', idToken));
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$AuthSocialLoginEventImpl &&
+            (identical(other.provider, provider) ||
+                other.provider == provider) &&
+            (identical(other.idToken, idToken) || other.idToken == idToken));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, provider, idToken);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$AuthSocialLoginEventImplCopyWith<_$AuthSocialLoginEventImpl>
+      get copyWith =>
+          __$$AuthSocialLoginEventImplCopyWithImpl<_$AuthSocialLoginEventImpl>(
+              this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String email, String password) login,
+    required TResult Function(String email, String password, String displayName)
+        register,
+    required TResult Function(String provider, String idToken) socialLogin,
+    required TResult Function() logout,
+    required TResult Function() checkStatus,
+  }) {
+    return socialLogin(provider, idToken);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(String email, String password)? login,
+    TResult? Function(String email, String password, String displayName)?
+        register,
+    TResult? Function(String provider, String idToken)? socialLogin,
+    TResult? Function()? logout,
+    TResult? Function()? checkStatus,
+  }) {
+    return socialLogin?.call(provider, idToken);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String email, String password)? login,
+    TResult Function(String email, String password, String displayName)?
+        register,
+    TResult Function(String provider, String idToken)? socialLogin,
+    TResult Function()? logout,
+    TResult Function()? checkStatus,
+    required TResult orElse(),
+  }) {
+    if (socialLogin != null) {
+      return socialLogin(provider, idToken);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(AuthLoginEvent value) login,
+    required TResult Function(AuthRegisterEvent value) register,
+    required TResult Function(AuthSocialLoginEvent value) socialLogin,
+    required TResult Function(AuthLogoutEvent value) logout,
+    required TResult Function(AuthCheckStatusEvent value) checkStatus,
+  }) {
+    return socialLogin(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(AuthLoginEvent value)? login,
+    TResult? Function(AuthRegisterEvent value)? register,
+    TResult? Function(AuthSocialLoginEvent value)? socialLogin,
+    TResult? Function(AuthLogoutEvent value)? logout,
+    TResult? Function(AuthCheckStatusEvent value)? checkStatus,
+  }) {
+    return socialLogin?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(AuthLoginEvent value)? login,
+    TResult Function(AuthRegisterEvent value)? register,
+    TResult Function(AuthSocialLoginEvent value)? socialLogin,
+    TResult Function(AuthLogoutEvent value)? logout,
+    TResult Function(AuthCheckStatusEvent value)? checkStatus,
+    required TResult orElse(),
+  }) {
+    if (socialLogin != null) {
+      return socialLogin(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class AuthSocialLoginEvent implements AuthEvent {
+  const factory AuthSocialLoginEvent(
+      {required final String provider,
+      required final String idToken}) = _$AuthSocialLoginEventImpl;
+
+  String get provider;
+  String get idToken;
+  @JsonKey(ignore: true)
+  _$$AuthSocialLoginEventImplCopyWith<_$AuthSocialLoginEventImpl>
+      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -494,6 +692,7 @@ class _$AuthLogoutEventImpl
     required TResult Function(String email, String password) login,
     required TResult Function(String email, String password, String displayName)
         register,
+    required TResult Function(String provider, String idToken) socialLogin,
     required TResult Function() logout,
     required TResult Function() checkStatus,
   }) {
@@ -506,6 +705,7 @@ class _$AuthLogoutEventImpl
     TResult? Function(String email, String password)? login,
     TResult? Function(String email, String password, String displayName)?
         register,
+    TResult? Function(String provider, String idToken)? socialLogin,
     TResult? Function()? logout,
     TResult? Function()? checkStatus,
   }) {
@@ -518,6 +718,7 @@ class _$AuthLogoutEventImpl
     TResult Function(String email, String password)? login,
     TResult Function(String email, String password, String displayName)?
         register,
+    TResult Function(String provider, String idToken)? socialLogin,
     TResult Function()? logout,
     TResult Function()? checkStatus,
     required TResult orElse(),
@@ -533,6 +734,7 @@ class _$AuthLogoutEventImpl
   TResult map<TResult extends Object?>({
     required TResult Function(AuthLoginEvent value) login,
     required TResult Function(AuthRegisterEvent value) register,
+    required TResult Function(AuthSocialLoginEvent value) socialLogin,
     required TResult Function(AuthLogoutEvent value) logout,
     required TResult Function(AuthCheckStatusEvent value) checkStatus,
   }) {
@@ -544,6 +746,7 @@ class _$AuthLogoutEventImpl
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(AuthLoginEvent value)? login,
     TResult? Function(AuthRegisterEvent value)? register,
+    TResult? Function(AuthSocialLoginEvent value)? socialLogin,
     TResult? Function(AuthLogoutEvent value)? logout,
     TResult? Function(AuthCheckStatusEvent value)? checkStatus,
   }) {
@@ -555,6 +758,7 @@ class _$AuthLogoutEventImpl
   TResult maybeMap<TResult extends Object?>({
     TResult Function(AuthLoginEvent value)? login,
     TResult Function(AuthRegisterEvent value)? register,
+    TResult Function(AuthSocialLoginEvent value)? socialLogin,
     TResult Function(AuthLogoutEvent value)? logout,
     TResult Function(AuthCheckStatusEvent value)? checkStatus,
     required TResult orElse(),
@@ -620,6 +824,7 @@ class _$AuthCheckStatusEventImpl
     required TResult Function(String email, String password) login,
     required TResult Function(String email, String password, String displayName)
         register,
+    required TResult Function(String provider, String idToken) socialLogin,
     required TResult Function() logout,
     required TResult Function() checkStatus,
   }) {
@@ -632,6 +837,7 @@ class _$AuthCheckStatusEventImpl
     TResult? Function(String email, String password)? login,
     TResult? Function(String email, String password, String displayName)?
         register,
+    TResult? Function(String provider, String idToken)? socialLogin,
     TResult? Function()? logout,
     TResult? Function()? checkStatus,
   }) {
@@ -644,6 +850,7 @@ class _$AuthCheckStatusEventImpl
     TResult Function(String email, String password)? login,
     TResult Function(String email, String password, String displayName)?
         register,
+    TResult Function(String provider, String idToken)? socialLogin,
     TResult Function()? logout,
     TResult Function()? checkStatus,
     required TResult orElse(),
@@ -659,6 +866,7 @@ class _$AuthCheckStatusEventImpl
   TResult map<TResult extends Object?>({
     required TResult Function(AuthLoginEvent value) login,
     required TResult Function(AuthRegisterEvent value) register,
+    required TResult Function(AuthSocialLoginEvent value) socialLogin,
     required TResult Function(AuthLogoutEvent value) logout,
     required TResult Function(AuthCheckStatusEvent value) checkStatus,
   }) {
@@ -670,6 +878,7 @@ class _$AuthCheckStatusEventImpl
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(AuthLoginEvent value)? login,
     TResult? Function(AuthRegisterEvent value)? register,
+    TResult? Function(AuthSocialLoginEvent value)? socialLogin,
     TResult? Function(AuthLogoutEvent value)? logout,
     TResult? Function(AuthCheckStatusEvent value)? checkStatus,
   }) {
@@ -681,6 +890,7 @@ class _$AuthCheckStatusEventImpl
   TResult maybeMap<TResult extends Object?>({
     TResult Function(AuthLoginEvent value)? login,
     TResult Function(AuthRegisterEvent value)? register,
+    TResult Function(AuthSocialLoginEvent value)? socialLogin,
     TResult Function(AuthLogoutEvent value)? logout,
     TResult Function(AuthCheckStatusEvent value)? checkStatus,
     required TResult orElse(),
@@ -705,6 +915,8 @@ mixin _$AuthState {
     required TResult Function(
             String userId, String email, String token, String displayName)
         authenticated,
+    required TResult Function(String email, String message)
+        emailConfirmationRequired,
     required TResult Function(String message) error,
   }) =>
       throw _privateConstructorUsedError;
@@ -715,6 +927,7 @@ mixin _$AuthState {
     TResult? Function(
             String userId, String email, String token, String displayName)?
         authenticated,
+    TResult? Function(String email, String message)? emailConfirmationRequired,
     TResult? Function(String message)? error,
   }) =>
       throw _privateConstructorUsedError;
@@ -725,32 +938,39 @@ mixin _$AuthState {
     TResult Function(
             String userId, String email, String token, String displayName)?
         authenticated,
+    TResult Function(String email, String message)? emailConfirmationRequired,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_Initial value) initial,
-    required TResult Function(_Loading value) loading,
+    required TResult Function(_AuthInitial value) initial,
+    required TResult Function(_AuthLoading value) loading,
     required TResult Function(_Authenticated value) authenticated,
-    required TResult Function(_Error value) error,
+    required TResult Function(_EmailConfirmationRequired value)
+        emailConfirmationRequired,
+    required TResult Function(_AuthError value) error,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Initial value)? initial,
-    TResult? Function(_Loading value)? loading,
+    TResult? Function(_AuthInitial value)? initial,
+    TResult? Function(_AuthLoading value)? loading,
     TResult? Function(_Authenticated value)? authenticated,
-    TResult? Function(_Error value)? error,
+    TResult? Function(_EmailConfirmationRequired value)?
+        emailConfirmationRequired,
+    TResult? Function(_AuthError value)? error,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Initial value)? initial,
-    TResult Function(_Loading value)? loading,
+    TResult Function(_AuthInitial value)? initial,
+    TResult Function(_AuthLoading value)? loading,
     TResult Function(_Authenticated value)? authenticated,
-    TResult Function(_Error value)? error,
+    TResult Function(_EmailConfirmationRequired value)?
+        emailConfirmationRequired,
+    TResult Function(_AuthError value)? error,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -774,25 +994,25 @@ class _$AuthStateCopyWithImpl<$Res, $Val extends AuthState>
 }
 
 /// @nodoc
-abstract class _$$InitialImplCopyWith<$Res> {
-  factory _$$InitialImplCopyWith(
-          _$InitialImpl value, $Res Function(_$InitialImpl) then) =
-      __$$InitialImplCopyWithImpl<$Res>;
+abstract class _$$AuthInitialImplCopyWith<$Res> {
+  factory _$$AuthInitialImplCopyWith(
+          _$AuthInitialImpl value, $Res Function(_$AuthInitialImpl) then) =
+      __$$AuthInitialImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$InitialImplCopyWithImpl<$Res>
-    extends _$AuthStateCopyWithImpl<$Res, _$InitialImpl>
-    implements _$$InitialImplCopyWith<$Res> {
-  __$$InitialImplCopyWithImpl(
-      _$InitialImpl _value, $Res Function(_$InitialImpl) _then)
+class __$$AuthInitialImplCopyWithImpl<$Res>
+    extends _$AuthStateCopyWithImpl<$Res, _$AuthInitialImpl>
+    implements _$$AuthInitialImplCopyWith<$Res> {
+  __$$AuthInitialImplCopyWithImpl(
+      _$AuthInitialImpl _value, $Res Function(_$AuthInitialImpl) _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$InitialImpl with DiagnosticableTreeMixin implements _Initial {
-  const _$InitialImpl();
+class _$AuthInitialImpl with DiagnosticableTreeMixin implements _AuthInitial {
+  const _$AuthInitialImpl();
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
@@ -808,7 +1028,7 @@ class _$InitialImpl with DiagnosticableTreeMixin implements _Initial {
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$InitialImpl);
+        (other.runtimeType == runtimeType && other is _$AuthInitialImpl);
   }
 
   @override
@@ -822,6 +1042,8 @@ class _$InitialImpl with DiagnosticableTreeMixin implements _Initial {
     required TResult Function(
             String userId, String email, String token, String displayName)
         authenticated,
+    required TResult Function(String email, String message)
+        emailConfirmationRequired,
     required TResult Function(String message) error,
   }) {
     return initial();
@@ -835,6 +1057,7 @@ class _$InitialImpl with DiagnosticableTreeMixin implements _Initial {
     TResult? Function(
             String userId, String email, String token, String displayName)?
         authenticated,
+    TResult? Function(String email, String message)? emailConfirmationRequired,
     TResult? Function(String message)? error,
   }) {
     return initial?.call();
@@ -848,6 +1071,7 @@ class _$InitialImpl with DiagnosticableTreeMixin implements _Initial {
     TResult Function(
             String userId, String email, String token, String displayName)?
         authenticated,
+    TResult Function(String email, String message)? emailConfirmationRequired,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
@@ -860,10 +1084,12 @@ class _$InitialImpl with DiagnosticableTreeMixin implements _Initial {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_Initial value) initial,
-    required TResult Function(_Loading value) loading,
+    required TResult Function(_AuthInitial value) initial,
+    required TResult Function(_AuthLoading value) loading,
     required TResult Function(_Authenticated value) authenticated,
-    required TResult Function(_Error value) error,
+    required TResult Function(_EmailConfirmationRequired value)
+        emailConfirmationRequired,
+    required TResult Function(_AuthError value) error,
   }) {
     return initial(this);
   }
@@ -871,10 +1097,12 @@ class _$InitialImpl with DiagnosticableTreeMixin implements _Initial {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Initial value)? initial,
-    TResult? Function(_Loading value)? loading,
+    TResult? Function(_AuthInitial value)? initial,
+    TResult? Function(_AuthLoading value)? loading,
     TResult? Function(_Authenticated value)? authenticated,
-    TResult? Function(_Error value)? error,
+    TResult? Function(_EmailConfirmationRequired value)?
+        emailConfirmationRequired,
+    TResult? Function(_AuthError value)? error,
   }) {
     return initial?.call(this);
   }
@@ -882,10 +1110,12 @@ class _$InitialImpl with DiagnosticableTreeMixin implements _Initial {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Initial value)? initial,
-    TResult Function(_Loading value)? loading,
+    TResult Function(_AuthInitial value)? initial,
+    TResult Function(_AuthLoading value)? loading,
     TResult Function(_Authenticated value)? authenticated,
-    TResult Function(_Error value)? error,
+    TResult Function(_EmailConfirmationRequired value)?
+        emailConfirmationRequired,
+    TResult Function(_AuthError value)? error,
     required TResult orElse(),
   }) {
     if (initial != null) {
@@ -895,30 +1125,30 @@ class _$InitialImpl with DiagnosticableTreeMixin implements _Initial {
   }
 }
 
-abstract class _Initial implements AuthState {
-  const factory _Initial() = _$InitialImpl;
+abstract class _AuthInitial implements AuthState {
+  const factory _AuthInitial() = _$AuthInitialImpl;
 }
 
 /// @nodoc
-abstract class _$$LoadingImplCopyWith<$Res> {
-  factory _$$LoadingImplCopyWith(
-          _$LoadingImpl value, $Res Function(_$LoadingImpl) then) =
-      __$$LoadingImplCopyWithImpl<$Res>;
+abstract class _$$AuthLoadingImplCopyWith<$Res> {
+  factory _$$AuthLoadingImplCopyWith(
+          _$AuthLoadingImpl value, $Res Function(_$AuthLoadingImpl) then) =
+      __$$AuthLoadingImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$LoadingImplCopyWithImpl<$Res>
-    extends _$AuthStateCopyWithImpl<$Res, _$LoadingImpl>
-    implements _$$LoadingImplCopyWith<$Res> {
-  __$$LoadingImplCopyWithImpl(
-      _$LoadingImpl _value, $Res Function(_$LoadingImpl) _then)
+class __$$AuthLoadingImplCopyWithImpl<$Res>
+    extends _$AuthStateCopyWithImpl<$Res, _$AuthLoadingImpl>
+    implements _$$AuthLoadingImplCopyWith<$Res> {
+  __$$AuthLoadingImplCopyWithImpl(
+      _$AuthLoadingImpl _value, $Res Function(_$AuthLoadingImpl) _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$LoadingImpl with DiagnosticableTreeMixin implements _Loading {
-  const _$LoadingImpl();
+class _$AuthLoadingImpl with DiagnosticableTreeMixin implements _AuthLoading {
+  const _$AuthLoadingImpl();
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
@@ -934,7 +1164,7 @@ class _$LoadingImpl with DiagnosticableTreeMixin implements _Loading {
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$LoadingImpl);
+        (other.runtimeType == runtimeType && other is _$AuthLoadingImpl);
   }
 
   @override
@@ -948,6 +1178,8 @@ class _$LoadingImpl with DiagnosticableTreeMixin implements _Loading {
     required TResult Function(
             String userId, String email, String token, String displayName)
         authenticated,
+    required TResult Function(String email, String message)
+        emailConfirmationRequired,
     required TResult Function(String message) error,
   }) {
     return loading();
@@ -961,6 +1193,7 @@ class _$LoadingImpl with DiagnosticableTreeMixin implements _Loading {
     TResult? Function(
             String userId, String email, String token, String displayName)?
         authenticated,
+    TResult? Function(String email, String message)? emailConfirmationRequired,
     TResult? Function(String message)? error,
   }) {
     return loading?.call();
@@ -974,6 +1207,7 @@ class _$LoadingImpl with DiagnosticableTreeMixin implements _Loading {
     TResult Function(
             String userId, String email, String token, String displayName)?
         authenticated,
+    TResult Function(String email, String message)? emailConfirmationRequired,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
@@ -986,10 +1220,12 @@ class _$LoadingImpl with DiagnosticableTreeMixin implements _Loading {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_Initial value) initial,
-    required TResult Function(_Loading value) loading,
+    required TResult Function(_AuthInitial value) initial,
+    required TResult Function(_AuthLoading value) loading,
     required TResult Function(_Authenticated value) authenticated,
-    required TResult Function(_Error value) error,
+    required TResult Function(_EmailConfirmationRequired value)
+        emailConfirmationRequired,
+    required TResult Function(_AuthError value) error,
   }) {
     return loading(this);
   }
@@ -997,10 +1233,12 @@ class _$LoadingImpl with DiagnosticableTreeMixin implements _Loading {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Initial value)? initial,
-    TResult? Function(_Loading value)? loading,
+    TResult? Function(_AuthInitial value)? initial,
+    TResult? Function(_AuthLoading value)? loading,
     TResult? Function(_Authenticated value)? authenticated,
-    TResult? Function(_Error value)? error,
+    TResult? Function(_EmailConfirmationRequired value)?
+        emailConfirmationRequired,
+    TResult? Function(_AuthError value)? error,
   }) {
     return loading?.call(this);
   }
@@ -1008,10 +1246,12 @@ class _$LoadingImpl with DiagnosticableTreeMixin implements _Loading {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Initial value)? initial,
-    TResult Function(_Loading value)? loading,
+    TResult Function(_AuthInitial value)? initial,
+    TResult Function(_AuthLoading value)? loading,
     TResult Function(_Authenticated value)? authenticated,
-    TResult Function(_Error value)? error,
+    TResult Function(_EmailConfirmationRequired value)?
+        emailConfirmationRequired,
+    TResult Function(_AuthError value)? error,
     required TResult orElse(),
   }) {
     if (loading != null) {
@@ -1021,8 +1261,8 @@ class _$LoadingImpl with DiagnosticableTreeMixin implements _Loading {
   }
 }
 
-abstract class _Loading implements AuthState {
-  const factory _Loading() = _$LoadingImpl;
+abstract class _AuthLoading implements AuthState {
+  const factory _AuthLoading() = _$AuthLoadingImpl;
 }
 
 /// @nodoc
@@ -1080,7 +1320,7 @@ class _$AuthenticatedImpl
       {required this.userId,
       required this.email,
       required this.token,
-      this.displayName = ''});
+      required this.displayName});
 
   @override
   final String userId;
@@ -1089,7 +1329,6 @@ class _$AuthenticatedImpl
   @override
   final String token;
   @override
-  @JsonKey()
   final String displayName;
 
   @override
@@ -1138,6 +1377,8 @@ class _$AuthenticatedImpl
     required TResult Function(
             String userId, String email, String token, String displayName)
         authenticated,
+    required TResult Function(String email, String message)
+        emailConfirmationRequired,
     required TResult Function(String message) error,
   }) {
     return authenticated(userId, email, token, displayName);
@@ -1151,6 +1392,7 @@ class _$AuthenticatedImpl
     TResult? Function(
             String userId, String email, String token, String displayName)?
         authenticated,
+    TResult? Function(String email, String message)? emailConfirmationRequired,
     TResult? Function(String message)? error,
   }) {
     return authenticated?.call(userId, email, token, displayName);
@@ -1164,6 +1406,7 @@ class _$AuthenticatedImpl
     TResult Function(
             String userId, String email, String token, String displayName)?
         authenticated,
+    TResult Function(String email, String message)? emailConfirmationRequired,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
@@ -1176,10 +1419,12 @@ class _$AuthenticatedImpl
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_Initial value) initial,
-    required TResult Function(_Loading value) loading,
+    required TResult Function(_AuthInitial value) initial,
+    required TResult Function(_AuthLoading value) loading,
     required TResult Function(_Authenticated value) authenticated,
-    required TResult Function(_Error value) error,
+    required TResult Function(_EmailConfirmationRequired value)
+        emailConfirmationRequired,
+    required TResult Function(_AuthError value) error,
   }) {
     return authenticated(this);
   }
@@ -1187,10 +1432,12 @@ class _$AuthenticatedImpl
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Initial value)? initial,
-    TResult? Function(_Loading value)? loading,
+    TResult? Function(_AuthInitial value)? initial,
+    TResult? Function(_AuthLoading value)? loading,
     TResult? Function(_Authenticated value)? authenticated,
-    TResult? Function(_Error value)? error,
+    TResult? Function(_EmailConfirmationRequired value)?
+        emailConfirmationRequired,
+    TResult? Function(_AuthError value)? error,
   }) {
     return authenticated?.call(this);
   }
@@ -1198,10 +1445,12 @@ class _$AuthenticatedImpl
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Initial value)? initial,
-    TResult Function(_Loading value)? loading,
+    TResult Function(_AuthInitial value)? initial,
+    TResult Function(_AuthLoading value)? loading,
     TResult Function(_Authenticated value)? authenticated,
-    TResult Function(_Error value)? error,
+    TResult Function(_EmailConfirmationRequired value)?
+        emailConfirmationRequired,
+    TResult Function(_AuthError value)? error,
     required TResult orElse(),
   }) {
     if (authenticated != null) {
@@ -1216,7 +1465,7 @@ abstract class _Authenticated implements AuthState {
       {required final String userId,
       required final String email,
       required final String token,
-      final String displayName}) = _$AuthenticatedImpl;
+      required final String displayName}) = _$AuthenticatedImpl;
 
   String get userId;
   String get email;
@@ -1228,20 +1477,207 @@ abstract class _Authenticated implements AuthState {
 }
 
 /// @nodoc
-abstract class _$$ErrorImplCopyWith<$Res> {
-  factory _$$ErrorImplCopyWith(
-          _$ErrorImpl value, $Res Function(_$ErrorImpl) then) =
-      __$$ErrorImplCopyWithImpl<$Res>;
+abstract class _$$EmailConfirmationRequiredImplCopyWith<$Res> {
+  factory _$$EmailConfirmationRequiredImplCopyWith(
+          _$EmailConfirmationRequiredImpl value,
+          $Res Function(_$EmailConfirmationRequiredImpl) then) =
+      __$$EmailConfirmationRequiredImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String email, String message});
+}
+
+/// @nodoc
+class __$$EmailConfirmationRequiredImplCopyWithImpl<$Res>
+    extends _$AuthStateCopyWithImpl<$Res, _$EmailConfirmationRequiredImpl>
+    implements _$$EmailConfirmationRequiredImplCopyWith<$Res> {
+  __$$EmailConfirmationRequiredImplCopyWithImpl(
+      _$EmailConfirmationRequiredImpl _value,
+      $Res Function(_$EmailConfirmationRequiredImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? email = null,
+    Object? message = null,
+  }) {
+    return _then(_$EmailConfirmationRequiredImpl(
+      email: null == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String,
+      message: null == message
+          ? _value.message
+          : message // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$EmailConfirmationRequiredImpl
+    with DiagnosticableTreeMixin
+    implements _EmailConfirmationRequired {
+  const _$EmailConfirmationRequiredImpl(
+      {required this.email, required this.message});
+
+  @override
+  final String email;
+  @override
+  final String message;
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'AuthState.emailConfirmationRequired(email: $email, message: $message)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'AuthState.emailConfirmationRequired'))
+      ..add(DiagnosticsProperty('email', email))
+      ..add(DiagnosticsProperty('message', message));
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$EmailConfirmationRequiredImpl &&
+            (identical(other.email, email) || other.email == email) &&
+            (identical(other.message, message) || other.message == message));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, email, message);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$EmailConfirmationRequiredImplCopyWith<_$EmailConfirmationRequiredImpl>
+      get copyWith => __$$EmailConfirmationRequiredImplCopyWithImpl<
+          _$EmailConfirmationRequiredImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() initial,
+    required TResult Function() loading,
+    required TResult Function(
+            String userId, String email, String token, String displayName)
+        authenticated,
+    required TResult Function(String email, String message)
+        emailConfirmationRequired,
+    required TResult Function(String message) error,
+  }) {
+    return emailConfirmationRequired(email, message);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? initial,
+    TResult? Function()? loading,
+    TResult? Function(
+            String userId, String email, String token, String displayName)?
+        authenticated,
+    TResult? Function(String email, String message)? emailConfirmationRequired,
+    TResult? Function(String message)? error,
+  }) {
+    return emailConfirmationRequired?.call(email, message);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? initial,
+    TResult Function()? loading,
+    TResult Function(
+            String userId, String email, String token, String displayName)?
+        authenticated,
+    TResult Function(String email, String message)? emailConfirmationRequired,
+    TResult Function(String message)? error,
+    required TResult orElse(),
+  }) {
+    if (emailConfirmationRequired != null) {
+      return emailConfirmationRequired(email, message);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_AuthInitial value) initial,
+    required TResult Function(_AuthLoading value) loading,
+    required TResult Function(_Authenticated value) authenticated,
+    required TResult Function(_EmailConfirmationRequired value)
+        emailConfirmationRequired,
+    required TResult Function(_AuthError value) error,
+  }) {
+    return emailConfirmationRequired(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_AuthInitial value)? initial,
+    TResult? Function(_AuthLoading value)? loading,
+    TResult? Function(_Authenticated value)? authenticated,
+    TResult? Function(_EmailConfirmationRequired value)?
+        emailConfirmationRequired,
+    TResult? Function(_AuthError value)? error,
+  }) {
+    return emailConfirmationRequired?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_AuthInitial value)? initial,
+    TResult Function(_AuthLoading value)? loading,
+    TResult Function(_Authenticated value)? authenticated,
+    TResult Function(_EmailConfirmationRequired value)?
+        emailConfirmationRequired,
+    TResult Function(_AuthError value)? error,
+    required TResult orElse(),
+  }) {
+    if (emailConfirmationRequired != null) {
+      return emailConfirmationRequired(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _EmailConfirmationRequired implements AuthState {
+  const factory _EmailConfirmationRequired(
+      {required final String email,
+      required final String message}) = _$EmailConfirmationRequiredImpl;
+
+  String get email;
+  String get message;
+  @JsonKey(ignore: true)
+  _$$EmailConfirmationRequiredImplCopyWith<_$EmailConfirmationRequiredImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$AuthErrorImplCopyWith<$Res> {
+  factory _$$AuthErrorImplCopyWith(
+          _$AuthErrorImpl value, $Res Function(_$AuthErrorImpl) then) =
+      __$$AuthErrorImplCopyWithImpl<$Res>;
   @useResult
   $Res call({String message});
 }
 
 /// @nodoc
-class __$$ErrorImplCopyWithImpl<$Res>
-    extends _$AuthStateCopyWithImpl<$Res, _$ErrorImpl>
-    implements _$$ErrorImplCopyWith<$Res> {
-  __$$ErrorImplCopyWithImpl(
-      _$ErrorImpl _value, $Res Function(_$ErrorImpl) _then)
+class __$$AuthErrorImplCopyWithImpl<$Res>
+    extends _$AuthStateCopyWithImpl<$Res, _$AuthErrorImpl>
+    implements _$$AuthErrorImplCopyWith<$Res> {
+  __$$AuthErrorImplCopyWithImpl(
+      _$AuthErrorImpl _value, $Res Function(_$AuthErrorImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -1249,7 +1685,7 @@ class __$$ErrorImplCopyWithImpl<$Res>
   $Res call({
     Object? message = null,
   }) {
-    return _then(_$ErrorImpl(
+    return _then(_$AuthErrorImpl(
       null == message
           ? _value.message
           : message // ignore: cast_nullable_to_non_nullable
@@ -1260,8 +1696,8 @@ class __$$ErrorImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$ErrorImpl with DiagnosticableTreeMixin implements _Error {
-  const _$ErrorImpl(this.message);
+class _$AuthErrorImpl with DiagnosticableTreeMixin implements _AuthError {
+  const _$AuthErrorImpl(this.message);
 
   @override
   final String message;
@@ -1283,7 +1719,7 @@ class _$ErrorImpl with DiagnosticableTreeMixin implements _Error {
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$ErrorImpl &&
+            other is _$AuthErrorImpl &&
             (identical(other.message, message) || other.message == message));
   }
 
@@ -1293,8 +1729,8 @@ class _$ErrorImpl with DiagnosticableTreeMixin implements _Error {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$ErrorImplCopyWith<_$ErrorImpl> get copyWith =>
-      __$$ErrorImplCopyWithImpl<_$ErrorImpl>(this, _$identity);
+  _$$AuthErrorImplCopyWith<_$AuthErrorImpl> get copyWith =>
+      __$$AuthErrorImplCopyWithImpl<_$AuthErrorImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -1304,6 +1740,8 @@ class _$ErrorImpl with DiagnosticableTreeMixin implements _Error {
     required TResult Function(
             String userId, String email, String token, String displayName)
         authenticated,
+    required TResult Function(String email, String message)
+        emailConfirmationRequired,
     required TResult Function(String message) error,
   }) {
     return error(message);
@@ -1317,6 +1755,7 @@ class _$ErrorImpl with DiagnosticableTreeMixin implements _Error {
     TResult? Function(
             String userId, String email, String token, String displayName)?
         authenticated,
+    TResult? Function(String email, String message)? emailConfirmationRequired,
     TResult? Function(String message)? error,
   }) {
     return error?.call(message);
@@ -1330,6 +1769,7 @@ class _$ErrorImpl with DiagnosticableTreeMixin implements _Error {
     TResult Function(
             String userId, String email, String token, String displayName)?
         authenticated,
+    TResult Function(String email, String message)? emailConfirmationRequired,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
@@ -1342,10 +1782,12 @@ class _$ErrorImpl with DiagnosticableTreeMixin implements _Error {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_Initial value) initial,
-    required TResult Function(_Loading value) loading,
+    required TResult Function(_AuthInitial value) initial,
+    required TResult Function(_AuthLoading value) loading,
     required TResult Function(_Authenticated value) authenticated,
-    required TResult Function(_Error value) error,
+    required TResult Function(_EmailConfirmationRequired value)
+        emailConfirmationRequired,
+    required TResult Function(_AuthError value) error,
   }) {
     return error(this);
   }
@@ -1353,10 +1795,12 @@ class _$ErrorImpl with DiagnosticableTreeMixin implements _Error {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Initial value)? initial,
-    TResult? Function(_Loading value)? loading,
+    TResult? Function(_AuthInitial value)? initial,
+    TResult? Function(_AuthLoading value)? loading,
     TResult? Function(_Authenticated value)? authenticated,
-    TResult? Function(_Error value)? error,
+    TResult? Function(_EmailConfirmationRequired value)?
+        emailConfirmationRequired,
+    TResult? Function(_AuthError value)? error,
   }) {
     return error?.call(this);
   }
@@ -1364,10 +1808,12 @@ class _$ErrorImpl with DiagnosticableTreeMixin implements _Error {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Initial value)? initial,
-    TResult Function(_Loading value)? loading,
+    TResult Function(_AuthInitial value)? initial,
+    TResult Function(_AuthLoading value)? loading,
     TResult Function(_Authenticated value)? authenticated,
-    TResult Function(_Error value)? error,
+    TResult Function(_EmailConfirmationRequired value)?
+        emailConfirmationRequired,
+    TResult Function(_AuthError value)? error,
     required TResult orElse(),
   }) {
     if (error != null) {
@@ -1377,11 +1823,11 @@ class _$ErrorImpl with DiagnosticableTreeMixin implements _Error {
   }
 }
 
-abstract class _Error implements AuthState {
-  const factory _Error(final String message) = _$ErrorImpl;
+abstract class _AuthError implements AuthState {
+  const factory _AuthError(final String message) = _$AuthErrorImpl;
 
   String get message;
   @JsonKey(ignore: true)
-  _$$ErrorImplCopyWith<_$ErrorImpl> get copyWith =>
+  _$$AuthErrorImplCopyWith<_$AuthErrorImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
