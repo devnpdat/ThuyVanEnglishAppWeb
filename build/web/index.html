@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<!-- build: gis-redirect-mode -->
+<html>
+<head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+  -->
+  <base href="/">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="Ứng dụng học tiếng Anh dành cho bạn Thuỳ Vân - lớp 8">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Thuỳ Vân English">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Open Graph (Zalo, Facebook preview) -->
+  <meta property="og:title" content="Ứng dụng học tiếng Anh của Thuỳ Vân">
+  <meta property="og:description" content="Học tiếng Anh mỗi ngày cùng Thuỳ Vân - nghe, nhìn, gõ từng câu">
+  <meta property="og:url" content="https://thuyvan.up.railway.app">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://storage.googleapis.com/vanvy-english-app-media/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://storage.googleapis.com/vanvy-english-app-media/og-image.jpg">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <!-- Google Identity Services (GIS) - One Tap + Button, không dùng popup -->
+  <!-- KHÔNG async — Flutter gọi google.accounts.id.initialize ngay sau first frame, cần script load đồng bộ -->
+  <script src="https://accounts.google.com/gsi/client" defer></script>
+  <script>
+    function handleGoogleCredential(response) {
+      if (window._dartGoogleCallback) {
+        window._dartGoogleCallback(response.credential);
+      }
+    }
+  </script>
+
+  <title>Thuỳ Vân English - Học tiếng Anh mỗi ngày</title>
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <!--
+    You can customize the "flutter_bootstrap.js" script.
+    This is useful to provide a custom configuration to the Flutter loader
+    or to give the user feedback during the initialization process.
+
+    For more details:
+    * https://docs.flutter.dev/platform-integration/web/initialization
+  -->
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>
