@@ -23,21 +23,26 @@ class _LoginScreenState extends State<LoginScreen> {
 
   AuthBloc? _bloc;
 
+  bool _googleCallbackChecked = false;
+
   @override
   void initState() {
     super.initState();
-    _checkGoogleCallback();
   }
 
   /// Kiểm tra nếu sessionStorage có id_token (được lưu bởi index.html script trước khi Flutter init)
+  /// Gọi từ build() lần đầu sau khi _bloc đã được gán — chỉ chạy 1 lần nhờ _googleCallbackChecked
   void _checkGoogleCallback() {
+    if (_googleCallbackChecked) return;
+    _googleCallbackChecked = true;
+
     final idToken = web.window.sessionStorage.getItem('google_id_token');
 
     if (idToken != null && idToken.isNotEmpty) {
       // Xoá khỏi sessionStorage ngay (tránh xử lý lại)
       web.window.sessionStorage.removeItem('google_id_token');
 
-      // Gửi id_token lên BE sau frame đầu (khi _bloc đã được set)
+      // _bloc đã được gán ngay trước khi gọi hàm này trong builder
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           _bloc?.add(AuthSocialLoginEvent(provider: 'google', idToken: idToken));
@@ -178,6 +183,7 @@ class _LoginScreenState extends State<LoginScreen> {
       builder: (context, state) {
         final bloc = context.read<AuthBloc>();
         _bloc = bloc;
+        _checkGoogleCallback(); // chỉ chạy 1 lần nhờ flag _googleCallbackChecked
         final isLoading = state.maybeWhen(loading: () => true, orElse: () => false);
 
         final emailConfirmInfo = state.whenOrNull<String?>(
